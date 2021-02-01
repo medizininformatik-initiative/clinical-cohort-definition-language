@@ -1,1 +1,6 @@
 # codex-structured-query
+
+Includes 
+* an example of a structured query (as JSON file)
+* a JSON schema describing a structured query
+* documenation as .md-file
