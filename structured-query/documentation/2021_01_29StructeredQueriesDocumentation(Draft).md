@@ -1,8 +1,8 @@
 # Structured Queries
 
-CODEX front-end allows users to create requests based on inclusion and exclusion criteria. The different inclusion and exclusion criteria are conjuncted with the "AND" and "OR" operators respectively. Resulting in a conjunctive normal form (CNF) for inclusion and disjunctive normal form (DNF) for the exclusion  criteria.
+CODEX front-end allows users to create  feasibility queries based on inclusion and exclusion criteria. The different inclusion and exclusion criteria are conjuncted with the "AND" and "OR" operators respectively. Resulting in a conjunctive normal form (CNF) for inclusion and disjunctive normal form (DNF) for the exclusion  criteria.
 
-The front-end created queries need to be transmitted to different back-end services which translate the CNF and DNF to queries. As common data exchange format the so called *Structured Queries* are defined.
+The front-end created queries need to be transmitted to different back-end services which translates the Structured Query format into other query formats such as FHIR Search or CQL. As common data exchange format the so called *Structured Queries* are defined.
 
 ## Query Message
 
@@ -109,15 +109,15 @@ The patient gender is a concept and can be represented with a Termcode. The valu
           "type": "concept",
           "selectedConcepts": [
             {
-              "code": "female",
+              "code": "F",
               "display": "female",
-              "system": "",
+              "system": "https://fhir.loinc.org/CodeSystem/$lookup?system=http://loinc.org&code=LL2191-6",
               "version": ""
             },
             {
-              "code": "male",
+              "code": "M",
               "display": "male",
-              "system": "",
+              "system": "https://fhir.loinc.org/CodeSystem/$lookup?system=http://loinc.org&code=LL2191-6",
               "version": ""
             }
           ]

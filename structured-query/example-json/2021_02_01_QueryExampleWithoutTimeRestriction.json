@@ -11,15 +11,15 @@
           "type": "concept",
           "selectedConcepts": [
             {
-              "code": "female",
+              "code": "F",
               "display": "female",
-              "system": "",
+              "system": "https://fhir.loinc.org/CodeSystem/$lookup?system=http://loinc.org&code=LL2191-6",
               "version": ""
             },
             {
-              "code": "male",
+              "code": "M",
               "display": "male",
-              "system": "",
+              "system": "https://fhir.loinc.org/CodeSystem/$lookup?system=http://loinc.org&code=LL2191-6",
               "version": ""
             }
           ]
@@ -37,7 +37,7 @@
           "type": "quantity-comperator",
           "comparator": "gt",
           "quantityUnit": {
-            "code": "year",
+            "code": "a",
             "display": "Jahr"
           },
           "value": 18
