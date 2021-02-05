@@ -13,7 +13,6 @@
 				"display": { "type": "string"},
 			}, 
 			"required": ["code", "system", "display"],
-            "additionalProperties": false
 		},
 	
 		"criterion": {
@@ -23,7 +22,6 @@
 				"valueFilter": { "$ref": "#/definitions/valueFilter"}
 			},
             "required": ["termCode"],
-            "additionalProperties": false
 		},
 		
 		"unit": {
@@ -35,13 +33,12 @@
 				"display": {"type": "string"}
 			},
 			"required": ["code", "display"],
-            "additionalProperties": false
 		},
 		
 		"valueFilter": {
 			"type": "object",
 			"properties": {
-				"type": { "enum": ["concept", "quantity-comperator", "quantity-range"] }  
+				"type": { "enum": ["concept", "quantity-comperator", "quantity-range"]}  
 			},
 			"required": ["type"],
 			"allOf": [
@@ -58,7 +55,6 @@
 							"items": {"$ref": "#/definitions/termCode"},
 						}
 					},
-					"additionalProperties": false,
 					"required": ["type", "selectedConcepts"]
 				}
 			},
@@ -74,7 +70,6 @@
 						"unit" : {"$ref": "#/definitions/unit" }
 					},
 					"required": ["type", "comparator", "value"],
-                    "additionalProperties": false
 				}
 			},
 			{
@@ -90,7 +85,6 @@
 						"unit" : {"$ref": "#/definitions/unit" }
 					},
 					"required": ["type", "minValue", "maxValue"],
-                    "additionalProperties": false
 				}
 			}
 			]			
@@ -127,5 +121,5 @@
         "display" : {"type": "string"}
 	},
 	"required": [ "inclusionCriteria" ],
-	"additionalProperties": false
 }
+
