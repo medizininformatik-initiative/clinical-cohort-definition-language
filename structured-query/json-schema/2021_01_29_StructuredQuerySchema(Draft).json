@@ -2,6 +2,46 @@
 	"$schema": "http://to_be_decided.com/draft-1/schema#",
 	
 	"definitions": {
+	
+		"queryMetadata": {
+			"type": "object",
+			"properties": {
+				"version": { "type": "uri" },
+				"timeStamp": { "type": "string", "format": "date-time" },
+				"queryId": { "type": "string", "format": "uuid"}
+			},
+			"required": ["version", "timeStamp", "queryId"]
+		},
+		
+		"query": {
+		"type": "object", 
+		"properties": {
+			"inclusionCriteria": {
+				"type": "array",
+				"minItems": 1,
+				"description": "All elements within the array are conjuncted with an AND operator",
+				"items": {
+					"type": "array",
+					"minItems": 1,
+					"description": "All elements within the array are conjuncted with an OR operator",
+					"items": { "$ref": "#/definitions/criterion" },
+				},
+			},
+			"exclusionCriteria": {
+				"type": "array",
+				"minItems": 1,
+				"description": "All elements within the array are conjuncted with an OR operator",
+				"items": {
+					"type": "array",
+					"minItems": 1,
+					"description": "All elements within the array are conjuncted with an AND operator",
+					"items": { "$ref": "#/definitions/criterion" },
+				},
+			},
+			"display" : {"type": "string"}
+		},
+		"required": [ "inclusionCriteria" ]
+		},
 		
 		"termCode": {
 			"type": "object",
@@ -92,34 +132,13 @@
 	},
 
 	"$id": "http://to_be_decided.com/query.schema.json",
-	"title": "query",
+	"title": "queryMessage",
 	"description": "Within a query the inclusion and exclusion criteria are conjuncted with AND NOT",
 	"type": "object",
 	"properties": {
-		"inclusionCriteria": {
-			"type": "array",
-			"minItems": 1,
-			"description": "All elements within the array are conjuncted with an AND operator",
-			"items": {
-				"type": "array",
-				"minItems": 1,
-				"description": "All elements within the array are conjuncted with an OR operator",
-				"items": { "$ref": "#/definitions/criterion" },
-			},
-		},
-		"exclusionCriteria": {
-			"type": "array",
-			"minItems": 1,
-			"description": "All elements within the array are conjuncted with an OR operator",
-			"items": {
-				"type": "array",
-				"minItems": 1,
-				"description": "All elements within the array are conjuncted with an AND operator",
-				"items": { "$ref": "#/definitions/criterion" },
-			},
-		},
-        "display" : {"type": "string"}
+		"queryMetadata": {"$ref": "#/definitions/queryMetadata"},
+		"query": {"$ref": "#/definitions/query"},
 	},
-	"required": [ "inclusionCriteria" ],
+	"required" ["queryMetadata", "query"]
 }
 

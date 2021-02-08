@@ -1,130 +1,137 @@
 {
-  "inclusionCriteria": [
-    [
-      {
-        "termCode": {
-          "code": "LL2191-6",
-          "display": "Geschlecht",
-          "system": "http://loinc.org"
-        },
-        "valueFilter": {
-          "type": "concept",
-          "selectedConcepts": [
-            {
-              "code": "F",
-              "display": "female",
-              "system": "https://fhir.loinc.org/CodeSystem/$lookup?system=http://loinc.org&code=LL2191-6",
-              "version": ""
+  "queryMetadata": {
+    "version": "http://to_be_decided.com/draft-1/schema#",
+    "timeStamp": "2021-02-08 13:21:57",
+    "queryId": "531ffdae-c500-4e8e-a978-69ddf4682e83"
+  },
+  "query": {
+    "inclusionCriteria": [
+      [
+        {
+          "termCode": {
+            "code": "LL2191-6",
+            "display": "Geschlecht",
+            "system": "http://loinc.org"
+          },
+          "valueFilter": {
+            "type": "concept",
+            "selectedConcepts": [
+              {
+                "code": "F",
+                "display": "female",
+                "system": "https://fhir.loinc.org/CodeSystem/$lookup?system=http://loinc.org&code=LL2191-6",
+                "version": ""
+              },
+              {
+                "code": "M",
+                "display": "male",
+                "system": "https://fhir.loinc.org/CodeSystem/$lookup?system=http://loinc.org&code=LL2191-6",
+                "version": ""
+              }
+            ]
+          }
+        }
+      ],
+      [
+        {
+          "termCode": {
+            "code": "30525-0",
+            "display": "Alter",
+            "system": "http://loinc.org"
+          },
+          "valueFilter": {
+            "type": "quantity-comperator",
+            "comparator": "gt",
+            "quantityUnit": {
+              "code": "a",
+              "display": "Jahr"
             },
-            {
-              "code": "M",
-              "display": "male",
-              "system": "https://fhir.loinc.org/CodeSystem/$lookup?system=http://loinc.org&code=LL2191-6",
-              "version": ""
-            }
-          ]
+            "value": 18
+          }
         }
-      }
-    ],
-    [
-      {
-        "termCode": {
-          "code": "30525-0",
-          "display": "Alter",
-          "system": "http://loinc.org"
+      ],
+      [
+        {
+          "termCode": {
+            "code": "F00",
+            "display": "F00",
+            "system": "http://fhir.de/CodeSystem/dimdi/icd-10-gm"
+          }
         },
-        "valueFilter": {
-          "type": "quantity-comperator",
-          "comparator": "gt",
-          "quantityUnit": {
-            "code": "a",
-            "display": "Jahr"
+        {
+          "termCode": {
+            "code": "F09",
+            "display": "F09",
+            "system": "http://fhir.de/CodeSystem/dimdi/icd-10-gm"
+          }
+        }
+      ]
+    ],
+    "exclusionCriteria": [
+      [
+        {
+          "termCode": {
+            "code": "LL2191-6",
+            "display": "Geschlecht",
+            "system": "http://loinc.org"
           },
-          "value": 18
+          "valueFilter": {
+            "type": "concept",
+            "selectedConcepts": [
+              {
+                "code": "male",
+                "display": "male",
+                "system": "",
+                "version": ""
+              }
+            ]
+          }
         }
-      }
-    ],
-    [
-      {
-        "termCode": {
-          "code": "F00",
-          "display": "F00",
-          "system": "http://fhir.de/CodeSystem/dimdi/icd-10-gm"
-        }
-      },
-      {
-        "termCode": {
-          "code": "F09",
-          "display": "F09",
-          "system": "http://fhir.de/CodeSystem/dimdi/icd-10-gm"
-        }
-      }
-    ]
-  ],
-  "exclusionCriteria": [
-    [
-      {
-        "termCode": {
-          "code": "LL2191-6",
-          "display": "Geschlecht",
-          "system": "http://loinc.org"
-        },
-        "valueFilter": {
-          "type": "concept",
-          "selectedConcepts": [
-            {
-              "code": "male",
-              "display": "male",
-              "system": "",
-              "version": ""
-            }
-          ]
-        }
-      }
-    ],
-    [
-      {
-        "termCode": {
-          "code": "30525-0",
-          "display": "Alter",
-          "system": "http://loinc.org"
-        },
-        "valueFilter": {
-          "type": "quantity-comperator",
-          "comparator": "gt",
-          "quantityUnit": {
-            "code": "year",
-            "display": "Jahr"
+      ],
+      [
+        {
+          "termCode": {
+            "code": "30525-0",
+            "display": "Alter",
+            "system": "http://loinc.org"
           },
-          "value": 65
+          "valueFilter": {
+            "type": "quantity-comperator",
+            "comparator": "gt",
+            "quantityUnit": {
+              "code": "year",
+              "display": "Jahr"
+            },
+            "value": 65
+          }
         }
-      }
-    ],
-    [
-      {
-        "termCode": {
-          "code": "F00.9",
-          "display": "F00.9",
-          "system": "http://fhir.de/CodeSystem/dimdi/icd-10-gm"
-        }
-      },
-      {
-        "termCode": {
-          "code": "8310-5",
-          "display": "Körpertemperatur",
-          "system": "http://loinc.org"
+      ],
+      [
+        {
+          "termCode": {
+            "code": "F00.9",
+            "display": "F00.9",
+            "system": "http://fhir.de/CodeSystem/dimdi/icd-10-gm"
+          }
         },
-        "valueFilter": {
-          "type": "quantity-range",
-          "quantityUnit": {
-            "code": "Cel",
-            "display": "°C"
+        {
+          "termCode": {
+            "code": "8310-5",
+            "display": "Körpertemperatur",
+            "system": "http://loinc.org"
           },
-          "minValue": 35,
-          "maxValue": 39
+          "valueFilter": {
+            "type": "quantity-range",
+            "quantityUnit": {
+              "code": "Cel",
+              "display": "°C"
+            },
+            "minValue": 35,
+            "maxValue": 39
+          }
         }
-      }
-    ]
-  ],
-  "display": "Beispiel-Query"
+      ]
+    ],
+    "display": "Beispiel-Query"
+  }
 }
