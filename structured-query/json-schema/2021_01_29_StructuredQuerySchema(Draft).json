@@ -6,7 +6,7 @@
 		"queryMetadata": {
 			"type": "object",
 			"properties": {
-				"version": { "type": "uri" },
+				"version": { "type": "string", "format": "uri" },
 				"timeStamp": { "type": "string", "format": "date-time" },
 				"queryId": { "type": "string", "format": "uuid"}
 			},
@@ -45,7 +45,7 @@
 		
 		"termCode": {
 			"type": "object",
-			"description": "The termCode defines a concept based on a coding system (i.e. LOINC). The triplet of code, system and version identify the concept."
+			"description": "The termCode defines a concept based on a coding system (i.e. LOINC). The triplet of code, system and version identify the concept.",
 			"properties": {
 				"code": { "type": "string" },
 				"system": { "type": "string"},
@@ -119,7 +119,6 @@
 				"then" : {
 					"properties": {
                       	"type": {"const": "quantity-range"},
-						"description": "In the range comparision both values are included: minValue <= x <= maxValue"
 						"minValue": { "type": "number" },
 						"maxValue": { "type": "number" },
 						"unit" : {"$ref": "#/definitions/unit" }
@@ -139,6 +138,6 @@
 		"queryMetadata": {"$ref": "#/definitions/queryMetadata"},
 		"query": {"$ref": "#/definitions/query"},
 	},
-	"required" ["queryMetadata", "query"]
+	"required": ["queryMetadata", "query"]
 }
 

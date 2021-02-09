@@ -16,7 +16,7 @@ The metadata provides some basic information about the query:
 | :-------- | -------------------------------------- |
 | Version   | API Version                            |
 | Timestamp | Timestamp when the query was send      |
-| queryID   | unique ID to identify a specific query |
+| queryId   | unique Id to identify a specific query |
 
 ## Query
 
