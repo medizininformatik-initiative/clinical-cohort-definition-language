@@ -1,7 +1,7 @@
 {
   "queryMetadata": {
     "version": "http://to_be_decided.com/draft-1/schema#",
-    "timeStamp": "2021-02-08 13:21:57",
+    "timestamp": "2021-02-08T13:21:57",
     "queryId": "531ffdae-c500-4e8e-a978-69ddf4682e83"
   },
   "query": {
@@ -40,7 +40,7 @@
             "system": "http://loinc.org"
           },
           "valueFilter": {
-            "type": "quantity-comperator",
+            "type": "quantity-comparator",
             "comparator": "gt",
             "quantityUnit": {
               "code": "a",
@@ -96,7 +96,7 @@
             "system": "http://loinc.org"
           },
           "valueFilter": {
-            "type": "quantity-comperator",
+            "type": "quantity-comparator",
             "comparator": "gt",
             "quantityUnit": {
               "code": "year",

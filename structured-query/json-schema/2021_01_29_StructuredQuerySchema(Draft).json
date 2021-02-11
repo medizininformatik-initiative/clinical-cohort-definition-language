@@ -6,11 +6,10 @@
 		"queryMetadata": {
 			"type": "object",
 			"properties": {
-				"version": { "type": "string", "format": "uri" },
-				"timeStamp": { "type": "string", "format": "date-time" },
+				"timestamp": { "type": "string", "format": "date-time" },
 				"queryId": { "type": "string", "format": "uuid"}
 			},
-			"required": ["version", "timeStamp", "queryId"]
+			"required": ["version", "timestamp", "queryId"]
 		},
 		
 		"query": {
@@ -78,7 +77,7 @@
 		"valueFilter": {
 			"type": "object",
 			"properties": {
-				"type": { "enum": ["concept", "quantity-comperator", "quantity-range"]}  
+				"type": { "enum": ["concept", "quantity-comparator", "quantity-range"]}  
 			},
 			"required": ["type"],
 			"allOf": [
@@ -140,4 +139,3 @@
 	},
 	"required": ["queryMetadata", "query"]
 }
-
