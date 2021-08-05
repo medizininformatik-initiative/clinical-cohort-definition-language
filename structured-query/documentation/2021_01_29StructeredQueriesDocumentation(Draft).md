@@ -1,6 +1,6 @@
 # Structured Queries
 
-CODEX front-end allows users to create  feasibility queries based on inclusion and exclusion criteria. The different inclusion and exclusion criteria are conjuncted with the "AND" and "OR" operators respectively. Resulting in a conjunctive normal form (CNF) for inclusion and disjunctive normal form (DNF) for the exclusion  criteria.
+CODEX front-end allows users to create  feasibility queries based on inclusion and exclusion criteria. The different inclusion and exclusion criteria are conjuncted with the "AND" and "OR" operators respectively. Resulting in a conjunctive normal form without negation (CNF) for inclusion and disjunctive normal form without negation (DNF) for the exclusion  criteria.
 
 The front-end created queries need to be transmitted to different back-end services which translates the Structured Query format into other query formats such as FHIR Search or CQL. As common data exchange format the so called *Structured Queries* are defined.
 
@@ -24,7 +24,11 @@ As previously introduced the query is based on inclusion and exclusion criteria 
 
 With in the query both CNF and DNF are conjuncted with an "AND NOT" operator. 
 
-For the normal Form different building blocks are provided to represent the conjunctions of criteria.
+For the normal form different building blocks are provided to represent the conjunctions of criteria.
+
+## Target
+
+Patient, Specimen or both
 
 ## inclusionCriteria\[][]
 
@@ -62,10 +66,6 @@ The termCode defines a concept based on a coding system (i.e. LOINC). The triple
 
 ValueFilter specify the value of a defined concept. Depending on the valueFilter Type different value statements can be made.
 
-
-
-
-
 ### quantity-comperator
 
 A valueFilter of type quantity-comperator can be applied to all numeric criterion concepts. It allows to use the common comparators represented as enumeration values:
@@ -85,7 +85,32 @@ A valueFilter of type quantity-comperator can be applied to all numeric criterio
 
 A valueFilter of type quantity-range can be applied to all numeric criterion concepts to validate if a value is within the boundaries of the defined min and max values. Again a unit can be given.
 
-## ConceptValueFilter
+### DateTime-comperator
+
+A valueFilter of type datetype can be applied to all datetime criterion concepts. It allows to use the 
+
+| Enumeration | Comparator    |
+| ----------- | ------------- |
+| le          | less equal    |
+| ge          | greater equal |
+
+ISO Datum 
+
+### DateTime-range
+
+A valueFilter of type datetime-range can be applied to all datetime criterion concepts to validate if a value is an overlap exists between the criterions datetime and the interval explicitly or implicitly defined by the before and/or afterDate. ISO dateformat.
+
+beforeDate
+
+afterDate  
+
+### Reference?
+
+All Biopropes that are available at a specific site?
+
+
+
+### Concept-ValueFilter
 
 A valueFilter of type concept can be applied to all concepts which have a value which itself is defined by a concept. The Value can be restricted by selectedConcepts which are termCodes. If multiple selectedConceptsare given the criterion is fulfilled if one of the values matches. 
 
@@ -129,4 +154,8 @@ The patient gender is a concept and can be represented with a Termcode. The valu
 ```
 
 
+
+## AttributeFilter (or Modifier)
+
+Attribute Filter are valueFilter for specific attributes of the Resource. The AttributeCode specifies which attribute is restricted.
 
