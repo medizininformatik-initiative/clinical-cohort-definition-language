@@ -153,11 +153,6 @@
           }
         ],
         "valueFilter": {
-          "attributeCode": {
-            "code": "value",
-            "system": "abide",
-            "display": "value"
-          },
           "type": "quantity-range",
           "quantityUnit": {
             "code": "Cel",
@@ -166,7 +161,7 @@
           "minValue": 35,
           "maxValue": 39
         },
-        "attributeFilter": [
+        "modifierFilter": [
           {
             "attributeCode": {
               "code": "method",
