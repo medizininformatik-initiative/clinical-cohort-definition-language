@@ -27,10 +27,6 @@ With in the query, both CNF and DNF are conjunct with an "AND NOT" operator.
 
 For the normal form, different building blocks are provided to represent the conjunctions of criteria.
 
-## Target
-
-Patient, Specimen or both
-
 ## inclusionCriteria\[][]
 
 Given a CNF:  A and (B or C)
@@ -104,12 +100,6 @@ A valueFilter of type datetime-range can be applied to all datetime criterion co
 beforeDate
 
 afterDate  
-
-### Reference?
-
-All Biopropes that are available at a specific site?
-
-
 
 ### Concept-ValueFilter
 

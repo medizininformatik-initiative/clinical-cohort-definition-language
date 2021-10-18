@@ -1,7 +1,6 @@
 {
-  "version": "http://to_be_decided.com/draft-1/schema#",
+  "version": "http://to_be_decided.com/draft-2/schema#",
   "display": "Beispiel-Query",
-  "target": "Patient",
   "inclusionCriteria": [
     [
       {
@@ -13,11 +12,6 @@
           }
         ],
         "valueFilter": {
-          "attributeCode": {
-            "code": "value",
-            "system": "abide",
-            "display": "value"
-          },
           "type": "concept",
           "selectedConcepts": [
             {
@@ -46,11 +40,6 @@
           }
         ],
         "valueFilter": {
-          "attributeCode": {
-            "code": "value",
-            "system": "abide",
-            "display": "value"
-          },
           "type": "quantity-comparator",
           "comparator": "gt",
           "quantityUnit": {
@@ -161,7 +150,7 @@
           "minValue": 35,
           "maxValue": 39
         },
-        "modifierFilter": [
+        "attributeFilter": [
           {
             "attributeCode": {
               "code": "method",

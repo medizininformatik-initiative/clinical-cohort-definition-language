@@ -1,5 +1,5 @@
 {
-	"$schema": "http://to_be_decided.com/draft-1/schema#",
+	"$schema": "http://to_be_decided.com/draft-2/schema#",
 	
 	"definitions": {
 		
@@ -76,7 +76,7 @@
 							"items": {"$ref": "#/definitions/termCode"}
 						}
 					},
-					"required": ["type", "selectedConcepts", "attributeCode"]
+					"required": ["type", "selectedConcepts"]
 				}
 			},
 			{
@@ -90,7 +90,7 @@
 						"value": { "type": "number" },
 						"unit" : {"$ref": "#/definitions/unit" }
 					},
-					"required": ["type", "comparator", "value", "attributeCode"]
+					"required": ["type", "comparator", "value"]
 				}
 			},
 			{
@@ -104,7 +104,7 @@
 						"maxValue": { "type": "number" },
 						"unit" : {"$ref": "#/definitions/unit" }
 					},
-					"required": ["type", "minValue", "maxValue", "attributeCode"]
+					"required": ["type", "minValue", "maxValue"]
 				}
 			}
 			]			
@@ -173,7 +173,6 @@
 	"type": "object",
 	"properties": {
 		"version": {"type": "string", "format": "uri"},
-		"target": {"enum": ["Patient", "Specimen", "Patient-Specimen"]},
 		"inclusionCriteria": {
 			"type": "array",
 			"minItems": 1,
