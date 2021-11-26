@@ -150,7 +150,7 @@
           "minValue": 35,
           "maxValue": 39
         },
-        "attributeFilter": [
+        "attributeFilters": [
           {
             "attributeCode": {
               "code": "method",
