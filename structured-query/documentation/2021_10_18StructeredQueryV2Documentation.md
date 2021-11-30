@@ -53,7 +53,7 @@ Within the inner array all elements are conjunct with "And". Based on the exampl
 
 The previous introduced elements {A}, {B} and {C} are representative for different criteria. 
 
-Each criterion represents a unique concept or statement, which is identified by its termCode.  Which can be further specified by applying a value filter.
+Each criterion represents a unique concept or statement, which is identified by its termCodes. A criterion can have multiple TermCodes if they are synonymous and mapped identically.  Which can be further specified by applying a value filter.
 
 ## termCode
 
