@@ -42,7 +42,7 @@
         "valueFilter": {
           "type": "quantity-comparator",
           "comparator": "gt",
-          "quantityUnit": {
+          "unit": {
             "code": "a",
             "display": "Jahr"
           },
@@ -86,11 +86,6 @@
           }
         ],
         "valueFilter": {
-          "attributeCode": {
-            "code": "value",
-            "system": "abide",
-            "display": "value"
-          },
           "type": "concept",
           "selectedConcepts": [
             {
