@@ -4,7 +4,7 @@
   "inclusionCriteria": [
     [
       {
-        "termCode": [
+        "termCodes": [
           {
             "code": "LL2191-6",
             "display": "Geschlecht",
@@ -32,7 +32,7 @@
     ],
     [
       {
-        "termCode": [
+        "termCodes": [
           {
             "code": "30525-0",
             "display": "Alter",
@@ -52,7 +52,7 @@
     ],
     [
       {
-        "termCode": [
+        "termCodes": [
           {
             "code": "F00",
             "display": "F00",
@@ -61,7 +61,7 @@
         ]
       },
       {
-        "termCode": [
+        "termCodes": [
           {
             "code": "F09",
             "display": "F09",
@@ -78,7 +78,7 @@
   "exclusionCriteria": [
     [
       {
-        "termCode": [
+        "termCodes": [
           {
             "code": "LL2191-6",
             "display": "Geschlecht",
@@ -100,7 +100,7 @@
     ],
     [
       {
-        "termCode": [
+        "termCodes": [
           {
             "code": "30525-0",
             "display": "Alter",
@@ -120,7 +120,7 @@
     ],
     [
       {
-        "termCode": [
+        "termCodes": [
           {
             "code": "F00.9",
             "display": "F00.9",
@@ -129,7 +129,7 @@
         ]
       },
       {
-        "termCode": [
+        "termCodes": [
           {
             "code": "8310-5",
             "display": "Körpertemperatur",
