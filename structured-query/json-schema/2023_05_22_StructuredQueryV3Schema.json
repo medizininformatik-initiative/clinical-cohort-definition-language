@@ -12,7 +12,7 @@
 				"version": { "type": "string"},
 				"display": { "type": "string"}
 			}, 
-			"required": ["code", "system", "display"],
+			"required": ["code", "system", "display"]
 		},
 	
 		"criterion": {
@@ -113,7 +113,7 @@
 		"attributeFilter": {
 			"type": "object",
 			"properties": {
-				"type": { "enum": ["concept", "quantity-comparator", "quantity-range"]}  
+				"type": { "enum": ["concept", "quantity-comparator", "quantity-range", "reference"]}  
 			},
 			"required": ["type"],
 			"allOf": [
@@ -162,6 +162,53 @@
 						"unit" : {"$ref": "#/definitions/unit" }
 					},
 					"required": ["type", "minValue", "maxValue", "attributeCode"]
+				}
+			},
+			{
+				"if": {
+					"properties": {"type": {"const": "reference"}}
+				},
+				"then": {
+					"properties": {
+						"attributeCode": {"$ref": "#/definitions/termCode"},
+                      	"type": {"const": "reference"},
+						"criteria": {
+							"type": "array",
+							"minItems": 1,
+							"items": {
+								
+								"allOf": [
+									{
+										"properties": {
+										  "attributeFilters": {
+											"type": "array",
+											"items": {
+											  "$ref": "#/definitions/attributeFilter",
+											  "not": {
+												"properties": {
+												  "type": {
+													"const": "reference"
+												  }
+												}
+											  }
+											}
+										  }
+										}
+									  
+									},
+									{
+									  "$ref": "#/definitions/criterion"
+									}
+								  ]
+								
+								
+								
+								
+								
+							}
+						}
+					},
+					"required": ["type", "criteria", "attributeCode"]
 				}
 			}
 			]			
