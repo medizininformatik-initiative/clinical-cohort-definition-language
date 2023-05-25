@@ -73,6 +73,65 @@
           "afterDate": "2021-09-09"
         }
       }
+    ],
+    [
+      {
+        "termCodes": [
+          {
+            "code": "5-016.0",
+            "system": "http://fhir.de/CodeSystem/bfarm/ops",
+            "version": "2023",
+            "display": "Schädelbasis, Tumorgewebe"
+          }
+        ],
+        "attributeFilters": [
+          {
+            "type": "reference",
+            "criteria": [
+              {
+                "termCodes": [
+                  {
+                    "code": "C50.0",
+                    "system": "icd-o-3",
+                    "display": "Some cid-o-3 Cancer"
+                  }
+                ],
+                "attributeFilters": [
+                  {
+                    "type": "concept",
+                    "selectedConcepts": [
+                      {
+                        "code": "active",
+                        "system": "http://hl7.org/fhir/",
+                        "display": "active"
+                      }
+                    ],
+                    "attributeCode": {
+                      "code": "status",
+                      "system": "mii.abide",
+                      "display": "status"
+                    }
+                  }
+                ]
+              },
+              {
+                "termCodes": [
+                  {
+                    "code": "C50.1",
+                    "system": "icd-o-3",
+                    "display": "Some cid-o-3 Cancer"
+                  }
+                ]
+              }
+            ],
+            "attributeCode": {
+              "code": "diagnose",
+              "system": "mii.abide",
+              "display": "specimen diagnosis"
+            }
+          }
+        ]
+      }
     ]
   ],
   "exclusionCriteria": [
