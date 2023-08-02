@@ -4,6 +4,12 @@
   "inclusionCriteria": [
     [
       {
+        "context": {
+          "code": "Patient",
+          "display": "Patient",
+          "system": "fdpg.mii.cds",
+          "version": "1.0.0"
+        },
         "termCodes": [
           {
             "code": "LL2191-6",
