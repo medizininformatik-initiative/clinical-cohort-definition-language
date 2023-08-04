@@ -27,6 +27,9 @@
     "criterion": {
       "type": "object",
       "properties": {
+        "context": {
+          "$ref": "#/definitions/termCode"
+        },
         "termCodes": {
           "type": "array",
           "minItems": 1,
