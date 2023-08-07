@@ -22,7 +22,8 @@
         "code",
         "system",
         "display"
-      ]
+      ],
+      "additionalProperties": false
     },
     "criterion": {
       "type": "object",
@@ -49,7 +50,8 @@
       },
       "required": [
         "termCodes"
-      ]
+      ],
+      "additionalProperties": false
     },
     "timeRestriction": {
       "type": "object",
@@ -75,7 +77,8 @@
             "afterDate"
           ]
         }
-      ]
+      ],
+      "additionalProperties": false
     },
     "unit": {
       "type": "object",
@@ -92,7 +95,8 @@
       "required": [
         "code",
         "display"
-      ]
+      ],
+      "additionalProperties": false
     },
     "attributeFilters": {
       "type": "array",
@@ -139,21 +143,22 @@
             "required": [
               "type",
               "selectedConcepts"
-            ]
+            ],
+            "additionalProperties": false
           }
         },
         {
           "if": {
             "properties": {
               "type": {
-                "const": "quantity-comperator"
+                "const": "quantity-comparator"
               }
             }
           },
           "then": {
             "properties": {
               "type": {
-                "const": "quantity-comperator"
+                "const": "quantity-comparator"
               },
               "comparator": {
                 "enum": [
@@ -176,7 +181,8 @@
               "type",
               "comparator",
               "value"
-            ]
+            ],
+            "additionalProperties": false
           }
         },
         {
@@ -206,7 +212,8 @@
               "type",
               "minValue",
               "maxValue"
-            ]
+            ],
+            "additionalProperties": false
           }
         }
       ]
@@ -255,14 +262,15 @@
               "type",
               "selectedConcepts",
               "attributeCode"
-            ]
+            ],
+            "additionalProperties": false
           }
         },
         {
           "if": {
             "properties": {
               "type": {
-                "const": "quantity-comperator"
+                "const": "quantity-comparator"
               }
             }
           },
@@ -272,7 +280,7 @@
                 "$ref": "#/definitions/termCode"
               },
               "type": {
-                "const": "quantity-comperator"
+                "const": "quantity-comparator"
               },
               "comparator": {
                 "enum": [
@@ -296,7 +304,8 @@
               "comparator",
               "value",
               "attributeCode"
-            ]
+            ],
+            "additionalProperties": false
           }
         },
         {
@@ -330,7 +339,8 @@
               "minValue",
               "maxValue",
               "attributeCode"
-            ]
+            ],
+            "additionalProperties": false
           }
         },
         {
@@ -382,7 +392,8 @@
               "type",
               "criteria",
               "attributeCode"
-            ]
+            ],
+            "additionalProperties": false
           }
         }
       ]
@@ -430,5 +441,6 @@
   "required": [
     "version",
     "inclusionCriteria"
-  ]
+  ],
+  "additionalProperties": false
 }
