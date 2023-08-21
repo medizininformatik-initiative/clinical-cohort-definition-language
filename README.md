@@ -1,4 +1,4 @@
-# codex-structured-query
+# MII feasibility Structured Query
 
 Includes 
 * an example of a structured query (as JSON file)
