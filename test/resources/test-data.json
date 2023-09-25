@@ -1,0 +1,876 @@
+{
+  "resourceType": "collection",
+  "entry": [
+    {
+      "resource": {
+        "resourceType" : "Observation",
+        "id" : "obs-1",
+        "identifier" : [{
+          "use" : "official",
+          "system" : "http://www.bmc.nl/zorgportal/identifiers/observations",
+          "value" : "6325"
+        }],
+        "status" : "final",
+        "code" : {
+          "coding" : [{
+            "system" : "http://loinc.org",
+            "code" : "11557-6",
+            "display" : "Carbon dioxide in blood"
+          }]
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": " LA20343-2",
+              "display": "Other substance: PLEASE SPECIFY"
+            }
+          ],
+          "text": "Other: Blue pills I found under my couch"
+        },
+        "subject" : {
+          "reference" : "Patient/f001",
+          "display" : "P. van de Heuvel"
+        },
+        "effectiveDateTime" : "2013-04-02T10:30:10+01:00",
+        "issued" : "2013-04-03T15:30:10+01:00",
+        "performer" : [{
+          "reference" : "Practitioner/f005",
+          "display" : "A. Langeveld"
+        }],
+        "valueQuantity" : {
+          "value" : 6.2,
+          "unit" : "kPa",
+          "system" : "http://unitsofmeasure.org",
+          "code" : "kPa"
+        },
+        "interpretation" : [{
+          "coding" : [{
+            "system" : "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+            "code" : "H",
+            "display" : "High"
+          }]
+        }],
+        "referenceRange" : [{
+          "low" : {
+            "value" : 4.8,
+            "unit" : "kPa",
+            "system" : "http://unitsofmeasure.org",
+            "code" : "kPa"
+          },
+          "high" : {
+            "value" : 6.0,
+            "unit" : "kPa",
+            "system" : "http://unitsofmeasure.org",
+            "code" : "kPa"
+          }
+        }]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "pat-1",
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p style=\"border: 1px #661aff solid; background-color: #e6e6ff; padding: 10px;\"><b>Jim </b> male, DoB: 1974-12-25 ( Medical record number: 12345\u00a0(use:\u00a0USUAL,\u00a0period:\u00a02001-05-06 --&gt; (ongoing)))</p><hr/><table class=\"grid\"><tr><td style=\"background-color: #f3f5da\" title=\"Record is active\">Active:</td><td>true</td><td style=\"background-color: #f3f5da\" title=\"Known status of Patient\">Deceased:</td><td colspan=\"3\">false</td></tr><tr><td style=\"background-color: #f3f5da\" title=\"Alternate names (see the one above)\">Alt Names:</td><td colspan=\"3\"><ul><li>Peter James Chalmers (OFFICIAL)</li><li>Peter James Windsor (MAIDEN)</li></ul></td></tr><tr><td style=\"background-color: #f3f5da\" title=\"Ways to contact the Patient\">Contact Details:</td><td colspan=\"3\"><ul><li>-unknown-(HOME)</li><li>ph: (03) 5555 6473(WORK)</li><li>ph: (03) 3410 5613(MOBILE)</li><li>ph: (03) 5555 8834(OLD)</li><li>534 Erewhon St PeasantVille, Rainbow, Vic  3999(HOME)</li></ul></td></tr><tr><td style=\"background-color: #f3f5da\" title=\"Nominated Contact: Next-of-Kin\">Next-of-Kin:</td><td colspan=\"3\"><ul><li>Bénédicte du Marché  (female)</li><li>534 Erewhon St PleasantVille Vic 3999 (HOME)</li><li><a href=\"tel:+33(237)998327\">+33 (237) 998327</a></li><li>Valid Period: 2012 --&gt; (ongoing)</li></ul></td></tr><tr><td style=\"background-color: #f3f5da\" title=\"Patient Links\">Links:</td><td colspan=\"3\"><ul><li>Managing Organization: <a href=\"organization-example-gastro.html\">Organization/1</a> &quot;Gastroenterology&quot;</li></ul></td></tr></table></div>"
+        },
+        "identifier": [
+          {
+            "use": "usual",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MR"
+                }
+              ]
+            },
+            "system": "urn:oid:1.2.36.146.595.217.0.1",
+            "value": "12345",
+            "period": {
+              "start": "2001-05-06"
+            },
+            "assigner": {
+              "display": "Acme Healthcare"
+            }
+          }
+        ],
+        "active": true,
+        "name": [
+          {
+            "use": "official",
+            "family": "Chalmers",
+            "given": [
+              "Peter",
+              "James"
+            ]
+          },
+          {
+            "use": "usual",
+            "given": [
+              "Jim"
+            ]
+          },
+          {
+            "use": "maiden",
+            "family": "Windsor",
+            "given": [
+              "Peter",
+              "James"
+            ],
+            "period": {
+              "end": "2002"
+            }
+          }
+        ],
+        "telecom": [
+          {
+            "use": "home"
+          },
+          {
+            "system": "phone",
+            "value": "(03) 5555 6473",
+            "use": "work",
+            "rank": 1
+          },
+          {
+            "system": "phone",
+            "value": "(03) 3410 5613",
+            "use": "mobile",
+            "rank": 2
+          },
+          {
+            "system": "phone",
+            "value": "(03) 5555 8834",
+            "use": "old",
+            "period": {
+              "end": "2014"
+            }
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1974-12-25",
+        "_birthDate": {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/patient-birthTime",
+              "valueDateTime": "1974-12-25T14:35:45-05:00"
+            }
+          ]
+        },
+        "deceasedBoolean": false,
+        "address": [
+          {
+            "use": "home",
+            "type": "both",
+            "text": "534 Erewhon St PeasantVille, Rainbow, Vic  3999",
+            "line": [
+              "534 Erewhon St"
+            ],
+            "city": "PleasantVille",
+            "district": "Rainbow",
+            "state": "Vic",
+            "postalCode": "3999",
+            "period": {
+              "start": "1974-12-25"
+            }
+          }
+        ],
+        "contact": [
+          {
+            "relationship": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/v2-0131",
+                    "code": "N"
+                  }
+                ]
+              }
+            ],
+            "name": {
+              "family": "du Marché",
+              "_family": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/humanname-own-prefix",
+                    "valueString": "VV"
+                  }
+                ]
+              },
+              "given": [
+                "Bénédicte"
+              ]
+            },
+            "telecom": [
+              {
+                "system": "phone",
+                "value": "+33 (237) 998327"
+              }
+            ],
+            "address": {
+              "use": "home",
+              "type": "both",
+              "line": [
+                "534 Erewhon St"
+              ],
+              "city": "PleasantVille",
+              "district": "Rainbow",
+              "state": "Vic",
+              "postalCode": "3999",
+              "period": {
+                "start": "1974-12-25"
+              }
+            },
+            "gender": "female",
+            "period": {
+              "start": "2012"
+            }
+          }
+        ],
+        "managingOrganization": {
+          "reference": "Organization/1"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Consent",
+        "id": "cons-1",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/modul-consent/StructureDefinition/mii-pr-consent-einwilligung"
+          ]
+        },
+        "status": "entered-in-error",
+        "scope": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/consentscope",
+              "code": "research"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-consent_category",
+                "code": "2.16.840.1.113883.3.1937.777.24.2.184"
+              }
+            ]
+          }
+        ],
+        "patient": {
+          "reference": "Patient/8da7a09c-c2b4-4b8f-9144-0ecf407f2ed1",
+          "display": "Ina Bielert"
+        },
+        "dateTime": "2003-07-09T00:45:44+02:00",
+        "policy": [
+          {
+            "uri": "https://example.com/policy"
+          }
+        ],
+        "provision": {
+          "type": "deny",
+          "period": {
+            "start": "2005-08-12T14:41:54+01:00",
+            "end": "2006-06-07T14:41:54+01:00"
+          },
+          "provision": [
+            {
+              "type": "permit",
+              "period": {
+                "start": "2022-12-03T12:47:00+01:00",
+                "end": "2023-04-03T12:47:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.1",
+                      "display": "PATDAT_erheben_speichern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2014-10-03T05:18:07+01:00",
+                "end": "2015-05-07T05:18:07+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.2",
+                      "display": "IDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2019-08-16T11:13:10+01:00",
+                "end": "2020-08-05T11:13:10+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.3",
+                      "display": "IDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2007-07-26T12:53:30+01:00",
+                "end": "2008-01-16T12:53:30+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.4",
+                      "display": "IDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2017-11-28T03:39:12+01:00",
+                "end": "2017-12-17T03:39:12+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.5",
+                      "display": "IDAT_bereitstellen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2017-04-20T20:20:34+01:00",
+                "end": "2018-04-13T20:20:34+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.6",
+                      "display": "MDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2003-08-23T22:08:53+01:00",
+                "end": "2003-11-04T22:08:53+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.7",
+                      "display": "MDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2016-01-15T07:39:20+01:00",
+                "end": "2016-06-23T07:39:20+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.8",
+                      "display": "MDAT_wissenschaftlich_nutzen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2003-06-14T10:05:53+01:00",
+                "end": "2003-06-24T10:05:53+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.9",
+                      "display": "MDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2006-06-30T23:00:52+01:00",
+                "end": "2006-12-26T23:00:52+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.18",
+                      "display": "BIOMAT_erheben_lagern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2006-06-16T23:09:55+01:00",
+                "end": "2007-03-26T23:09:55+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.19",
+                      "display": "BIOMAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2001-10-16T06:18:42+01:00",
+                "end": "2002-01-30T06:18:42+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.20",
+                      "display": "BIOMAT_lagern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2019-09-11T19:21:48+01:00",
+                "end": "2020-08-28T19:21:48+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.21",
+                      "display": "BIOMAT_Eigentum_uebertragen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2011-03-06T06:17:45+01:00",
+                "end": "2011-08-11T06:17:45+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.22",
+                      "display": "BIOMAT_wissenschaftlich_nutzen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2009-05-05T03:18:56+01:00",
+                "end": "2010-01-15T03:18:56+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.23",
+                      "display": "BIOMAT_Analysedaten_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-06-11T21:32:59+01:00",
+                "end": "2021-03-17T21:32:59+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.24",
+                      "display": "BIOMAT_Zusatzentnahme"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2009-04-23T14:06:00+01:00",
+                "end": "2010-03-16T14:06:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.25",
+                      "display": "BIOMAT_Zusatzmengen_entnehmen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-06-14T09:57:54+01:00",
+                "end": "2021-02-07T09:57:54+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.50",
+                      "display": "BIOMAT_retrospektiv_speichern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2018-03-26T21:22:21+01:00",
+                "end": "2018-04-29T21:22:21+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.51",
+                      "display": "BIOMAT_retro_lagern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2021-09-01T23:03:09+01:00",
+                "end": "2022-08-05T23:03:09+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.52",
+                      "display": "BIOMAT_retro_wissenschaftlich_nutzen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-11-17T12:34:10+01:00",
+                "end": "2021-07-04T12:34:10+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.53",
+                      "display": "BIOMAT_retro_Analysedaten_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2009-05-08T07:40:49+01:00",
+                "end": "2010-01-04T07:40:49+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.54",
+                      "display": "BIOMAT_Weitergabe_non_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2006-12-14T03:16:13+01:00",
+                "end": "2007-08-19T03:16:13+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.55",
+                      "display": "BIOMAT_bereitstellen_non_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2004-06-19T18:41:54+01:00",
+                "end": "2005-05-27T18:41:54+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.26",
+                      "display": "Rekontaktierung_Ergaenzungen"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Medication",
+        "id": "med-1",
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/atc",
+              "code": "P01CA",
+              "display": "Nitroimidazol-Derivate"
+            }
+          ]
+        },
+        "status": "active"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "med-adm-1",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationAdministration"
+          ]
+        },
+        "status": "stopped",
+        "medicationReference": {
+          "reference": "Medication/med-1",
+          "display": "Nitroimidazol-Derivate"
+        },
+        "subject": {
+          "reference": "Patient/b2283a75-bf39-4bcb-b941-2853e473f4dc",
+          "display": "Chiara Lukoschek"
+        },
+        "effectiveDateTime": "2009-03-24T17:36:55+01:00"
+      }
+    },
+    {
+      "fullUrl": "Condition/SPEC-DIAB-TEST-C-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "SPEC-DIAB-TEST-C-1",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "identifier": [
+          {
+            "value": "SPEC-DIAB-TEST-C-1"
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2023",
+              "code": "E13.9"
+            }
+          ],
+          "text": "Idiopathische Hypotonie"
+        },
+        "onsetDateTime": "2013-04-02T10:30:10+01:00",
+        "subject": {
+          "reference": "Patient/SPEC-DIAB-TEST-P-1"
+        },
+        "recordedDate": "2021-01-01T00:00:00+01:00"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Specimen",
+        "id": "spec-1",
+        "extension": [
+          {
+            "url": "https://www.medizininformatik-initiative.de/fhir/ext/modul-biobank/StructureDefinition/Diagnose",
+            "valueReference": {
+              "reference": "Condition/SPEC-DIAB-TEST-C-1"
+            }
+          }
+        ],
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative: Specimen</b><a name=\"101\"> </a></p><div style=\"display: inline-block; background-color: #d9e0e7; padding: 6px; margin: 4px; border: 1px solid #8da1b4; border-radius: 5px; line-height: 60%\"><p style=\"margin-bottom: 0px\">Resource Specimen &quot;101&quot; </p></div><p><b>identifier</b>: <span title=\" text&gt;\n    &lt;status value=&quot;generated&quot; /&gt;\n    &lt;div xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;[Put rendering here]&lt;/div&gt;\n  &lt;/text&gt; \">id:\u00a023234352356</span></p><p><b>accessionIdentifier</b>: id:\u00a0X352356</p><p><b>status</b>: available</p><p><b>type</b>: Venous blood specimen <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"https://browser.ihtsdotools.org/\">SNOMED CT</a>#122555007)</span></p><p><b>subject</b>: <a href=\"patient-example.html\">Patient/example: Peter Patient</a> &quot;Peter CHALMERS&quot;</p><p><b>receivedTime</b>: 2011-03-04T07:03:00Z</p><p><b>request</b>: <a href=\"servicerequest-example.html\">ServiceRequest/example</a></p><blockquote><p><b>collection</b></p><p><b>collector</b>: <a href=\"practitioner-example.html\">Practitioner/example</a> &quot;Adam CAREFUL&quot;</p><p><b>collected</b>: <span title=\"  the time of collection is usually required. Usually a point in time, but can be a period\n      (collectedPeriod) if it's a timed collection (e.g. a 24 hour urine)  \">2011-05-30T06:15:00Z</span></p><p><b>quantity</b>: 6 mL</p><p><b>method</b>: <span title=\"  method is usually implied by type  \">Line, Venous <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"http://terminology.hl7.org/5.2.0/CodeSystem-v2-0488.html\">specimenCollectionMethod</a>#LNV)</span></span></p><h3>BodySites</h3><table class=\"grid\"><tr><td style=\"display: none\">-</td><td><b>Concept</b></td></tr><tr><td style=\"display: none\">*</td><td>Structure of median cubital vein (body structure) <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"https://browser.ihtsdotools.org/\">SNOMED CT</a>#49852007)</span></td></tr></table></blockquote><h3>Containers</h3><table class=\"grid\"><tr><td style=\"display: none\">-</td><td><b>Device</b></td><td><b>SpecimenQuantity</b></td></tr><tr><td style=\"display: none\">*</td><td><a href=\"device-example-specimen-container-green-gel-vacutainer.html\">Device/device-example-specimen-container-green-gel-vacutainer</a></td><td><span title=\"  if there's only one container, then this value is the same\n     as .collection.quantity (usually). This is for when there is more\n     than one container  \">3 mL</span></td></tr></table><p><b>note</b>: Specimen is grossly lipemic</p></div>"
+        },
+        "identifier": [
+          {
+            "system": "http://ehr.acme.org/identifiers/collections",
+            "value": "23234352356"
+          }
+        ],
+        "accessionIdentifier": {
+          "system": "http://lab.acme.org/specimens/2011",
+          "value": "X352356"
+        },
+        "status": "available",
+        "type": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "122555007",
+              "display": "Venous blood specimen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/example",
+          "display": "Peter Patient"
+        },
+        "receivedTime": "2011-03-04T07:03:00Z",
+        "collection": {
+          "collector": {
+            "reference": "Practitioner/example"
+          },
+          "collectedDateTime": "2011-05-30T06:15:00Z",
+          "quantity": {
+            "value": 6,
+            "unit": "mL"
+          },
+          "method": {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v2-0488",
+                "code": "LNV"
+              }
+            ]
+          },
+          "bodySite": {
+            "concept": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "49852007",
+                  "display": "Structure of median cubital vein (body structure)"
+                }
+              ]
+            }
+          }
+        },
+        "container": [
+          {
+            "device": {
+              "reference": "Device/device-example-specimen-container-green-gel-vacutainer"
+            },
+            "specimenQuantity": {
+              "value": 3,
+              "unit": "mL"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Specimen is grossly lipemic"
+          }
+        ]
+      }
+    }
+  ]
+}
