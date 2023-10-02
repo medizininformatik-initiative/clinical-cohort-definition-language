@@ -1,1 +1,4 @@
 .idea
+.pytest_cache/
+test/src/__pycache__/
+
