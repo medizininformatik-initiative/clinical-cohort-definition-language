@@ -7,6 +7,7 @@ SCHEMA_FILE = "json-schema/StructuredQuery-schema-v3.json"
 EXAMPLE_JSON_FILE = "example-json/sqv3_all_properties.json"
 
 TERM_CODE = {"code": "somecode-4591", "system": "somesystem-1138", "display": "somedisplay-5832"}
+CONTEXT = {"code": "somecode-4465", "system": "somesystem-2561", "display": "somedisplay-0684"}
 UNIT = {"code": "somecode-8331", "display": "somedisplay-1269"}
 ATTRIBUTE_CODE = {"code": "somecode-0103", "system": "somesystem-3571", "display": "somedisplay-9567"}
 
@@ -20,7 +21,7 @@ def schema():
 
 def basic_sq():
     sq = {}
-    sq["inclusionCriteria"] = [[ {"termCodes": [copy.deepcopy(TERM_CODE)]}]]
+    sq["inclusionCriteria"] = [[ {"termCodes": [copy.deepcopy(TERM_CODE)], "context": CONTEXT}]]
     sq["version"] = "someVersion"
     return sq
     
@@ -160,7 +161,7 @@ def test_additional_prop_in_attribute_reference_filter(schema):
     attr_filter = {"attributeCode": ATTRIBUTE_CODE}
     sq = basic_sq()
     attr_filter["type"] = "reference"
-    attr_filter["criteria"] = [{"termCodes": [TERM_CODE]}]
+    attr_filter["criteria"] = [{"termCodes": [TERM_CODE], "context": CONTEXT}]
     sq["inclusionCriteria"][0][0]["attributeFilters"] = [attr_filter]
     jsonschema.validate(sq, schema)
 
@@ -172,7 +173,7 @@ def test_additional_prop_in_referenced_criterion(schema):
     attr_filter = {"attributeCode": ATTRIBUTE_CODE}
     sq = basic_sq()
     attr_filter["type"] = "reference"
-    attr_filter["criteria"] = [{"termCodes": [TERM_CODE]}]
+    attr_filter["criteria"] = [{"termCodes": [TERM_CODE], "context": CONTEXT}]
     sq["inclusionCriteria"][0][0]["attributeFilters"] = [attr_filter]
     jsonschema.validate(sq, schema)
 
