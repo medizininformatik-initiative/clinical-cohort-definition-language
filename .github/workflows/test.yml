@@ -20,5 +20,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install pytest
           python -m pip install jsonschema
+      - name: Generate Test SQs
+        run: python sq-generator/sq_generator.py -i test/resources/test-data.json -o target/resources/generated-sqs/
       - name: Run tests
         run: pytest

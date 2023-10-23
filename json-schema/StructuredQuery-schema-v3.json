@@ -1,6 +1,7 @@
 {
-  "$schema": "http://medizininformatik-initiative/v3/StructuredQuery/schema#",
-  "definitions": {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://medizininformatik-initiative.de/fdpg/StructuredQuery/v3/schema",
+  "$defs": {
     "termCode": {
       "type": "object",
       "description": "The termCode defines a concept based on a coding system (i.e. LOINC). The triplet of code, system and version identify the concept.",
@@ -29,23 +30,23 @@
       "type": "object",
       "properties": {
         "context": {
-          "$ref": "#/definitions/termCode"
+          "$ref": "#/$defs/termCode"
         },
         "termCodes": {
           "type": "array",
           "minItems": 1,
           "items": {
-            "$ref": "#/definitions/termCode"
+            "$ref": "#/$defs/termCode"
           }
         },
         "valueFilter": {
-          "$ref": "#/definitions/valueFilter"
+          "$ref": "#/$defs/valueFilter"
         },
         "attributeFilters": {
-          "$ref": "#/definitions/attributeFilters"
+          "$ref": "#/$defs/attributeFilters"
         },
         "timeRestriction": {
-          "$ref": "#/definitions/timeRestriction"
+          "$ref": "#/$defs/timeRestriction"
         }
       },
       "required": [
@@ -58,24 +59,26 @@
       "type": "object",
       "description": "TimeRestirction specify the interval within the critiera has to be fullfilled. An intersection of the criterias interval with the interval defined in this timeRestriction is sufficient",
       "properties": {
-        "beforeDate": {
-          "type": "string",
-          "format": "date"
-        },
         "afterDate": {
           "type": "string",
-          "format": "date"
+          "format": "date",
+          "description": "afterDate is the start of the date interval that further limits the resources."
+        },
+        "beforeDate": {
+          "type": "string",
+          "format": "date",
+          "description": "beforeDate is the end of the date interval that further limits the resources."
         }
       },
       "anyOf": [
         {
           "required": [
-            "beforeDate"
+            "afterDate"
           ]
         },
         {
           "required": [
-            "afterDate"
+            "beforeDate"
           ]
         }
       ],
@@ -102,7 +105,7 @@
     "attributeFilters": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/attributeFilter"
+        "$ref": "#/$defs/attributeFilter"
       }
     },
     "valueFilter": {
@@ -137,7 +140,7 @@
                 "type": "array",
                 "minItems": 1,
                 "items": {
-                  "$ref": "#/definitions/termCode"
+                  "$ref": "#/$defs/termCode"
                 }
               }
             },
@@ -175,7 +178,7 @@
                 "type": "number"
               },
               "unit": {
-                "$ref": "#/definitions/unit"
+                "$ref": "#/$defs/unit"
               }
             },
             "required": [
@@ -206,7 +209,7 @@
                 "type": "number"
               },
               "unit": {
-                "$ref": "#/definitions/unit"
+                "$ref": "#/$defs/unit"
               }
             },
             "required": [
@@ -246,7 +249,7 @@
           "then": {
             "properties": {
               "attributeCode": {
-                "$ref": "#/definitions/termCode"
+                "$ref": "#/$defs/termCode"
               },
               "type": {
                 "const": "concept"
@@ -255,7 +258,7 @@
                 "type": "array",
                 "minItems": 1,
                 "items": {
-                  "$ref": "#/definitions/termCode"
+                  "$ref": "#/$defs/termCode"
                 }
               }
             },
@@ -278,7 +281,7 @@
           "then": {
             "properties": {
               "attributeCode": {
-                "$ref": "#/definitions/termCode"
+                "$ref": "#/$defs/termCode"
               },
               "type": {
                 "const": "quantity-comparator"
@@ -297,7 +300,7 @@
                 "type": "number"
               },
               "unit": {
-                "$ref": "#/definitions/unit"
+                "$ref": "#/$defs/unit"
               }
             },
             "required": [
@@ -320,7 +323,7 @@
           "then": {
             "properties": {
               "attributeCode": {
-                "$ref": "#/definitions/termCode"
+                "$ref": "#/$defs/termCode"
               },
               "type": {
                 "const": "quantity-range"
@@ -332,7 +335,7 @@
                 "type": "number"
               },
               "unit": {
-                "$ref": "#/definitions/unit"
+                "$ref": "#/$defs/unit"
               }
             },
             "required": [
@@ -355,7 +358,7 @@
           "then": {
             "properties": {
               "attributeCode": {
-                "$ref": "#/definitions/termCode"
+                "$ref": "#/$defs/termCode"
               },
               "type": {
                 "const": "reference"
@@ -370,7 +373,7 @@
                         "attributeFilters": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/definitions/attributeFilter",
+                            "$ref": "#/$defs/attributeFilter",
                             "not": {
                               "properties": {
                                 "type": {
@@ -383,7 +386,7 @@
                       }
                     },
                     {
-                      "$ref": "#/definitions/criterion"
+                      "$ref": "#/$defs/criterion"
                     }
                   ]
                 }
@@ -400,7 +403,6 @@
       ]
     }
   },
-  "$id": "http://to_be_decided.com/query.schema.json",
   "title": "queryDefinition",
   "description": "Within a query the inclusion and exclusion criteria are conjuncted with AND NOT",
   "type": "object",
@@ -418,7 +420,7 @@
         "minItems": 1,
         "description": "All elements within the array are conjuncted with an OR operator",
         "items": {
-          "$ref": "#/definitions/criterion"
+          "$ref": "#/$defs/criterion"
         }
       }
     },
@@ -431,7 +433,7 @@
         "minItems": 1,
         "description": "All elements within the array are conjuncted with an AND operator",
         "items": {
-          "$ref": "#/definitions/criterion"
+          "$ref": "#/$defs/criterion"
         }
       }
     },
