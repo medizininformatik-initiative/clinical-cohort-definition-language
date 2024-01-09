@@ -1,9 +1,10 @@
 
-# Structured Queries
+# Structured Query
 
-CODEX front-end allows users to create  feasibility queries based on inclusion and exclusion criteria. The different inclusion and exclusion criteria are conjuncted with the "AND" and "OR" operators respectively. Resulting in a conjunctive normal form without negation (CNF) for inclusion and disjunctive normal form without negation (DNF) for the exclusion  criteria.
 
-The front-end created queries need to be transmitted to different back-end services which translates the Structured Query format into other query formats such as FHIR Search or CQL. As common data exchange format the so called *Structured Queries* are defined.
+The Structured Query was created to provide a formal definition for feasibility queries based on inclusion and exclusion criteria. The different inclusion and exclusion criteria are conjuncted with the "AND" and "OR" operators respectively. Resulting in a conjunctive normal form without negation (CNF) for inclusion and disjunctive normal form without negation (DNF) for the exclusion  criteria.
+
+The format was chosen to be easily created from a javascript front-end as well as support simple translation to FHIR Search and CQL.
 
 ## Query Message
 
@@ -16,26 +17,21 @@ The metadata provides some basic information about the query:
 | Name      | Description                            |
 | :-------- | -------------------------------------- |
 | Version   | API Version                            |
-| Timestamp | Timestamp when the query was sent      |
 | queryId   | unique Id to identify a specific query |
 
 ## Query
 
-As previously introduced, the query is based on inclusion and exclusion criteria represented in CNF and DNF. 
-
-With in the query, both CNF and DNF are conjunct with an "AND NOT" operator. 
-
-For the normal form, different building blocks are provided to represent the conjunctions of criteria.
+The query is based on inclusion and exclusion criteria represented in CNF and DNF. 
+In the query, both CNF and DNF are implicitedly joint with an "AND NOT" operator.
 
 ## inclusionCriteria\[][]
 
 Given a CNF:  A and (B or C)
 
 The inclusionCriteria is an array of arrays of criteria. Within the outer array, all elements are conjunct with "AND". Based on the example {A} {B or C}.
-
 Within the inner array all elements are disjunct with "OR". Based on the example {B}{C}. A special case is given if only one element is given, e.g. {A}. In this case, no logic operation is applied to this element in this hierarchic element.
+-> inclusionCriteria:  [[{A}], [{B}, {C}]]  = A and (B or C)
 
--> inclusionCriteria= {{A}, {B, C}}
 
 ## exclusionCriteria\[][]
 
@@ -47,25 +43,33 @@ The exclusionCriteria is an array of arrays of criteria. Within the outer array,
 
 Within the inner array all elements are conjunct with "And". Based on the example {B}{C} . A special case is given if only one element is given, e.g. {A}. In this case, no logic operation is applied to this element in this hierarchic element.
 
--> exclusionCriteria = {{A},  {B, C}}
+-> exclusionCriteria = [[{A}], [{B}, {C}]]  = A OR (B AND C)
 
-## criterion
+## Criterion
 
-The previous introduced elements {A}, {B} and {C} are representative for different criteria. 
+The previous introduced elements {A}, {B} and {C} are representative for different criteria.
+Each criterion represents a unique medical concept, which is identified by its termCodes. A criterion can have multiple TermCodes if they are synonymous and mapped identically.  Which can be further specified by applying a value filter.
 
-Each criterion represents a unique concept or statement, which is identified by its termCodes. A criterion can have multiple TermCodes if they are synonymous and mapped identically.  Which can be further specified by applying a value filter.
+## Term Code
 
-## termCode
+The termCode uniquely identifies a criterion based on a coding system (i.e. LOINC). The triplet of code, system and version identify the criterion. 
+An additional display element allows for a human-readable form (This value SHALL be the same as the value defined by the coding system), which is not interpreted for translation.
 
-The termCode defines a concept based on a coding system (i.e. LOINC). The triplet of code, system and version identify the concept. An additional display element allows for a human-readable form (This value SHALL be the same as the value define by the coding system)
+## Context
 
-## valueFilter
+There are cases where the termCode does not uniquely identify a criterion within an ontology as the same termCode is used to describe different criteria based on a context.
+For these cases the context introduced an additional triplet of code, system and version.
+The criterion is then uniquely identified by the combination of context and termCode. 
 
-ValueFilter specify the value of a defined concept. Depending on the valueFilter Type, different value statements can be made. The valueFilter restricts the value of the highest interest of the resource.
+## Value Filter
 
-### quantity-comperator
+The Value Filter allows the filtering of the criterion by its main value (the value, which can always be expected to be set in the source system). There can only be exactly one value filter for each criterion.
 
-A valueFilter of type quantity-comperator can be applied to all numeric criterion concepts. It allows to use the common comparators represented as enumeration values:
+Three types of value filter exist: quantity-comparator, quantity-range and concept
+
+### quantity-comparator
+
+The type quantity-comparator can be applied to all numeric criteria. It allows the use of the folowing common comparators:
 
 | Enumeration | Comparator |
 | ----------- | ---------- |
@@ -76,76 +80,51 @@ A valueFilter of type quantity-comperator can be applied to all numeric criterio
 | eq          | =          |
 | ne          | !=         |
 
- The concept value is compared with the given value. A unit can be used in the comparison.
+ The concept value is compared with the given value. 
+ A unit can be used in the comparison.
 
 ### quantity-range
 
-A valueFilter of type quantity-range can be applied to all numeric criterion concepts to validate if a value is within the boundaries of the defined min and max values. Again a unit can be given.
+The type quantity-range can be applied to all numeric criterion concepts to validate if a value is within the boundaries of the defined min and max values.
+A unit can be used in the comparison.
 
-### DateTime-comperator
 
-A valueFilter of type datetype can be applied to all datetime criterion concepts. It allows to use the 
+### Concept
 
-| Enumeration | Comparator    |
-| ----------- | ------------- |
-| le          | less equal    |
-| ge          | greater equal |
-
-ISO Datum 
-
-### DateTime-range
-
-A valueFilter of type datetime-range can be applied to all datetime criterion concepts to validate if a value is an overlap exists between the criterions datetime and the interval explicitly or implicitly defined by the before and/or afterDate. ISO dateformat.
-
-beforeDate
-
-afterDate  
-
-### Concept-ValueFilter
-
-A valueFilter of type concept can be applied to all concepts which have a value which itself is defined by a concept. The Value can be restricted by selectedConcepts which are termCodes. If multiple selectedConceptsare given the criterion is fulfilled if one of the values matches. 
-
-Example:
-
-The patient gender is a concept and can be represented with a Termcode. The values female, male, diverse, etc. are also concepts representable by termCodes.
-
-"All male or female patients " (PseudoCriterion): 
-
-```json
-{
-  "inclusionCriteria": [
-    [
-      {
-        "termCode": [ {
-          "code": "LL2191-6",
-          "display": "Geschlecht",
-          "system": "http://loinc.org"
-        } ],
-        "valueFilter": {
-          "type": "concept",
-          "selectedConcepts": [
-            {
-              "code": "F",
-              "display": "female",
-              "system": "https://fhir.loinc.org/CodeSystem/$lookup?system=http://loinc.org&code=LL2191-6",
-              "version": ""
-            },
-            {
-              "code": "M",
-              "display": "male",
-              "system": "https://fhir.loinc.org/CodeSystem/$lookup?system=http://loinc.org&code=LL2191-6",
-              "version": ""
-            }
-          ]
-        }
-      }
-    ]
-  ]
-}
-```
-
+The type concept can be applied to all criteria which have a value defined by a concept. The value can be restricted by the selectedConcepts which are termCodes.
+Multiple selected concepts are joint using OR. 
+=> If multiple concepts are selected the criterion is fulfilled if one or more of the values matches. 
 
 
 ## AttributeFilter[]
 
-Attribute Filter are valueFilter for specific attributes of the Resource. The AttributeCode defined as termCode specifies which attribute is restricted.
+Attribute Filter are valueFilter for specific attributes of the Resource and can be set independent of the value filter. 
+The AttributeCode defined as termCode specifies which attribute of a resource is restricted.
+Attribute filters have all the types of the value filter and one additional type "reference".
+
+### reference
+
+The attribute filter of type reference allows one to filter a criterion by another criterion directly linked to it.
+If the attribute filter is of type reference it contains an additional "criteria" array.
+This array contains criteria the referencing criterion is linked to. 
+The referenced criterion supports all types of filter (value, attribute, time rescrition) except the filter of type reference.
+
+Example for referenced criterion:
+
+A biospecimen (referencing criterion) of a specific type (termCode) and taken from a specific body site (selectedConcept attribute filter) can be retrieved
+for a specific diagnosis (refrenced criterion - diagnosis).
+
+## Time Restriction
+
+For each criterion a main time restriction can be applied. This timeRestriction specifies the interval within the critiera has to be fullfilled.
+
+The time restriction is specified by a afterDate (the start of the date interval) and beforeDate (the end of the date interval).
+
+If either afterDate or beforeDate is not set the interval is open end towards the "not set" data restriction.
+
+
+## Schema and Example:
+
+Schema:  [Schema](../json-schema/structured-query-schema.json)
+Example: [Example](../example-json/sq-all-properties.json)
+
