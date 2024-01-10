@@ -16,8 +16,7 @@ The metadata provides some basic information about the query:
 
 | Name      | Description                            |
 | :-------- | -------------------------------------- |
-| Version   | API Version                            |
-| queryId   | unique Id to identify a specific query |
+| version   | API Version of the sq                  |
 
 ## Query
 
@@ -26,7 +25,7 @@ In the query, both CNF and DNF are implicitedly joint with an "AND NOT" operator
 
 ## inclusionCriteria\[][]
 
-Given a CNF:  A and (B or C)
+Given a CNF:  A AND (B OR C)
 
 The inclusionCriteria is an array of arrays of criteria. Within the outer array, all elements are conjunct with "AND". Based on the example {A} {B or C}.
 Within the inner array all elements are disjunct with "OR". Based on the example {B}{C}. A special case is given if only one element is given, e.g. {A}. In this case, no logic operation is applied to this element in this hierarchic element.
