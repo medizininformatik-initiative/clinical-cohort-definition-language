@@ -3,7 +3,7 @@
 ## Includes 
 * an example of a structured query (as JSON file)
 * a JSON schema describing a structured query
-* [documenation as .md-file](documentation/2021_10_18StructeredQueryV2Documentation.md) 
+* [documenation as .md-file](documentation/Documentation.md) 
 * a python script that generates structured queries that fit to custom test data
 
 ## Usage of Structured Query Generator
