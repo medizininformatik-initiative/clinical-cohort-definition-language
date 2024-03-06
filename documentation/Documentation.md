@@ -1,23 +1,23 @@
 
-# Structured Query
+# Clinical Cohort Definition Language
 
 
-The Structured Query was created to provide a formal definition for feasibility queries based on inclusion and exclusion criteria. The different inclusion and exclusion criteria are conjuncted with the "AND" and "OR" operators respectively. Resulting in a conjunctive normal form without negation (CNF) for inclusion and disjunctive normal form without negation (DNF) for the exclusion  criteria.
+The Clinical Cohort Definition Language (CCDL) was created to provide a formal definition for feasibility queries based on inclusion and exclusion criteria. The different inclusion and exclusion criteria are conjuncted with the "AND" and "OR" operators respectively. Resulting in a conjunctive normal form without negation (CNF) for inclusion and disjunctive normal form without negation (DNF) for the exclusion  criteria.
 
 The format was chosen to be easily created from a javascript front-end as well as support simple translation to FHIR Search and CQL.
 
 
-## Query Definition
+## CCDL Definition
 
-The query is based on inclusion and exclusion criteria represented in CNF and DNF. 
-In the query, both CNF and DNF are implicitedly joint with an "AND NOT" operator.
+The CCDL is based on inclusion and exclusion criteria represented in CNF and DNF. 
+In the CCDL, both CNF and DNF are implicitedly joint with an "AND NOT" operator.
 
-In addition to the inclusion and exclusion criteria, at its core each structured query has a the following fields, that provide some basic information about the query:
+In addition to the inclusion and exclusion criteria, at its core each CCDL has a the following fields, that provide some basic information about the CCDL:
 
 | Name      | Description                            |
 | :-------- | -------------------------------------- |
-| version   | API Version of the sq                  |
-| display   | Custom name of the query               |
+| version   | API Version of the CCDL                |
+| display   | Custom name of the CCDL                |
 
 ## Inclusion Criteria\[][]
 
@@ -118,6 +118,6 @@ If either *afterDate* or *beforeDate* is not set, the interval is open end towar
 
 ## Schema and Example:
 
-Schema:  [Schema](../json-schema/structured-query-schema.json)
-Example: [Example](../example-json/sq-all-properties.json)
+Schema:  [Schema](../json-schema/clinical-cohort-definition-language-schema.json)
+Example: [Example](../example-json/ccdl-all-properties.json)
 

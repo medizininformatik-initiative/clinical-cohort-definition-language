@@ -5,7 +5,7 @@ import getopt
 import os
 import warnings
 
-META_PROFILES_FILE = "sq-generator/meta-profiles.json"
+META_PROFILES_FILE = "ccdl-generator/meta-profiles.json"
 
 
 def birthdate_to_age(birthdate_str):
@@ -309,7 +309,7 @@ def read_args():
         elif opt in ('-o', '--output-dir'):
             output_dir = arg
         elif opt in ('-h', '--help'):
-            print("Usage: sq-generator.py -i <input-json> -o <output-dir>")
+            print("Usage: ccdl-generator.py -i <input-json> -o <output-dir>")
 
     return testdata_file, output_dir
 
@@ -323,10 +323,10 @@ def init_testdata_id_map(testdata):
     return testdata_id_map
 
 
-def build_sq_from_inclusin_criteria(criteria):
-    sq = {"version": "https://medizininformatik-initiative.de/fdpg/StructuredQuery/v3/schema"}
-    sq["inclusionCriteria"] = [criteria]
-    return sq
+def build_ccdl_from_inclusion_criteria(criteria):
+    ccdl = {"version": "https://medizininformatik-initiative.de/fdpg/ClinicalCohortDefinitionLanguage/v3/schema"}
+    ccdl["inclusionCriteria"] = [criteria]
+    return ccdl
 
 
 def main():
@@ -341,12 +341,12 @@ def main():
         if len(criteria) == 0:
             raise Exception(f"Could not generate criteria from resource with id {data['resource']['id']}")
 
-        sq = build_sq_from_inclusin_criteria(criteria)
+        ccdl = build_ccdl_from_inclusion_criteria(criteria)
 
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
-        with open(f"{output_dir}sq-{file_count}.json", "w") as f:
-            f.write(json.dumps(sq, indent=4))
+        with open(f"{output_dir}ccdl-{file_count}.json", "w") as f:
+            f.write(json.dumps(ccdl, indent=4))
             f.write("\n")
 
 

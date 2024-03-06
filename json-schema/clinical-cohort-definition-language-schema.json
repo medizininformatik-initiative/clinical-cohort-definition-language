@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://medizininformatik-initiative.de/fdpg/StructuredQuery/v3/schema",
+  "$id": "https://medizininformatik-initiative.de/fdpg/ClinicalCohortDefinitionLanguage/v3/schema",
   "$defs": {
     "termCode": {
       "type": "object",
@@ -403,8 +403,8 @@
       ]
     }
   },
-  "title": "queryDefinition",
-  "description": "Within a query the inclusion and exclusion criteria are conjuncted with AND NOT",
+  "title": "cohortDefinition",
+  "description": "Within a CCDL the inclusion and exclusion criteria are conjuncted with AND NOT",
   "type": "object",
   "properties": {
     "version": {
