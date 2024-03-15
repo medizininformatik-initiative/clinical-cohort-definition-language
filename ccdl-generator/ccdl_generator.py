@@ -324,7 +324,7 @@ def init_testdata_id_map(testdata):
 
 
 def build_ccdl_from_inclusion_criteria(criteria):
-    ccdl = {"version": "https://medizininformatik-initiative.de/fdpg/ClinicalCohortDefinitionLanguage/v3/schema"}
+    ccdl = {"version": "https://medizininformatik-initiative.de/fdpg/ClinicalCohortDefinitionLanguage/v1/schema"}
     ccdl["inclusionCriteria"] = [criteria]
     return ccdl
 

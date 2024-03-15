@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://medizininformatik-initiative.de/fdpg/ClinicalCohortDefinitionLanguage/v3/schema",
+  "$id": "https://medizininformatik-initiative.de/fdpg/ClinicalCohortDefinitionLanguage/v1/schema",
   "$defs": {
     "termCode": {
       "type": "object",
