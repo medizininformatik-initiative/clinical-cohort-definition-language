@@ -1,0 +1,142 @@
+[
+    {
+        "name": "Einwilligung",
+        "resource_type": "Consent",
+        "context": {
+            "system": "fdpg.mii.cds",
+            "code": "Einwilligung",
+            "display": "Einwilligung",
+            "version": "1.0.0"
+        },
+        "term_code_defining_id": "Consent.provision.provision.code"
+    },
+    {
+        "name": "Gender",
+        "resource_type": "Patient",
+        "context": {
+            "system": "fdpg.mii.cds",
+            "code": "Patient",
+            "display": "Patient",
+            "version": "1.0.0"
+        },
+        "term_codes": [
+            {
+                "system": "http://snomed.info/sct",
+                "code": "263495000",
+                "display": "Geschlecht"
+            }
+        ],
+        "concept_system": "http://hl7.org/fhir/administrative-gender",
+        "value_defining_id": "Patient.gender",
+        "value_type": "code"
+    },
+    {
+        "name": "MedicationAdministration",
+        "resource_type": "MedicationAdministration",
+        "context": {
+            "system": "fdpg.mii.cds",
+            "code": "Medikamentenverabreichung",
+            "display": "Verabreichung von Medikamenten",
+            "version": "1.0.0"
+        },
+        "term_code_defining_id": "(MedicationAdministration.medication[x]:medicationReference).code.coding:atcClassDe",
+        "time_restriction_defining_id": "MedicationAdministration.effective[x]"
+    },
+    {
+        "name": "Procedure",
+        "resource_type": "Procedure",
+        "context": {
+            "system": "fdpg.mii.cds",
+            "code": "Procedure",
+            "display": "Prozedur",
+            "version": "1.0.0"
+        },
+        "term_code_defining_id": "Procedure.code.coding:ops",
+        "time_restriction_defining_id": "Procedure.performed[x]"
+    },
+    {
+        "name": "QuantityObservation",
+        "resource_type": "Observation",
+        "context": {
+            "system": "fdpg.mii.cds",
+            "code": "Laboruntersuchung",
+            "display": "Laboruntersuchung",
+            "version": "1.0.0"
+        },
+        "term_code_defining_id": "Observation.code.coding:loinc",
+        "value_defining_id": "Observation.valueQuantity",
+        "time_restriction_defining_id": "Observation.effective[x]"
+    },
+    {
+        "name": "Specimen",
+        "resource_type": "Specimen",
+        "context": {
+            "system": "fdpg.mii.cds",
+            "code": "Specimen",
+            "display": "Bioprobe",
+            "version": "1.0.0"
+        },
+        "term_code_defining_id": "Specimen.type.coding:sct",
+        "attribute_defining_id_type_map": {
+            "((Specimen.extension:festgestellteDiagnose).value[x]).code.coding:icd10-gm": "reference",
+            "Specimen.collection.bodySite.coding:icd-o-3": ""
+        },
+        "time_restriction_defining_id": "Specimen.collection.collected[x]"
+    },
+    {
+        "name": "Age",
+        "resource_type": "Patient",
+        "context": {
+            "system": "fdpg.mii.cds",
+            "code": "Patient",
+            "display": "Patient",
+            "version": "1.0.0"
+        },
+        "value_defining_id": "Patient.birthDate",
+        "value_type": "Age",
+        "term_codes": [
+            {
+                "system": "http://snomed.info/sct",
+                "code": "424144002",
+                "display": "Gegenwärtiges chronologisches Alter"
+            }
+        ]
+    },
+    {
+        "name": "CauseOfDeath",
+        "resource_type": "Condition",
+        "context": {
+            "system": "fdpg.mii.cds",
+            "code": "Todesursache",
+            "display": "Todesursache",
+            "version": "1.0.0"
+        },
+        "term_code_defining_id": "Condition.code.coding:icd10-gm",
+        "time_restriction_defining_id": "Condition.onset[x]"
+    },
+    {
+        "name": "ConceptObservation",
+        "resource_type": "Observation",
+        "context": {
+            "system": "fdpg.mii.cds",
+            "code": "Laboruntersuchung",
+            "display": "Laboruntersuchung",
+            "version": "1.0.0"
+        },
+        "term_code_defining_id": "Observation.code.coding:loinc",
+        "value_defining_id": "Observation.valueCodeableConcept",
+        "time_restriction_defining_id": "Observation.effective[x]"
+    },
+    {
+        "name": "Condition",
+        "resource_type": "Condition",
+        "context": {
+            "system": "fdpg.mii.cds",
+            "code": "Diagnose",
+            "display": "Diagnose",
+            "version": "1.0.0"
+        },
+        "term_code_defining_id": "Condition.code.coding:icd10-gm",
+        "time_restriction_defining_id": "Condition.onset[x]"
+    }
+]
