@@ -3,8 +3,8 @@ import os
 import json
 import jsonschema
 
-SCHEMA_FILE = "json-schema/structured-query-schema.json"
-GENERATED_SQS_DIR = "target/resources/generated-sqs/"
+SCHEMA_FILE = "json-schema/clinical-cohort-definition-language-schema.json"
+GENERATED_CCDLS_DIR = "target/resources/generated-ccdls/"
 
 
 @pytest.fixture
@@ -15,21 +15,21 @@ def schema():
     return loaded_schema
 
 
-def read_sqs():
-    if not os.path.exists(GENERATED_SQS_DIR):
+def read_ccdls():
+    if not os.path.exists(GENERATED_CCDLS_DIR):
         return []
-    sqs = []
-    for file in os.listdir(GENERATED_SQS_DIR):
+    ccdls = []
+    for file in os.listdir(GENERATED_CCDLS_DIR):
         filename = os.fsdecode(file)
         if not filename.endswith(".json"):
             continue
 
-        with open(f"{GENERATED_SQS_DIR}{filename}", 'r') as f:
-            sqs.append(json.load(f))
+        with open(f"{GENERATED_CCDLS_DIR}{filename}", 'r') as f:
+            ccdls.append(json.load(f))
 
-    return sqs
+    return ccdls
 
 
-@pytest.mark.parametrize("sq", read_sqs())
-def test_validate_sqs(sq, schema):
-    jsonschema.validate(sq, schema)
+@pytest.mark.parametrize("ccdl", read_ccdls())
+def test_validate_ccdls(ccdl, schema):
+    jsonschema.validate(ccdl, schema)

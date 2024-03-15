@@ -1,6 +1,6 @@
 {
-  "version": "https://medizininformatik-initiative.de/fdpg/StructuredQuery/v3/schema",
-  "display": "Beispiel-Query",
+  "version": "https://medizininformatik-initiative.de/fdpg/ClinicalCohortDefinitionLanguage/v3/schema",
+  "display": "Example-CCDL",
   "inclusionCriteria": [
     [
       {
