@@ -23,7 +23,7 @@ def schema():
 def basic_ccdl():
     ccdl = {}
     ccdl["inclusionCriteria"] = [[{"termCodes": [copy.deepcopy(TERM_CODE)], "context": CONTEXT}]]
-    ccdl["version"] = "someVersion"
+    ccdl["version"] = "1.1.0"
     return ccdl
 
 
