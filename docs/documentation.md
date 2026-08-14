@@ -1,8 +1,6 @@
+# Clinical Cohort Definition Language (CCDL)
 
-# Clinical Cohort Definition Language
-
-
-The Clinical Cohort Definition Language (CCDL) was created to provide a formal definition for feasibility queries based on inclusion and exclusion criteria. The different inclusion and exclusion criteria are conjuncted with the "AND" and "OR" operators respectively. Resulting in a conjunctive normal form without negation (CNF) for inclusion and disjunctive normal form without negation (DNF) for the exclusion  criteria.
+The Clinical Cohort Definition Language (CCDL) was created to provide a formal definition for cohort queries based on inclusion and exclusion criteria. The different inclusion and exclusion criteria are conjuncted with the "AND" and "OR" operators respectively. Resulting in a conjunctive normal form without negation (CNF) for inclusion and disjunctive normal form without negation (DNF) for the exclusion  criteria.
 
 The format was chosen to be easily created from a javascript front-end as well as support simple translation to FHIR Search and CQL.
 
@@ -116,8 +114,8 @@ The time restriction is specified by a *afterDate* (the start of the date interv
 If either *afterDate* or *beforeDate* is not set, the interval is open end towards the "not set" data restriction.
 
 
-## Schema and Example:
+## Schema and Example
 
-Schema:  [Schema](../json-schema/clinical-cohort-definition-language-schema.json)
-Example: [Example](../example-json/ccdl-all-properties.json)
+Schema:  [clinical-cohort-definition-language-schema.json](https://github.com/medizininformatik-initiative/clinical-cohort-definition-language/blob/main/json-schema/clinical-cohort-definition-language-schema.json)
 
+Example: [ccdl-all-properties.json](https://github.com/medizininformatik-initiative/clinical-cohort-definition-language/blob/main/example-json/ccdl-all-properties.json)
