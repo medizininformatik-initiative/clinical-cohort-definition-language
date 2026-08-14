@@ -4,15 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
-## [UNRELEASED] - yyyy-mm-dd
+## [2.0.0] - 2026-08-14
 
 ### Added
 - Add GitHub Pages documentation site built with VitePress (`docs/`), published via `.github/workflows/docs.yml`
 - Add per-version documentation with a version switcher (`dev`, `stable`, and tagged releases), deployed to the `gh-pages` branch
+
 ### Changed
 - **Breaking:** `$id` changed from a full-semver URL to a major-only one (`.../ClinicalCohortDefinitionLanguage/v2/schema`), so the schema URI only changes on breaking releases
 - **Breaking:** `version` is now a semver string matching `^2\.\d+\.\d+$` instead of a free-form URI-typed string; existing documents must update their `version` value to a `2.x.y` release
 - Move CCDL documentation and CCDL generator usage instructions out of `README.md`/`documentation/Documentation.md` into the docs site; `README.md` now links to it
+
 ### Deprecated
 ### Removed
 ### Fixed
