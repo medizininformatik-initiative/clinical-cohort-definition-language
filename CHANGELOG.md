@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 ### Changed
+- **Breaking:** `$id` changed from a full-semver URL to a major-only one (`.../ClinicalCohortDefinitionLanguage/v2/schema`), so the schema URI only changes on breaking releases
+- **Breaking:** `version` is now a semver string matching `^2\.\d+\.\d+$` instead of a free-form URI-typed string; existing documents must update their `version` value to a `2.x.y` release
 ### Deprecated
 ### Removed
 ### Fixed

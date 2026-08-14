@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://medizininformatik-initiative.de/fdpg/ClinicalCohortDefinitionLanguage/v1/schema",
+  "$id": "https://medizininformatik-initiative.de/fdpg/ClinicalCohortDefinitionLanguage/v2/schema",
   "$defs": {
     "termCode": {
       "type": "object",
@@ -409,7 +409,8 @@
   "properties": {
     "version": {
       "type": "string",
-      "format": "uri"
+      "pattern": "^2\\.\\d+\\.\\d+$",
+      "description": "Semantic version of the CCDL format this document conforms to. Must be a 2.x.y release matching this schema's major version."
     },
     "inclusionCriteria": {
       "type": "array",

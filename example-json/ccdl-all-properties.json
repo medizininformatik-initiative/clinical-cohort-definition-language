@@ -1,5 +1,5 @@
 {
-  "version": "https://medizininformatik-initiative.de/fdpg/ClinicalCohortDefinitionLanguage/v1/schema",
+  "version": "2.0.0",
   "display": "Example-CCDL",
   "inclusionCriteria": [
     [
