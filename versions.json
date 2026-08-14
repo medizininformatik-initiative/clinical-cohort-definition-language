@@ -1,1 +1,7 @@
-[]
+[
+  {
+    "version": "dev",
+    "path": "/clinical-cohort-definition-language/dev/",
+    "latest": false
+  }
+]
