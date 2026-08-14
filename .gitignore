@@ -2,3 +2,8 @@
 .pytest_cache/
 test/src/__pycache__/
 target
+
+# docs (vitepress)
+docs/node_modules
+docs/.vitepress/dist
+docs/.vitepress/cache

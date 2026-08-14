@@ -1,0 +1,25 @@
+---
+layout: home
+title: CCDL
+hero:
+  name: Clinical Cohort Definition Language
+  text: A formal definition language for feasibility queries
+  tagline: CCDL
+  actions:
+    - theme: brand
+      text: Documentation
+      link: /documentation
+    - theme: alt
+      text: View on GitHub
+      link: https://github.com/medizininformatik-initiative/clinical-cohort-definition-language
+
+features:
+  - title: CCDL Documentation
+    icon: 📄
+    details: Formal specification of the CCDL - inclusion/exclusion criteria, criteria, term codes, value filters and more
+    link: /documentation
+  - title: CCDL Generator
+    icon: 🛠️
+    details: Python tool that generates CCDLs which fit custom FHIR test data
+    link: /ccdl-generator
+---
