@@ -4,7 +4,7 @@ export default withMermaid({
     title: 'CCDL',
     description: 'Clinical Cohort Definition Language Documentation',
     ignoreDeadLinks: true,
-    base: process.env.DOCS_BASE || '',
+    base: process.env.VITE_BASE_PATH || '/clinical-cohort-definition-language/',
     appearance: true,
     lastUpdated: true,
     themeConfig: {
