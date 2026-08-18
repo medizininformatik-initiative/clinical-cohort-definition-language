@@ -23,8 +23,7 @@
         "code",
         "system",
         "display"
-      ],
-      "additionalProperties": false
+      ]
     },
     "criterion": {
       "type": "object",
@@ -52,8 +51,7 @@
       "required": [
         "termCodes",
         "context"
-      ],
-      "additionalProperties": false
+      ]
     },
     "timeRestriction": {
       "type": "object",
@@ -81,8 +79,7 @@
             "beforeDate"
           ]
         }
-      ],
-      "additionalProperties": false
+      ]
     },
     "unit": {
       "type": "object",
@@ -99,8 +96,7 @@
       "required": [
         "code",
         "display"
-      ],
-      "additionalProperties": false
+      ]
     },
     "attributeFilters": {
       "type": "array",
@@ -147,8 +143,7 @@
             "required": [
               "type",
               "selectedConcepts"
-            ],
-            "additionalProperties": false
+            ]
           }
         },
         {
@@ -185,8 +180,7 @@
               "type",
               "comparator",
               "value"
-            ],
-            "additionalProperties": false
+            ]
           }
         },
         {
@@ -216,8 +210,7 @@
               "type",
               "minValue",
               "maxValue"
-            ],
-            "additionalProperties": false
+            ]
           }
         }
       ]
@@ -266,8 +259,7 @@
               "type",
               "selectedConcepts",
               "attributeCode"
-            ],
-            "additionalProperties": false
+            ]
           }
         },
         {
@@ -308,8 +300,7 @@
               "comparator",
               "value",
               "attributeCode"
-            ],
-            "additionalProperties": false
+            ]
           }
         },
         {
@@ -343,8 +334,7 @@
               "minValue",
               "maxValue",
               "attributeCode"
-            ],
-            "additionalProperties": false
+            ]
           }
         },
         {
@@ -396,8 +386,7 @@
               "type",
               "criteria",
               "attributeCode"
-            ],
-            "additionalProperties": false
+            ]
           }
         }
       ]
@@ -408,9 +397,8 @@
   "type": "object",
   "properties": {
     "version": {
-      "type": "string",
-      "pattern": "^2\\.\\d+\\.\\d+$",
-      "description": "Semantic version of the CCDL format this document conforms to. Must be a 2.x.y release matching this schema's major version."
+      "const": "2",
+      "description": "Schema version of the CCDL format this document conforms to. Fixed per schema major version and will change as the schema evolves."
     },
     "inclusionCriteria": {
       "type": "array",
@@ -445,6 +433,5 @@
   "required": [
     "version",
     "inclusionCriteria"
-  ],
-  "additionalProperties": false
+  ]
 }
