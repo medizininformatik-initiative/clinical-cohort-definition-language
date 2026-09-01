@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://medizininformatik-initiative.de/fdpg/ClinicalCohortDefinitionLanguage/v2/schema",
+  "$id": "https://medizininformatik-initiative.de/fdpg/ClinicalCohortDefinitionLanguage/v3/schema",
   "$defs": {
     "termCode": {
       "type": "object",
@@ -51,6 +51,23 @@
       "required": [
         "termCodes",
         "context"
+      ]
+    },
+    "negatableCriterion": {
+      "description": "A criterion that may be negated. Only usable directly within inclusionCriteria/exclusionCriteria; criteria referenced via an attribute filter of type \"reference\" are not negatable.",
+      "allOf": [
+        {
+          "$ref": "#/$defs/criterion"
+        },
+        {
+          "properties": {
+            "negated": {
+              "type": "boolean",
+              "default": false,
+              "description": "If true, the criterion is fulfilled when no resource matches context, termCodes, valueFilter, attributeFilters and timeRestriction (i.e. the resource does not exist). If false or omitted, the criterion is fulfilled when such a resource exists."
+            }
+          }
+        }
       ]
     },
     "timeRestriction": {
@@ -397,7 +414,7 @@
   "type": "object",
   "properties": {
     "version": {
-      "const": "2",
+      "const": "3",
       "description": "Schema version of the CCDL format this document conforms to. Fixed per schema major version and will change as the schema evolves."
     },
     "inclusionCriteria": {
@@ -409,7 +426,7 @@
         "minItems": 1,
         "description": "All elements within the array are conjuncted with an OR operator",
         "items": {
-          "$ref": "#/$defs/criterion"
+          "$ref": "#/$defs/negatableCriterion"
         }
       }
     },
@@ -422,7 +439,7 @@
         "minItems": 1,
         "description": "All elements within the array are conjuncted with an AND operator",
         "items": {
-          "$ref": "#/$defs/criterion"
+          "$ref": "#/$defs/negatableCriterion"
         }
       }
     },

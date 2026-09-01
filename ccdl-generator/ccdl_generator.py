@@ -324,7 +324,7 @@ def init_testdata_id_map(testdata):
 
 
 def build_ccdl_from_inclusion_criteria(criteria):
-    ccdl = {"version": "2"}
+    ccdl = {"version": "3"}
     ccdl["inclusionCriteria"] = [criteria]
     return ccdl
 

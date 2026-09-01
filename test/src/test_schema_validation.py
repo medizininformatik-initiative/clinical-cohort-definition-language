@@ -23,7 +23,7 @@ def schema():
 def basic_ccdl():
     ccdl = {}
     ccdl["inclusionCriteria"] = [[{"termCodes": [copy.deepcopy(TERM_CODE)], "context": CONTEXT}]]
-    ccdl["version"] = "2"
+    ccdl["version"] = "3"
     return ccdl
 
 
@@ -42,6 +42,20 @@ def test_example_json(schema):
 def test_wrong_version_rejected(schema):
     ccdl = basic_ccdl()
 
-    ccdl["version"] = "2.0.0"
+    ccdl["version"] = "3.0.0"
     with pytest.raises(jsonschema.exceptions.ValidationError):
         jsonschema.validate(ccdl, schema)
+
+
+def test_negated_criterion(schema):
+    ccdl = basic_ccdl()
+    ccdl["inclusionCriteria"][0][0]["negated"] = True
+
+    jsonschema.validate(ccdl, schema)
+
+
+def test_negated_defaults_to_optional(schema):
+    ccdl = basic_ccdl()
+    assert "negated" not in ccdl["inclusionCriteria"][0][0]
+
+    jsonschema.validate(ccdl, schema)

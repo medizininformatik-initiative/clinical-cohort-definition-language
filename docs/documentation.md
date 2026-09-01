@@ -1,6 +1,6 @@
 # Clinical Cohort Definition Language (CCDL)
 
-The Clinical Cohort Definition Language (CCDL) was created to provide a formal definition for cohort queries based on inclusion and exclusion criteria. The different inclusion and exclusion criteria are conjuncted with the "AND" and "OR" operators respectively. Resulting in a conjunctive normal form without negation (CNF) for inclusion and disjunctive normal form without negation (DNF) for the exclusion  criteria.
+The Clinical Cohort Definition Language (CCDL) was created to provide a formal definition for cohort queries based on inclusion and exclusion criteria. The different inclusion and exclusion criteria are conjuncted with the "AND" and "OR" operators respectively. Resulting in a conjunctive normal form (CNF) for inclusion and disjunctive normal form (DNF) for the exclusion criteria, where each individual criterion (literal) may optionally be negated.
 
 The format was chosen to be easily created from a javascript front-end as well as support simple translation to FHIR Search and CQL.
 
@@ -40,6 +40,14 @@ Within the inner array all elements are conjunct with "AND". Based on the exampl
 
 The previous introduced elements {A}, {B} and {C} are representative for different criteria.
 Each criterion represents a unique medical concept, which is identified by its *termCodes*. A criterion can have multiple term codes if they are synonymous and mapped identically. Which can be further specified by applying a value filter.
+
+## Negation
+
+Each criterion directly contained in *inclusionCriteria* or *exclusionCriteria* can be negated by setting its *negated* field to `true` (default `false`).
+
+A negated criterion is fulfilled when no resource matches its *context*, *termCodes*, *valueFilter*, *attributeFilters* and *timeRestriction* combined, i.e. the resource does not exist. This differs from negating a comparator (like `ne` on a *quantity-comparator* value filter): a `ne` comparator still requires a matching resource to exist with a different value, whereas a negated criterion is satisfied by the absence of any matching resource.
+
+Negation is only available on criteria directly within *inclusionCriteria*/*exclusionCriteria*. Criteria referenced through an attribute filter of type "reference" cannot be negated.
 
 ## Term Code
 

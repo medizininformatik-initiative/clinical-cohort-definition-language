@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
+## [3.0.0] - 2026-09-01
+
+### Added
+- Add optional `negated` field to criteria directly within `inclusionCriteria`/`exclusionCriteria`. A negated criterion is fulfilled when no resource matches its context, termCodes, valueFilter, attributeFilters and timeRestriction combined (not-exists semantics). Not available on criteria referenced via an attribute filter of type "reference"
+
+### Changed
+- `$id` changed from `.../ClinicalCohortDefinitionLanguage/v2/schema` to `.../ClinicalCohortDefinitionLanguage/v3/schema`
+- **Breaking:** `version` const value changed from `"2"` to `"3"`; existing documents must update their `version` value to `"3"`
+
 ## [2.0.0] - 2026-08-18
 
 ### Added
