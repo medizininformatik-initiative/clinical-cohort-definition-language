@@ -13,9 +13,9 @@
 > four-level structure including the OR level above the group array (§1–§3), the evaluation model
 > (§6), and the translation obligations that preserve it on real engines (§7) are all implemented
 > and shipped together in `cctb`, the CQL translator. The exceptions: **`anchorOccurrence: "any"`
-> (§6) is specified but not yet implemented**, and **chained anchors (§6, "Chaining") are
-> implemented but not yet conformant** — `cctb` does not apply a chained anchor group's own window
-> when gathering its candidates. Both are called out explicitly wherever they are discussed.
+> (§6) is specified but not yet implemented**, and **the §7 null-guard is not applied along the
+> chaining path**, so a chained anchor whose own anchor fails to resolve can still supply a date
+> downstream. Both are called out explicitly wherever they are discussed.
 > Everything else should be read as "this is what `cctb` does today." `version: "3"` has not been
 > published or adopted anywhere yet, so there was no reason to stage it behind an intermediate,
 > never-released version — the whole extension ships as one breaking change from today's adopted
@@ -587,15 +587,18 @@ applies to each anchor id separately, so a chain of `"any"` anchors shares one w
 group array without any of them constraining another id's choice. Worked through three levels deep in
 `ccdl-example-any-chain-three-hops-draft.json` (see Worked examples).
 
-**`cctb` does not implement this.** Its candidate-gathering path (`resolveAnchorDates`) collects the
-chained group's raw criteria matches without applying that group's own window, which only the final
-criterion-matching path (`combineCriteria`) does. A chained anchor can therefore resolve to an
-occurrence that does not qualify, admitting patients this document says should not match. This is a
-**conformance defect against the semantics above, not a scoped-out feature.** Keeping the two
-concerns apart is what makes that visible: the window filtering defined here is §6 meaning, while
-the separate, also-missing null-guard on the same code path is a §7 translation obligation. The
-first changes which patients match and the second does not. Neither is fixed yet, both are listed
-under Open Questions.
+**`cctb` implements this.** `Group.resolveAnchorDates` computes the group's own window first and
+passes it down through `aggregateClauseDates` into `resolveClauseDate`, so the emitted candidate
+query carries the window predicate. For a chained anchor the generated CQL reads
+`Min((from [Condition: Code 'N17' ...] C where ToDate(C.recordedDate as dateTime) in
+Interval["AnchorDate_<upstream>" + 0 hours, "AnchorDate_<upstream>" + 168 hours] ...))`, which is the
+rule above.
+
+What is **not** applied on that path is the §7 null-guard. The interval is passed down, the guard is
+not, so if the upstream anchor fails to resolve for a patient the interval degenerates to unbounded
+rather than to no-match, and the chained anchor can still supply a date downstream. That is a
+translation obligation left unmet rather than a gap in the semantics above, and it does change which
+patients match. Listed under Open Questions.
 
 ### Applying the window
 
@@ -683,9 +686,10 @@ direct list-index access (`list[i] is not null`), confirmed to work correctly on
 nested-query shape above does not. `"any"` is not implemented at all, so no guard question arises
 for it yet.
 
-One known gap: the guard is not applied along the chaining path. That is the smaller half of the
-chaining problem — see §6's "Chaining" subsection for the larger half, which is a semantics
-conformance defect rather than a translation one.
+One known gap: the guard is not applied along the chaining path, where a group is both a dependent
+and an anchor. The window interval *is* applied there (§6, "Chaining"), so candidates are filtered
+correctly whenever the upstream anchor resolves. When it does not, the unguarded interval degenerates
+to unbounded instead of producing no-match, which admits patients that should be excluded.
 
 ## Compatibility
 
@@ -837,17 +841,20 @@ latest. Not translatable by `cctb` because of `"any"`, but everything else in it
   tuple rule) and empty candidate sets (no guard needed). What's still open is entirely on the
   `cctb` side: it isn't implemented, and the correlated-existential translation is a distinct code
   path from the hoisted-anchor-date one §7 describes, not an incremental extension of it. Two
-  specific costs are known in advance. A group with an `"any"` entry cannot be translated in
-  isolation from its sibling referencers in the same group array, which the current per-group
-  translation structure assumes. And a multi-clause `"any"` anchor quantifies over a product of
-  candidate sets, so single-clause support is the sensible first increment.
-- **Chained anchors are not evaluated per §6 in `cctb`.** Not an open design question — the
-  semantics are settled in §6's "Chaining" subsection — but an open implementation gap worth
-  tracking here rather than only in code comments, because it changes results rather than only
-  performance: `cctb` gathers a chained anchor's candidates without applying that group's own
-  window, so an occurrence that does not qualify can still date a downstream window. Fixing it
-  means applying the window along the candidate-gathering path (`resolveAnchorDates`), not only
-  along the criterion-matching path (`combineCriteria`).
+  specific costs are known in advance. The larger one is chaining: every anchor currently resolves to
+  a single per-patient date, so a chained `"any"` anchor's candidate set has to become a correlated
+  query nested inside the referencing existential rather than a hoisted value, and the §7 guard has
+  nothing to guard on that path. The smaller one is that a group with an `"any"` entry cannot be
+  translated in isolation from its sibling referencers in the same group array — though a translator
+  that already inspects a whole group array before translating its members, as `cctb` does, absorbs
+  this without restructuring. Separately, a multi-clause `"any"` anchor quantifies over a product of
+  candidate sets, which is why single-clause support is the sensible first increment.
+- **The null-guard is not applied along `cctb`'s chaining path.** Not an open design question, and
+  not a gap in §6: the window interval *is* applied when a chained anchor gathers its candidates.
+  The §7 guard is not. So when an upstream anchor fails to resolve, the chained anchor's window
+  degenerates to unbounded rather than producing no-match, and the group downstream of it can match
+  a patient it should exclude. It changes results rather than only performance, which is why it is
+  tracked here rather than only in a code comment.
 - **Overlap vs. containment for narrow relative windows.** §6 step 5 inherits the existing
   `timeRestriction` rule that overlap between a criterion's own interval and the window is
   sufficient. That's reasonable for the looser windows the absolute case was designed around, but

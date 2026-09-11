@@ -167,9 +167,10 @@ group can be date-bounded in its own right. Under `"any"` the quantifiers nest r
 a downstream `"any"` reference quantifies over the intermediate group's already-window-filtered
 matches, and each anchor id is shared per group array independently of the others.
 
-**`cctb` does not do this** — `resolveAnchorDates` gathers raw criteria matches, only
-`combineCriteria` applies the window — so a non-qualifying occurrence can date a downstream window.
-A conformance defect against the semantics, not a missing feature.
+**`cctb` does this** — `resolveAnchorDates` passes the group's own window down into candidate
+resolution. What it does not pass down is the §7 null-guard, so an unresolved upstream anchor leaves
+the window unbounded instead of producing no-match. A translation gap rather than a semantics one,
+but it does change which patients match.
 
 ## Translation obligations (not semantics)
 
@@ -203,9 +204,10 @@ Eight worked examples in [example-json/ccdl-v3/](example-json/ccdl-v3/), with a 
 ## Open questions
 
 - `anchorOccurrence: "any"` implementation in `cctb` — semantics are settled (above), the
-  translator work is not done yet. Two known costs: sibling groups' translation is coupled, and
-  multi-clause `"any"` quantifies over a product of candidate sets, so single-clause is the sensible
-  first increment.
+  translator work is not done yet. Known costs, largest first: a chained `"any"` anchor's candidates
+  must become a correlated query rather than a hoisted per-patient date; sibling groups' translation
+  is coupled; and multi-clause `"any"` quantifies over a product of candidate sets, so single-clause
+  is the sensible first increment.
 - Chained anchors in `cctb` do not apply the chained group's own window when gathering candidates —
   settled semantics, open implementation gap, changes results rather than only performance.
 - Overlap vs. containment for narrow relative windows — step 5's inherited overlap-sufficiency rule
