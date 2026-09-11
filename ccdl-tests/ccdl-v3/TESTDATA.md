@@ -152,19 +152,27 @@ Patients sit in different months, so lanes are drawn relative to each patient's 
                               │      |    |    |               |                           │
 ══════════════════════════════╪════════════════════════════════════════════════════════════╪
 Patient = first-path          │                                                            │ ✓ selected
-  resources                   │           ◇5-470.1 ◇8-718.94 ●Hb ●E10.9                    │
+  resources                   │           ◇5-470.1                                         │
+                              │           ◇8-718.94                                        │
+                              │           ●Hb                                              │
+                              │           ●E10.9                                           │
   window                      │      ▓▓▓▓▓▓▓▓▓▓▓                                           │ both clauses same day: ±1 day
 ──────────────────────────────┼────────────────────────────────────────────────────────────┼
 Patient = second-path         │                                                            │ ✓ selected
-  resources                   │           ◇5-470.1 ◇8-718.94 ●Hb ●E11.9                    │
+  resources                   │           ◇5-470.1                                         │
+                              │           ◇8-718.94                                        │
+                              │           ●Hb                                              │
+                              │           ●E11.9                                           │
   window                      │      ▓▓▓▓▓▓▓▓▓▓▓                                           │ qualifies via the second array
 ──────────────────────────────┼────────────────────────────────────────────────────────────┼
 Patient = spread-out          │                                                            │ ✗ not selected
-  resources                   │      ◇5-470.1  ●Hb ●E10.9      ◇8-718.94                   │
+  resources                   │      ◇5-470.1  ●Hb             ◇8-718.94                   │
+                              │                ●E10.9                                      │
   window                      │           end◄────────────►start                           │ latest−24h is after earliest+24h
 ──────────────────────────────┼────────────────────────────────────────────────────────────┼
 Patient = no-procedure        │                                                            │ ✗ not selected
-  resources                   │                ●Hb ●E10.9                                  │
+  resources                   │                ●Hb                                         │
+                              │                ●E10.9                                      │
   window                      │                                                            │ no anchor clause resolves
 ══════════════════════════════╧════════════════════════════════════════════════════════════╧
 ```
@@ -183,14 +191,15 @@ each one in turn and needs only one to work.
                               │     |      |          |                |                   │
 ══════════════════════════════╪════════════════════════════════════════════════════════════╪
 Patient = same-episode        │                                                            │ ✓ selected
-  resources                   │     ◇F00              ◆F05 ●Na                             │
+  resources                   │     ◇F00              ◆F05                                 │
+                              │                       ●Na                                  │
                               │                         ●Halo                              │
   F05 candidates              │     ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓            │ delirium must be within 30d of dx
   ⤷ try Jan 11                │                     ▓▓▓▓▓▓▓▓▓                              │ Halo ✓ and Na ✓ — one episode, both
 ──────────────────────────────┼────────────────────────────────────────────────────────────┼
 Patient = split               │                                                            │ ✗ not selected
-  resources                   │     ◇F00   ◆F05                        ◆F05 ●Na            │
-                              │              ●Halo                                         │
+  resources                   │     ◇F00   ◆F05                        ◆F05                │
+                              │              ●Halo                     ●Na                 │
   ⤷ try Jan 5                 │            ▓▓▓▓▓▓▓                                         │ Halo ✓, but no Na within ±1d
   ⤷ try Jan 20                │                                      ▓▓▓▓▓▓▓▓              │ Na ✓, but no Halo within +3d
 ──────────────────────────────┼────────────────────────────────────────────────────────────┼
@@ -214,7 +223,8 @@ the dates span months.
                               │      |        |                 |                          │
 ══════════════════════════════╪════════════════════════════════════════════════════════════╪
 Patient = chain               │                                                            │ ✓ selected
-  resources                   │      ◆A41.5   ◆N17.0            ◆8-85a.0 ●Hb               │
+  resources                   │      ◆A41.5   ◆N17.0            ◆8-85a.0                   │
+                              │                                 ●Hb                        │
   ⤷ sepsis Jan 1              │      ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓                                  │ AKI must land within 7d
   ⤷ AKI Jan 4                 │               ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓       │ dialysis within 14d
   ⤷ dialysis Jan 11           │                                 ▓▓▓▓                       │ Hb within 1d ✓
@@ -226,8 +236,9 @@ Patient = chain               │                                               
                               │   |                                  |     |               │
 ══════════════════════════════╪════════════════════════════════════════════════════════════╪
 Patient = late-episode        │                                                            │ ✓ selected
-  resources                   │   ◆A41.5                             ◆A41.5◆8-85a.0 ●Hb    │
+  resources                   │   ◆A41.5                             ◆A41.5◆8-85a.0        │
                               │                                        ◆N17.0              │
+                              │                                            ●Hb             │
   ⤷ try sepsis Jan 1          │   ▓▓▓▓▓                                                    │ no AKI in range — try the next
   ⤷ try sepsis Mar 1          │                                      ▓▓▓▓▓                 │ AKI Mar 4 ✓
   ⤷ AKI Mar 4                 │                                        ▓▓▓▓▓▓▓▓            │ dialysis Mar 10 ✓, then Hb ✓
@@ -240,7 +251,8 @@ Patient = late-episode        │                                               
 ══════════════════════════════╪════════════════════════════════════════════════════════════╪
 Patient = broken-link         │                                                            │ ✗ not selected
   resources                   │    ◆A41.5                             ◆N17.0               │
-                              │                                           ◆8-85a.0 ●Hb     │
+                              │                                           ◆8-85a.0         │
+                              │                                           ●Hb              │
   ⤷ sepsis Jan 1              │    ▓▓▓▓▓▓▓                                                 │ the only sepsis; AKI is six weeks later
 ══════════════════════════════╧════════════════════════════════════════════════════════════╧
 ```
@@ -262,32 +274,49 @@ the product of the two clauses' candidates. The window runs from the later tuple
 member plus the offset, so a tuple whose members are far apart produces no window at all.
 
 ```
-                              │   Jan 1   Jan 11                         Feb 20            │ result
-                              │   |       |                              |                 │
+                              │         Jan 1  Jan 2   Jan 3                               │ result
+                              │         |      |       |                                   │
 ══════════════════════════════╪════════════════════════════════════════════════════════════╪
 Patient = tight               │                                                            │ ✓ selected
-  resources                   │   ◆A41.5                                                   │
-                              │    ◆N17.0 ●CRP                                             │
-                              │     ●Hb                                                    │
-  ⤷ Jan 1 + Jan 2             │    ▓▓▓                                                     │ Hb ✓ and CRP ✓
-──────────────────────────────┼────────────────────────────────────────────────────────────┼
+  resources                   │         ◆A41.5 ◆N17.0  ●Hb                                 │
+                              │                ●CRP                                        │
+  ⤷ tuple Jan 1 + Jan 2       │                ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓                           │ Hb window: latest → earliest+3d
+  ⤷ same tuple, CRP           │                ▓                                           │ CRP window: latest → earliest+1d
+══════════════════════════════╧════════════════════════════════════════════════════════════╧
+```
+
+```
+                              │               Feb 20   Feb 22                              │ result
+                              │               |        |                                   │
+══════════════════════════════╪════════════════════════════════════════════════════════════╪
 Patient = two-options         │                                                            │ ✓ selected
-  resources                   │   ◆A41.5                                 ◆A41.5            │
-                              │                                           ◆N17.0 ●CRP      │
-                              │                                            ●Hb             │
-  ⤷ Jan 1 + Feb 21            │      end◄─────────────────────────────────►start           │ seven weeks apart: empty
-  ⤷ Feb 20 + Feb 21           │                                           ▓▓▓              │ the other pairing works ✓
-──────────────────────────────┼────────────────────────────────────────────────────────────┼
+  resources                   │               ◆A41.5   ●Hb                                 │ (a Jan 1 sepsis also exists, off-chart)
+                              │                   ◆N17.0                                   │
+                              │                   ●CRP                                     │
+  ⤷ tuple Feb 20 + Feb 21     │                   ▓▓▓▓▓▓▓▓▓▓▓                              │ the Jan 1 pairing gives an empty window
+  ⤷ same tuple, CRP           │                   ▓                                        │ CRP on Feb 21 ✓
+══════════════════════════════╧════════════════════════════════════════════════════════════╧
+```
+
+```
+                              │    Jan 1                            Jan 11                 │ result
+                              │    |                                |                      │
+══════════════════════════════╪════════════════════════════════════════════════════════════╪
 Patient = far-apart           │                                                            │ ✗ not selected
-  resources                   │   ◆A41.5  ◆N17.0 ●CRP                                      │
-                              │            ●Hb                                             │
-  ⤷ the only tuple            │      end◄─►start                                           │ ten days apart, no other pairing exists
-──────────────────────────────┼────────────────────────────────────────────────────────────┼
+  resources                   │    ◆A41.5                           ◆N17.0                 │
+                              │                                     ●CRP                   │
+                              │                                        ●Hb                 │
+  ⤷ the only tuple            │              end◄───────────────────►start                 │ earliest+3d is before latest
+══════════════════════════════╧════════════════════════════════════════════════════════════╧
+```
+
+```
+                              │         Jan 1  Jan 2   Jan 3                               │ result
+                              │         |      |       |                                   │
+══════════════════════════════╪════════════════════════════════════════════════════════════╪
 Patient = no-crp              │                                                            │ ✗ not selected
-  resources                   │   ◆A41.5                                                   │
-                              │    ◆N17.0                                                  │
-                              │     ●Hb                                                    │
-  ⤷ Jan 1 + Jan 2             │    ▓▓▓                                                     │ Hb ✓ but there is no CRP
+  resources                   │         ◆A41.5 ◆N17.0  ●Hb                                 │
+  ⤷ tuple Jan 1 + Jan 2       │                ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓                           │ Hb ✓, but the CRP group has nothing
 ══════════════════════════════╧════════════════════════════════════════════════════════════╧
 ```
 
@@ -309,22 +338,21 @@ Every patient also has a respiratory rate three days before the evaluation date,
 ══════════════════════════════╪════════════════════════════════════════════════════════════╪
 Patient = included            │                                                            │ ✓ selected
   resources                   │      ●Weight ◇F00                     ●N06DA02             │
-                              │           ●CRP ●HR                                         │
+                              │           ●CRP                                             │
+                              │           ●HR                                              │
   infection signs             │      ▓▓▓▓▓▓▓▓▓                                             │ CRP and HR inside dx−3d ✓
   donepezil                   │              ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓            │ within 30d after dx ✓
   weight                      │ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓            │ dx−7d onward ✓
 ──────────────────────────────┼────────────────────────────────────────────────────────────┼
 Patient = anticoagulant-only  │                                                            │ ✓ selected
-  resources                   │           ●CRP ●HR                    ●N06DA02             │
-                              │              ◇F00                                          │
-                              │                ◆B01AA04                                    │
+  resources                   │           ●CRP ◆B01AA04               ●N06DA02             │
+                              │           ●HR◇F00                                          │
   exclusion: drug             │              ▓▓▓▓▓▓                                        │ anticoagulant is in range …
   exclusion: failure          │                                                            │ … but there is no organ failure, so the AND fails
 ──────────────────────────────┼────────────────────────────────────────────────────────────┼
 Patient = excluded            │                                                            │ ✗ not selected
-  resources                   │           ●CRP ●HR                    ●N06DA02             │
-                              │              ◇F00                                          │
-                              │                ◆B01AA04                                    │
+  resources                   │           ●CRP ◆B01AA04               ●N06DA02             │
+                              │           ●HR◇F00                                          │
   exclusion: drug             │              ▓▓▓▓▓▓                                        │ anticoagulant in range ✓
   exclusion: failure          │                                                            │ N18.8 recorded in 2023 ✓ — both halves hold
 ──────────────────────────────┼────────────────────────────────────────────────────────────┼
@@ -350,8 +378,9 @@ examples look alike and mean different things.
                               │     |                        |           |                 │
 ══════════════════════════════╪════════════════════════════════════════════════════════════╪
 Patient = main-path           │                                                            │ ✓ selected
-  resources                   │     ◇K57.3  ●Hb              ◇5-455.3 ◇8-805.0             │
-                              │                                  ◆A41.5  ●8-85a.0          │
+  resources                   │     ◇K57.3  ●Hb              ◇5-455.3    ●8-85a.0          │
+                              │                              ◇8-805.0                      │
+                              │                                  ◆A41.5                    │
                               │                                     ◆N17.0                 │
   Hb between anchors          │     ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓                             │ dx → resection, Hb inside ✓
   ⤷ sepsis Feb 15             │                                  ▓▓▓▓▓▓▓                   │ AKI ✓ within 7d, CRP ✓ within 3d
@@ -370,8 +399,8 @@ Patient = excluded            │                                               
   exclusion                   │                                                            │ drug ✓ and N18.8 + K72 ✓ — excluded
 ──────────────────────────────┼────────────────────────────────────────────────────────────┼
 Patient = specimen-path       │                                                            │ ✓ selected
-  resources                   │     ◇K57.3 ▣Specimen         ◇5-455.3 ◇8-805.0             │
-                              │                                              ●Hb           │
+  resources                   │     ◇K57.3                   ◇5-455.3        ●Hb           │
+                              │     ▣Specimen                ◇8-805.0                      │
   array 2                     │                                                            │ specimen references the K57.3 condition ✓
   follow-up lab               │                              ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓            │ resection → now, Hb inside ✓
 ══════════════════════════════╧════════════════════════════════════════════════════════════╧
