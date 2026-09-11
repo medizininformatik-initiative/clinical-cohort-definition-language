@@ -1,6 +1,6 @@
 # CCDL v3 worked examples
 
-Seven `version: "3"` cohort definitions, each chosen to demonstrate a different part of the relative
+Eight `version: "3"` cohort definitions, each chosen to demonstrate a different part of the relative
 time constraint extension. The specification itself is [../../ccdl-v3-draft.md](../../ccdl-v3-draft.md),
 with a rules-only summary in [../../ccdl-v3-draft-tldr.md](../../ccdl-v3-draft-tldr.md). This file is
 a guide to the examples, not a second copy of the spec.
@@ -16,6 +16,7 @@ a guide to the examples, not a second copy of the spec.
 | 5 | `ccdl-example-hemoglobin-between-two-anchors.json` | two anchors on one group, windows intersected | yes, 290 lines |
 | 6 | `ccdl-example-any-chained-anchors-draft.json` | `anchorOccurrence: "any"`, one anchor with two referencers | **no, by design** |
 | 7 | `ccdl-example-any-chain-three-hops-draft.json` | `"any"` anchors stacked three deep | **no, by design** |
+| 8 | `ccdl-example-all-features-draft.json` | everything at once, as a reference | **no, by design** |
 
 ---
 
@@ -179,24 +180,84 @@ dialysis sessions where only one particular path through them is the qualifying 
 
 ---
 
+### 8. `ccdl-example-all-features-draft.json` — every feature in one query
+
+A reference file rather than a teaching one. Thirteen groups across two inclusion group arrays and
+one exclusion group array, exercising every feature of the extension plus the criterion-level
+features it inherits from `version: "2"`. Read examples 1 to 7 first. Come here when you need to see
+how two features interact, or to copy a shape.
+
+The cohort: adults with colon cancer who had a resection with transfusion, and either developed a
+post-operative sepsis cascade or have a matching biopsy specimen and recent follow-up labs, excluding
+those on vitamin K antagonists around surgery or with chronic organ failure.
+
+Group array 1, the main clinical path:
+
+- `group-demographics` — gender (`concept` value filter) AND age (`quantity-comparator`, `ge` 18
+  years). No anchor. Level 3 AND across two single-criterion clauses.
+- `anchor-colon-cancer-diagnosis` — C18, `anchorOccurrence: "last"`, `anchorPoint: "start"`.
+- `anchor-resection-with-transfusion` — a **two-clause AND anchor**, resection AND transfusion, with
+  `anchorOccurrence: "first"` and `anchorPoint: "end"`.
+- `group-hemoglobin-between-diagnosis-and-resection` — **two `relativeTimeRestrictions` entries**,
+  each bounded on one side, intersecting into the window between the two anchors, **plus** an
+  absolute `timeRestriction` on the criterion itself, which intersects with the relative window.
+- `group-sepsis-after-resection` — A41 within 30 days of the resection, `anchorOccurrence: "any"`.
+  Both a dependent and an anchor, and it has **two referencers**, so the shared-witness rule applies.
+- `group-aki-after-sepsis` — N17 within 7 days of that sepsis episode, also `"any"`, also an anchor.
+- `group-dialysis-after-aki` — the leaf of a three-hop chain.
+- `group-crp-after-sepsis` — the sepsis anchor's second referencer.
+
+Group array 2, an alternative qualifying path:
+
+- `anchor-now` — the `now` criterion.
+- `group-colon-biopsy-specimen` — a Specimen criterion carrying an **`attributeFilters`** entry of
+  type `reference`, joining the sample to a colon cancer diagnosis through the biobank extension.
+- `group-followup-lab-since-resection` — references `anchor-resection-with-transfusion`, which is
+  **defined in the other group array and not listed here**, and bounds the other side against `now`.
+
+Exclusion group array:
+
+- `group-excl-anticoagulant-around-resection` — anchored to an **inclusion-side** anchor, which is
+  the cross-side reference case.
+- `group-excl-organ-failure` — level 4 OR of two unanchored diagnoses.
+
+One detail worth looking at in the output: the multi-clause anchor is consumed from both ends in the
+same query. `group-hemoglobin-between-diagnosis-and-resection` bounds a `maxOffset` against it and so
+resolves to `Min("AnchorDate_anchor-resection-with-transfusion")`, its earliest clause, while
+`group-followup-lab-since-resection` bounds a `minOffset` and resolves to `Max(...)`, its latest. That
+is the asymmetric rule from the spec, visible twice in one file.
+
+**Does not translate**, because of `"any"`. Everything else in it does: replacing `"any"` with
+`"first"` produces 1345 lines of valid CQL, which is how the rest of the file was verified, including
+the attribute filter join, the absolute-plus-relative window intersection and the `AgeInYears() >= 18`
+comparison. Only the `"any"` groups are unverified against a real translator.
+
+---
+
 ## Feature coverage
 
-| | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
-|---|---|---|---|---|---|---|---|
-| OR level (more than one group array) | | | yes | yes | | | |
-| `exclusionCriteria` | | yes | | | | | |
-| `now` criterion | yes | yes | | | | | |
-| open-ended window (one offset omitted) | | yes | yes | | yes | | |
-| anchor referenced without being listed | | | yes | yes | | | |
-| multi-clause AND-anchor | | | | yes | | | |
-| multiple `relativeTimeRestrictions` entries | | | | | yes | | |
-| two different anchors in one query | | yes | | | yes | | |
-| `anchorOccurrence: "any"` | | | | | | yes | yes |
-| chained anchor | | | | | | yes | yes |
-| one anchor, two referencers (shared witness) | | | | | | yes | |
-| chain deeper than two hops | | | | | | | yes |
+| | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+|---|---|---|---|---|---|---|---|---|
+| OR level (more than one group array) | | | yes | yes | | | | yes |
+| `exclusionCriteria` | | yes | | | | | | yes |
+| `now` criterion | yes | yes | | | | | | yes |
+| open-ended window (one offset omitted) | | yes | yes | | yes | | | yes |
+| anchor referenced without being listed | | | yes | yes | | | | yes |
+| cross-side anchor reference | | yes | | | | | | yes |
+| multi-clause AND-anchor | | | | yes | | | | yes |
+| multiple `relativeTimeRestrictions` entries | | | | | yes | | | yes |
+| `anchorOccurrence: "first"` | | yes | yes | yes | yes | yes | | yes |
+| `anchorOccurrence: "last"` | | | | | | | | yes |
+| `anchorOccurrence: "any"` | | | | | | yes | yes | yes |
+| `anchorPoint: "end"` | | | | | | | | yes |
+| chained anchor | | | | | | yes | yes | yes |
+| one anchor, two referencers (shared witness) | | | | | | yes | | yes |
+| chain deeper than two hops | | | | | | | yes | yes |
+| absolute `timeRestriction` on a windowed criterion | | | | | | | | yes |
+| `valueFilter` | | yes | yes | yes | | | | yes |
+| `attributeFilters` | | | | | | | | yes |
 
-Every feature of the extension now has at least one worked example.
+Every feature has at least one worked example, and example 8 has all of them.
 
 ## Running them
 
@@ -211,7 +272,7 @@ java -jar cli/target/cctb-cli-<version>.jar translate CQL \
 
 The mapping and concept-tree files are downloaded by `mvn generate-resources`. Every term code used in
 these examples resolves against that snapshot, so a translation failure means a real problem, not a
-missing code — with the two expected exceptions, examples 6 and 7.
+missing code — with the three expected exceptions, examples 6, 7 and 8.
 
 ## Known issues
 

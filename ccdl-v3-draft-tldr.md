@@ -194,10 +194,11 @@ published or adopted yet.
 
 ## Examples
 
-Seven worked examples in [example-json/ccdl-v3/](example-json/ccdl-v3/), with a reading guide in
+Eight worked examples in [example-json/ccdl-v3/](example-json/ccdl-v3/), with a reading guide in
 [example-json/ccdl-v3/README.md](example-json/ccdl-v3/README.md) and per-file notes in
 [ccdl-v3-draft.md § Worked examples](ccdl-v3-draft.md#worked-examples). Five translate through
-`cctb`; the two `anchorOccurrence: "any"` examples do not, by design.
+`cctb`; the three `anchorOccurrence: "any"` examples do not, by design.
+`ccdl-example-all-features-draft.json` exercises every feature at once.
 
 ## Open questions
 

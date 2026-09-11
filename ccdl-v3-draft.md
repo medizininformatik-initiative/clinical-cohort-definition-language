@@ -707,9 +707,9 @@ today's adopted `"2"`.
 
 ## Worked examples
 
-All seven live in [example-json/ccdl-v3/](example-json/ccdl-v3/), all `version: "3"`, with a reading
+All eight live in [example-json/ccdl-v3/](example-json/ccdl-v3/), all `version: "3"`, with a reading
 guide in [example-json/ccdl-v3/README.md](example-json/ccdl-v3/README.md). Five translate through
-`cctb` today; the two `anchorOccurrence: "any"` ones deliberately do not — see their entries.
+`cctb` today; the three using `anchorOccurrence: "any"` deliberately do not — see their entries.
 
 **[ccdl-with-new-time-constraint-draft.json](example-json/ccdl-v3/ccdl-with-new-time-constraint-draft.json)**.
 Defines a cohort of female patients with a first dementia diagnosis (F00 or F01) as the index event,
@@ -817,6 +817,18 @@ two events. The generated CQL shows the §6 step 4 rule literally, `Interval[Max
 contributing the identity element. It also illustrates why this is not the same query as two separate
 single-entry groups: those would be satisfied by two *different* haemoglobin values, whereas the
 intersected window demands one value inside both.
+
+**[ccdl-example-all-features-draft.json](example-json/ccdl-v3/ccdl-example-all-features-draft.json)**.
+A reference file rather than a teaching one: thirteen groups across two inclusion group arrays and one
+exclusion group array, exercising every construct in this document at once, plus the criterion-level
+`valueFilter`, `attributeFilters` and absolute `timeRestriction` inherited from `version: "2"`. It is
+the only example carrying `anchorOccurrence: "last"`, `anchorPoint: "end"`, an absolute
+`timeRestriction` on a criterion that also sits in a relative window (§5), and an `attributeFilters`
+entry. It also shows the §6 step 3 asymmetric multi-clause rule consumed from both ends in one query:
+a group bounding `maxOffset` against `anchor-resection-with-transfusion` resolves to that anchor's
+earliest clause date, while a group bounding `minOffset` against the same anchor resolves to its
+latest. Not translatable by `cctb` because of `"any"`, but everything else in it is verified — with
+`"any"` replaced by `"first"` the file produces 1345 lines of valid CQL.
 
 ## Open Questions (not yet decided)
 
