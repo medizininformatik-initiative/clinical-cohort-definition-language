@@ -42,7 +42,7 @@ element.
 - `relativeTimeRestrictions` — array, see below; omit if the group has no time constraint.
 - `anchorOccurrence: "first" | "last" | "any"` — required if this group is used as an anchor (not
   for `now`). Selects which candidates may serve as the witness: earliest only, latest only, or all
-  of them. `"any"` is not implemented in `cctb` yet.
+  of them. All three are implemented in `cctb`.
 - `anchorPoint: "start" | "end"` — optional, default `"start"`; only matters for `Period`-valued matches.
 
 ## `relativeTimeRestrictions`
@@ -185,6 +185,12 @@ being the conjunction of every entry's own check, and **MUST** verify this again
 the target engine. An `"any"` reference is never hoisted, so a translator **MUST NOT** emit a
 date-null guard for one.
 
+An **inverted window** (`windowStart > windowEnd`, reachable with multiple entries or with a
+multi-clause anchor) means no-match semantically, but Blaze fails the whole evaluation with "Invalid
+interval bounds" rather than yielding false, for membership and `overlaps` alike. A translator
+**MUST** emit an explicit `windowStart <= windowEnd` check ahead of the membership test - `and`
+short-circuits before the interval is built.
+
 See [ccdl-v3-draft.md § 7](ccdl-v3-draft.md) for the engine-level evidence behind these obligations
 and for how `cctb` implements them.
 
@@ -195,11 +201,10 @@ published or adopted yet.
 
 ## Examples
 
-Eight worked examples in [example-json/ccdl-v3/](example-json/ccdl-v3/), with a reading guide in
+Nine worked examples in [example-json/ccdl-v3/](example-json/ccdl-v3/), with a reading guide in
 [example-json/ccdl-v3/README.md](example-json/ccdl-v3/README.md) and per-file notes in
-[ccdl-v3-draft.md § Worked examples](ccdl-v3-draft.md#worked-examples). Five translate through
-`cctb`; the three `anchorOccurrence: "any"` examples do not, by design.
-`ccdl-example-all-features-draft.json` exercises every feature at once.
+[ccdl-v3-draft.md § Worked examples](ccdl-v3-draft.md#worked-examples). All nine translate through
+`cctb`. `ccdl-example-all-features-draft.json` exercises every feature at once.
 
 ## Open questions
 

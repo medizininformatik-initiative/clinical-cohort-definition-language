@@ -1,6 +1,6 @@
 # CCDL v3 worked examples
 
-Eight `version: "3"` cohort definitions, each chosen to demonstrate a different part of the relative
+Nine `version: "3"` cohort definitions, each chosen to demonstrate a different part of the relative
 time constraint extension. The specification itself is [../../ccdl-v3-draft.md](../../ccdl-v3-draft.md),
 with a rules-only summary in [../../ccdl-v3-draft-tldr.md](../../ccdl-v3-draft-tldr.md). This file is
 a guide to the examples, not a second copy of the spec.
@@ -12,11 +12,12 @@ a guide to the examples, not a second copy of the spec.
 | 1 | `ccdl-example-hemoglobin-last-24h.json` | the minimal anchored query | yes, 18 lines CQL |
 | 2 | `ccdl-with-new-time-constraint-draft.json` | the feature set in one realistic cohort | yes, 216 lines |
 | 3 | `ccdl-example-or-scoped-anchors-draft.json` | the OR level and asymmetric requiredness | yes, 66 lines |
-| 4 | `ccdl-example-hemoglobin-after-procedure.json` | multi-clause AND-anchors | yes, 181 lines |
-| 5 | `ccdl-example-hemoglobin-between-two-anchors.json` | two anchors on one group, windows intersected | yes, 290 lines |
-| 6 | `ccdl-example-any-chained-anchors-draft.json` | `anchorOccurrence: "any"`, one anchor with two referencers | **no, by design** |
-| 7 | `ccdl-example-any-chain-three-hops-draft.json` | `"any"` anchors stacked three deep | **no, by design** |
-| 8 | `ccdl-example-all-features-draft.json` | everything at once, as a reference | **no, by design** |
+| 4 | `ccdl-example-hemoglobin-after-procedure.json` | multi-clause AND-anchors | yes, 183 lines |
+| 5 | `ccdl-example-hemoglobin-between-two-anchors.json` | two anchors on one group, windows intersected | yes, 291 lines |
+| 6 | `ccdl-example-any-chained-anchors-draft.json` | `anchorOccurrence: "any"`, one anchor with two referencers | yes, 65 lines |
+| 7 | `ccdl-example-any-chain-three-hops-draft.json` | `"any"` anchors stacked three deep | yes, 251 lines |
+| 8 | `ccdl-example-any-multi-clause-anchor-draft.json` | a multi-clause `"any"` anchor: the witness is a tuple | yes, 92 lines |
+| 9 | `ccdl-example-all-features-draft.json` | everything at once, as a reference | yes, 1254 lines |
 
 ---
 
@@ -132,10 +133,9 @@ duplicate the delirium group under a second `id` and point one dependent at each
 mean different events. This is also a cohort `"first"`/`"last"` cannot express at all, since the
 qualifying episode need not be the earliest or the latest one.
 
-**This file does not translate**, and that is correct. `cctb`'s `AnchorOccurrence` enum accepts only
-`first` and `last`, so it fails at deserialization before validation runs. Its structure, anchor
-references, acyclicity and term codes have been checked separately, and every code in it resolves
-against the current MII ontology, so it should translate unchanged once `"any"` is implemented.
+**It translates**, as of `cctb`'s `"any"` support. The two dependents are emitted inside one
+correlated `exists` over the delirium candidate dates, aliased `W1`, so both are bound to the same
+witness - which is the shared-witness rule made concrete in the output.
 
 ---
 
@@ -176,11 +176,40 @@ This is the cohort shape that motivated `"any"` in the first place, and the one 
 gets wrong at every hop: a patient can easily have several sepsis episodes, several AKIs and several
 dialysis sessions where only one particular path through them is the qualifying one.
 
-**Does not translate**, for the same reason as example 6.
+**Translates**, nesting one `exists` per hop: `W1` (sepsis) wraps `W2` (AKI, windowed by `W1`) wraps
+`W3` (dialysis, windowed by `W2`), with the haemoglobin test innermost.
 
 ---
 
-### 8. `ccdl-example-all-features-draft.json` — every feature in one query
+### 8. `ccdl-example-any-multi-clause-anchor-draft.json` — a tuple witness
+
+The only example of a **multi-clause `"any"` anchor**. `anchor-sepsis-with-aki` is a two-clause AND —
+a sepsis diagnosis and an acute kidney injury, both required — carrying `anchorOccurrence: "any"`,
+referenced by a haemoglobin group within 3 days and a CRP group within 1 day.
+
+With several clauses the witness stops being one occurrence and becomes a **tuple**, one candidate
+drawn from each clause, quantified over the product of the clauses' candidate sets. The dependents'
+windows come from that tuple's extremes: `minOffset` from the later of the two dates, `maxOffset`
+from the earlier — the same asymmetric rule `"first"`/`"last"` multi-clause anchors already use. Both
+dependents are bound to the same tuple, so the shared-witness rule applies to tuples exactly as it
+does to lone occurrences.
+
+The generated CQL nests one `exists` per clause, because Blaze accepts only single-source queries —
+`from A W1, B W2` is rejected outright — so the product is expressed by nesting:
+
+```
+exists (from (<sepsis dates>) W1_1
+  where exists (from (<AKI dates>) W1_2
+    where Max({ W1_1, W1_2 }) + 0 hours <= Min({ W1_1, W1_2 }) + 72 hours and
+      exists (... Interval[Max({ W1_1, W1_2 }) + 0 hours, Min({ W1_1, W1_2 }) + 72 hours] ...) and ...
+```
+
+That leading comparison is the bounds check. A patient whose sepsis and kidney injury lie further
+apart than the offsets allow induces an inverted window, and the check turns that into a no-match
+rather than an evaluation failure — Blaze rejects an inverted `Interval` outright. This is the
+clearest place in the examples to see it.
+
+### 9. `ccdl-example-all-features-draft.json` — every feature in one query
 
 A reference file rather than a teaching one. Thirteen groups across two inclusion group arrays and
 one exclusion group array, exercising every feature of the extension plus the criterion-level
@@ -227,37 +256,38 @@ resolves to `Min("AnchorDate_anchor-resection-with-transfusion")`, its earliest 
 `group-followup-lab-since-resection` bounds a `minOffset` and resolves to `Max(...)`, its latest. That
 is the asymmetric rule from the spec, visible twice in one file.
 
-**Does not translate**, because of `"any"`. Everything else in it does: replacing `"any"` with
-`"first"` produces 1345 lines of valid CQL, which is how the rest of the file was verified, including
-the attribute filter join, the absolute-plus-relative window intersection and the `AgeInYears() >= 18`
-comparison. Only the `"any"` groups are unverified against a real translator.
+**Translates**, at 1254 lines - every feature in this document exercised in one query, verified end
+to end against the real translator, including the attribute filter join, the absolute-plus-relative
+window intersection and the `AgeInYears() >= 18` comparison.
 
 ---
 
 ## Feature coverage
 
-| | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
-|---|---|---|---|---|---|---|---|---|
-| OR level (more than one group array) | | | yes | yes | | | | yes |
-| `exclusionCriteria` | | yes | | | | | | yes |
-| `now` criterion | yes | yes | | | | | | yes |
-| open-ended window (one offset omitted) | | yes | yes | | yes | | | yes |
-| anchor referenced without being listed | | | yes | yes | | | | yes |
-| cross-side anchor reference | | yes | | | | | | yes |
-| multi-clause AND-anchor | | | | yes | | | | yes |
-| multiple `relativeTimeRestrictions` entries | | | | | yes | | | yes |
-| `anchorOccurrence: "first"` | | yes | yes | yes | yes | yes | | yes |
-| `anchorOccurrence: "last"` | | | | | | | | yes |
-| `anchorOccurrence: "any"` | | | | | | yes | yes | yes |
-| `anchorPoint: "end"` | | | | | | | | yes |
-| chained anchor | | | | | | yes | yes | yes |
-| one anchor, two referencers (shared witness) | | | | | | yes | | yes |
-| chain deeper than two hops | | | | | | | yes | yes |
-| absolute `timeRestriction` on a windowed criterion | | | | | | | | yes |
-| `valueFilter` | | yes | yes | yes | | | | yes |
-| `attributeFilters` | | | | | | | | yes |
+| | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+|---|---|---|---|---|---|---|---|---|---|
+| OR level (more than one group array) | | | yes | yes | | | | | yes |
+| `exclusionCriteria` | | yes | | | | | | | yes |
+| `now` criterion | yes | yes | | | | | | | yes |
+| open-ended window (one offset omitted) | | yes | yes | | yes | | | | yes |
+| anchor referenced without being listed | | | yes | yes | | | | | yes |
+| cross-side anchor reference | | yes | | | | | | | yes |
+| multi-clause AND-anchor (`first`/`last`) | | | | yes | | | | | yes |
+| multiple `relativeTimeRestrictions` entries | | | | | yes | | | | yes |
+| `anchorOccurrence: "first"` | | yes | yes | yes | yes | yes | | | yes |
+| `anchorOccurrence: "last"` | | | | | | | | | yes |
+| `anchorOccurrence: "any"` | | | | | | yes | yes | yes | yes |
+| `anchorPoint: "end"` | | | | | | | | | yes |
+| chained anchor | | | | | | yes | yes | | yes |
+| one anchor, two referencers (shared witness) | | | | | | yes | | yes | yes |
+| chain deeper than two hops | | | | | | | yes | | |
+| multi-clause `"any"` anchor (tuple witness) | | | | | | | | yes | |
+| absolute `timeRestriction` on a windowed criterion | | | | | | | | | yes |
+| `valueFilter` | | yes | yes | yes | | | | | yes |
+| `attributeFilters` | | | | | | | | | yes |
 
-Every feature has at least one worked example, and example 8 has all of them.
+Every feature has at least one worked example, and example 9 has all of them except the tuple
+witness, which example 8 covers on its own.
 
 ## Running them
 
@@ -272,7 +302,7 @@ java -jar cli/target/cctb-cli-<version>.jar translate CQL \
 
 The mapping and concept-tree files are downloaded by `mvn generate-resources`. Every term code used in
 these examples resolves against that snapshot, so a translation failure means a real problem, not a
-missing code — with the three expected exceptions, examples 6, 7 and 8.
+missing code. All nine translate.
 
 ## Known issues
 

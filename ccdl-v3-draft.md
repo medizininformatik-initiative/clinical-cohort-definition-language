@@ -7,15 +7,15 @@
 > undecided. For a concise, rationale-free reference (just the rules and shapes), see
 > [ccdl-v3-draft-tldr.md](ccdl-v3-draft-tldr.md).
 >
-> **This entire document is `version: "3"`, implemented as one piece — with two named exceptions.**
-> Anchors, `relativeTimeRestrictions` (including multiple entries per group, intersected into one
-> window — §4), `anchorOccurrence: "first"`/`"last"`/`anchorPoint`, the `now` criterion, the
-> four-level structure including the OR level above the group array (§1–§3), the evaluation model
-> (§6), and the translation obligations that preserve it on real engines (§7) are all implemented
-> and shipped together in `cctb`, the CQL translator. The exceptions: **`anchorOccurrence: "any"`
-> (§6) is specified but not yet implemented**, and **the §7 null-guard is not applied along the
-> chaining path**, so a chained anchor whose own anchor fails to resolve can still supply a date
-> downstream. Both are called out explicitly wherever they are discussed.
+> **This entire document is `version: "3"`, and `cctb` implements all of it.** Anchors,
+> `relativeTimeRestrictions` (including multiple entries per group, intersected into one window — §4),
+> `anchorOccurrence: "first"`/`"last"`/`"any"` with single- and multi-clause anchors alike,
+> `anchorPoint`, the `now` criterion, the four-level structure including the OR level above the group
+> array (§1–§3), the evaluation model (§6), and the translation obligations that preserve it on real
+> engines (§7) are all implemented and shipped in `cctb`, the CQL translator. One shape is
+> deliberately refused rather than translated: a `"first"`/`"last"` anchor chained off an `"any"`
+> anchor, which would need a per-patient value computed from a witness that only exists inside a
+> correlated query. `cctb` rejects it at validation with a message saying so.
 > Everything else should be read as "this is what `cctb` does today." `version: "3"` has not been
 > published or adopted anywhere yet, so there was no reason to stage it behind an intermediate,
 > never-released version — the whole extension ships as one breaking change from today's adopted
@@ -537,8 +537,8 @@ Flagging drifted near-duplicates for human review stays fine; silently deduplica
   rule `"first"`/`"last"` already use for multi-clause anchors (step 3), not a new one. The
   shared-witness scope rule applies to the tuple as a whole, so every reference to such an anchor
   within one group array agrees on the same tuple. The cost is combinatorial: the existential ranges
-  over the product of the clauses' candidate sets rather than over a single set, so a translator may
-  reasonably ship single-clause `"any"` first.
+  over the product of the clauses' candidate sets rather than over a single set, which is worth
+  weighing before reaching for a multi-clause `"any"` anchor where a single-clause one would do.
 - **No null-guard.** An empty candidate set already makes the existential false (§6, "An empty
   candidate set is no-match"), and an `"any"` reference is never hoisted to a scalar date, so the
   guard §7 obliges hoisting implementations to emit has nothing to guard here. §7 states that as a
@@ -563,9 +563,10 @@ reference the same anchor. A group referencing that anchor from a *different* gr
 part of the conjunction and gets its own separate existential, per the scope rule. This is a
 distinct translation path from the hoisted-anchor-date one described in §7, not a variant of it.
 
-**Status:** specified here; not yet implemented in `cctb`, which currently supports `"first"`/
-`"last"` only. Flagged as a known, deliberately scoped extension point rather than pushed out to
-some future document, since the semantics above are settled enough to build against.
+**Status:** implemented in `cctb`, single- and multi-clause, including chains of `"any"` anchors and
+the shared-witness coupling across sibling referencers. The one shape `cctb` refuses is a
+`"first"`/`"last"` anchor chained off an `"any"` one, which it rejects at validation - such an anchor
+would have to compute its per-patient date from a witness that only exists inside a correlated query.
 
 ### Chaining: an anchor's candidates are its own qualifying matches
 
@@ -677,19 +678,50 @@ produced a translator that is wrong on a live engine, twice.
   sourced from a `Min`/`Max(retrieve)` aggregate through that specific query shape, though it
   detects a literal null correctly.
 
+### Making an inverted window no-match
+
+A group's window can come out inverted — `windowStart` later than `windowEnd` — whenever two
+independently resolved dates bound opposite ends of it. Two constructs in this document do that:
+multiple `relativeTimeRestrictions` entries, whose intersection takes its start from one anchor and
+its end from another (§4); and a multi-clause anchor, whose `minOffset` is measured from the latest
+clause and `maxOffset` from the earliest (§6 step 3). "Between the diagnosis and the procedure" is
+inverted for a patient whose procedure came first, and a multi-clause anchor's window is inverted
+whenever its clauses lie further apart than the offsets allow.
+
+Semantically that is settled and needs no rule of its own: no timestamp can fall inside such a
+window, so the group does not match. A translator **MUST** ensure the emitted query behaves that
+way, and **MUST NOT** assume the target engine reaches it on its own.
+
+Confirmed empirically, in the same spirit as the null-guard above: Blaze rejects an inverted
+`Interval` outright rather than treating it as empty, failing the entire evaluation with "Invalid
+interval bounds" — for interval membership and for `overlaps` alike. That is worse than a wrong
+answer, because one patient whose dates happen to invert takes down the whole cohort query. The same
+bounds expressed as `>= and <=` comparisons evaluate to false as expected, and an explicit
+`windowStart <= windowEnd` check placed ahead of the membership test short-circuits before the
+interval is ever built.
+
+`cctb` emits that check as part of the window's guard, and only where a window can actually invert. A
+single entry against a single-clause anchor cannot: both of its bounds are the same resolved date
+plus a constant, so the window is inverted only if `minOffset` exceeds `maxOffset`, which is an
+authoring mistake rather than a property of the data.
+
 ### How `cctb` implements it
 
 `Group.Window` carries an explicit guard alongside the computed interval, AND'd in once after the
-group's own criteria are fully combined rather than per leaf criterion, and the guard is the
-conjunction of every entry's own check. The per-clause check for multi-clause AND-anchors uses
-direct list-index access (`list[i] is not null`), confirmed to work correctly on Blaze where the
-nested-query shape above does not. `"any"` is not implemented at all, so no guard question arises
-for it yet.
+group's own criteria are fully combined rather than per leaf criterion. The guard is the conjunction
+of every entry's own check, plus the `windowStart <= windowEnd` bounds check above wherever
+`Group.canInvert` reports that this group's window can invert. The per-clause check for multi-clause
+AND-anchors uses direct list-index access (`list[i] is not null`), confirmed to work correctly on
+Blaze where the nested-query shape above does not.
 
-One known gap: the guard is not applied along the chaining path, where a group is both a dependent
-and an anchor. The window interval *is* applied there (§6, "Chaining"), so candidates are filtered
-correctly whenever the upstream anchor resolves. When it does not, the unguarded interval degenerates
-to unbounded instead of producing no-match, which admits patients that should be excluded.
+An `"any"` reference is never hoisted, so it carries no date-null guard at all - the correlated
+`exists` is natively false on an empty candidate set. It does still carry the bounds check when its
+anchor is multi-clause, since a tuple witness whose members lie far apart inverts the window exactly
+as a multi-clause `"first"`/`"last"` anchor does.
+
+The guard also travels along the chaining path: `Group.resolveAnchorDates` ANDs the upstream window's
+guard into a chained anchor's own, so an anchor that fails to resolve anywhere up the chain forces
+no-match at every point below it rather than leaving a downstream window unbounded.
 
 ## Compatibility
 
@@ -711,9 +743,9 @@ today's adopted `"2"`.
 
 ## Worked examples
 
-All eight live in [example-json/ccdl-v3/](example-json/ccdl-v3/), all `version: "3"`, with a reading
-guide in [example-json/ccdl-v3/README.md](example-json/ccdl-v3/README.md). Five translate through
-`cctb` today; the three using `anchorOccurrence: "any"` deliberately do not — see their entries.
+All nine live in [example-json/ccdl-v3/](example-json/ccdl-v3/), all `version: "3"`, with a reading
+guide in [example-json/ccdl-v3/README.md](example-json/ccdl-v3/README.md). Every one of them
+translates through `cctb`.
 
 **[ccdl-with-new-time-constraint-draft.json](example-json/ccdl-v3/ccdl-with-new-time-constraint-draft.json)**.
 Defines a cohort of female patients with a first dementia diagnosis (F00 or F01) as the index event,
@@ -809,6 +841,20 @@ scope rule is trivially satisfied because each anchor has exactly one referencer
 the two-referencer example above, both falling out of the same rule. Not translatable by `cctb`, for
 the same reason.
 
+**[ccdl-example-any-multi-clause-anchor-draft.json](example-json/ccdl-v3/ccdl-example-any-multi-clause-anchor-draft.json)**.
+The only example of a **multi-clause `"any"` anchor**, where the witness is a tuple rather than a
+single occurrence. `anchor-sepsis-with-aki` is a two-clause AND — a sepsis diagnosis and an acute
+kidney injury, both required — with `anchorOccurrence: "any"`, referenced by a haemoglobin group
+within 3 days and a CRP group within 1 day. A witness is one candidate drawn from each clause, and the
+dependents' windows come from that tuple's extremes: `minOffset` from the later of the two dates,
+`maxOffset` from the earlier. Both dependents are bound to the same tuple, so this is the
+shared-witness rule applied to a tuple rather than to a lone occurrence.
+
+It is also the clearest place to see the §7 bounds check in the output: a patient whose sepsis and
+kidney injury lie more than three days apart induces an inverted window, and the emitted
+`Max({...}) + 0 hours <= Min({...}) + 72 hours` conjunct is what turns that into a no-match instead
+of an evaluation failure.
+
 **[ccdl-example-hemoglobin-between-two-anchors.json](example-json/ccdl-v3/ccdl-example-hemoglobin-between-two-anchors.json)**.
 The "between event A and event B" pattern from §4, and the only example where a single group carries
 more than one `relativeTimeRestrictions` entry. A haemoglobin measured somewhere between a colon
@@ -836,19 +882,9 @@ latest. Not translatable by `cctb` because of `"any"`, but everything else in it
 
 ## Open Questions (not yet decided)
 
-- **`anchorOccurrence: "any"` — implementation, not semantics.** §6 settles what `"any"` means (one
-  shared witness per group array), its scope rule, and how it behaves with multi-clause anchors (the
-  tuple rule) and empty candidate sets (no guard needed). What's still open is entirely on the
-  `cctb` side: it isn't implemented, and the correlated-existential translation is a distinct code
-  path from the hoisted-anchor-date one §7 describes, not an incremental extension of it. Two
-  specific costs are known in advance. The larger one is chaining: every anchor currently resolves to
-  a single per-patient date, so a chained `"any"` anchor's candidate set has to become a correlated
-  query nested inside the referencing existential rather than a hoisted value, and the §7 guard has
-  nothing to guard on that path. The smaller one is that a group with an `"any"` entry cannot be
-  translated in isolation from its sibling referencers in the same group array — though a translator
-  that already inspects a whole group array before translating its members, as `cctb` does, absorbs
-  this without restructuring. Separately, a multi-clause `"any"` anchor quantifies over a product of
-  candidate sets, which is why single-clause support is the sensible first increment.
+- **Window match mode is the only open item left about `"any"`.** `cctb` now implements
+  `anchorOccurrence: "any"` in full, single- and multi-clause, including chains and the shared-witness
+  coupling, so what used to sit here as unimplemented is retired below.
 - **The null-guard is not applied along `cctb`'s chaining path.** Not an open design question, and
   not a gap in §6: the window interval *is* applied when a chained anchor gathers its candidates.
   The §7 guard is not. So when an upstream anchor fails to resolve, the chained anchor's window
