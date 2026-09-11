@@ -1,0 +1,360 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [ {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "chain",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/chain"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "chain-sepsis",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "A41.5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/chain"
+      },
+      "recordedDate": "2024-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/chain-sepsis"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "chain-aki",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "N17.0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/chain"
+      },
+      "recordedDate": "2024-01-04"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/chain-aki"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "chain-dialysis",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "8-85a.0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/chain"
+      },
+      "performedDateTime": "2024-01-11"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/chain-dialysis"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "chain-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/chain"
+      },
+      "effectiveDateTime": "2024-01-11"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/chain-hb"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "late-episode",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/late-episode"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "late-episode-sepsis-a",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "A41.5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/late-episode"
+      },
+      "recordedDate": "2024-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/late-episode-sepsis-a"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "late-episode-sepsis-b",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "A41.5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/late-episode"
+      },
+      "recordedDate": "2024-03-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/late-episode-sepsis-b"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "late-episode-aki",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "N17.0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/late-episode"
+      },
+      "recordedDate": "2024-03-04"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/late-episode-aki"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "late-episode-dialysis",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "8-85a.0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/late-episode"
+      },
+      "performedDateTime": "2024-03-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/late-episode-dialysis"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "late-episode-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/late-episode"
+      },
+      "effectiveDateTime": "2024-03-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/late-episode-hb"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "broken-link",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/broken-link"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "broken-link-sepsis",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "A41.5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/broken-link"
+      },
+      "recordedDate": "2024-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/broken-link-sepsis"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "broken-link-aki",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "N17.0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/broken-link"
+      },
+      "recordedDate": "2024-02-15"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/broken-link-aki"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "broken-link-dialysis",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "8-85a.0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/broken-link"
+      },
+      "performedDateTime": "2024-02-20"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/broken-link-dialysis"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "broken-link-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/broken-link"
+      },
+      "effectiveDateTime": "2024-02-20"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/broken-link-hb"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "no-hemoglobin",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/no-hemoglobin"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "no-hemoglobin-sepsis",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "A41.5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/no-hemoglobin"
+      },
+      "recordedDate": "2024-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/no-hemoglobin-sepsis"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "no-hemoglobin-aki",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "N17.0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/no-hemoglobin"
+      },
+      "recordedDate": "2024-01-04"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/no-hemoglobin-aki"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "no-hemoglobin-dialysis",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "8-85a.0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/no-hemoglobin"
+      },
+      "performedDateTime": "2024-01-11"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/no-hemoglobin-dialysis"
+    }
+  } ]
+}

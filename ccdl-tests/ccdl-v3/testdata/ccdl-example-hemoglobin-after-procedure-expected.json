@@ -1,0 +1,6 @@
+{
+  "ccdl": "ccdl-example-hemoglobin-after-procedure.json",
+  "referenceDate": "2026-09-11",
+  "includedPatients": ["first-path", "second-path"],
+  "excludedPatients": ["no-procedure", "spread-out"]
+}

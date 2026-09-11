@@ -1,0 +1,179 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [ {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "gender-crp",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/gender-crp"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "gender-crp-crp",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "1988-5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/gender-crp"
+      },
+      "effectiveDateTime": "2024-01-05"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/gender-crp-crp"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "donepezil",
+      "gender": "male",
+      "birthDate": "1955-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/donepezil"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "donepezil-dx",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "F00"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/donepezil"
+      },
+      "recordedDate": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/donepezil-dx"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Medication",
+      "id": "donepezil-med-med",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/atc",
+          "code": "N06DA02"
+        } ]
+      }
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Medication/donepezil-med-med"
+    }
+  }, {
+    "resource": {
+      "resourceType": "MedicationStatement",
+      "id": "donepezil-med",
+      "status": "active",
+      "medicationReference": {
+        "reference": "Medication/donepezil-med-med"
+      },
+      "subject": {
+        "reference": "Patient/donepezil"
+      },
+      "effectiveDateTime": "2024-01-20"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "MedicationStatement/donepezil-med"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "weight",
+      "gender": "male",
+      "birthDate": "1955-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/weight"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "weight-dx",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "G30"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/weight"
+      },
+      "recordedDate": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/weight-dx"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "weight-obs",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "29463-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/weight"
+      },
+      "effectiveDateTime": "2024-01-13"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/weight-obs"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "none",
+      "gender": "male",
+      "birthDate": "1955-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/none"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "none-crp",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "1988-5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/none"
+      },
+      "effectiveDateTime": "2024-01-05"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/none-crp"
+    }
+  } ]
+}

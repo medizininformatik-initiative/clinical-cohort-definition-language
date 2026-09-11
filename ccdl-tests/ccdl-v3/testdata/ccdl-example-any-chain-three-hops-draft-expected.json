@@ -1,0 +1,6 @@
+{
+  "ccdl": "ccdl-example-any-chain-three-hops-draft.json",
+  "referenceDate": "2026-09-11",
+  "includedPatients": ["chain", "late-episode"],
+  "excludedPatients": ["broken-link", "no-hemoglobin"]
+}

@@ -1,0 +1,6 @@
+{
+  "ccdl": "ccdl-example-any-chained-anchors-draft.json",
+  "referenceDate": "2026-09-11",
+  "includedPatients": ["same-episode"],
+  "excludedPatients": ["no-delirium", "split"]
+}

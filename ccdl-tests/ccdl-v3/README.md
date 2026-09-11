@@ -304,6 +304,79 @@ The mapping and concept-tree files are downloaded by `mvn generate-resources`. E
 these examples resolves against that snapshot, so a translation failure means a real problem, not a
 missing code. All nine translate.
 
+## Test data
+
+Every example ships with a dataset and an expected result, so an implementation can be checked against
+what the example is supposed to select rather than only against whether it translates.
+
+```
+<example>.json                        the CCDL
+testdata/<example>-data.json          a FHIR transaction Bundle
+testdata/<example>-expected.json      which patients it must select
+```
+
+An `expected.json` names patients rather than counting them:
+
+```json
+{
+  "ccdl": "ccdl-example-any-chained-anchors-draft.json",
+  "referenceDate": "2026-09-11",
+  "includedPatients": ["same-episode"],
+  "excludedPatients": ["no-delirium", "split"]
+}
+```
+
+Counting is not enough. `same-episode` and `split` both have a delirium episode, a haloperidol
+administration and a sodium measurement; the difference is whether one single episode carries both,
+and a result of "1 patient" would not say which one was found. Listing the excluded patients as well
+distinguishes a patient correctly rejected from one that was never in the data.
+
+### How to use it
+
+Load `data.json` into whatever store your implementation queries, translate the CCDL, run it, and
+compare the selected patient ids against `includedPatients`. The data is plain FHIR R4 with no
+profiles or extensions beyond what the examples need, so ingest it however you normally would - there
+is no expectation that every engine reads a transaction Bundle directly.
+
+Each dataset is deliberately small and built around one boundary. Every one contains at least one
+patient that must **not** be selected, usually differing from an included patient by a single date, so
+an implementation that ignores the time window fails rather than passing by accident.
+
+### `referenceDate`
+
+Dates in the bundles are absolute, but two examples are anchored to `now`
+(`ccdl-example-hemoglobin-last-24h` and the respiratory-rate group in
+`ccdl-with-new-time-constraint-draft`), and a fixed date cannot express "yesterday". `referenceDate`
+records the day the dataset was generated. To exercise those two, shift every date in the bundle by
+`today - referenceDate` when loading. The other seven use only relative-to-each-other dates and can be
+loaded unchanged.
+
+### What each dataset probes
+
+| example | the patient that decides it |
+|---|---|
+| `hemoglobin-last-24h` | one observation today, one three days ago |
+| `hemoglobin-between-two-anchors` | a resection *preceding* its diagnosis, so the window inverts |
+| `or-scoped-anchors` | three patients qualifying through different group arrays, one through none |
+| `hemoglobin-after-procedure` | two procedures five days apart, inverting a multi-clause anchor's window |
+| `any-chained-anchors` | `split`: treated after one episode, worked up after another |
+| `any-chain-three-hops` | `late-episode`: qualifies only via its *second* sepsis |
+| `any-multi-clause-anchor` | `two-options`: only one pairing of the tuple satisfies both windows |
+| `with-new-time-constraint` | an anticoagulant without an organ failure, which does not exclude |
+| `all-features` | one patient qualifying only via the second array, one surviving a partial exclusion |
+
+Two of those are easy to get wrong by reading alone. `group-excl-organ-failure` is a single clause
+with two criteria in `all-features` but two clauses in `with-new-time-constraint`, and on the
+exclusion side those combine oppositely - so the two examples genuinely mean different things. And an
+inverted window has to mean "selects nobody" rather than an error, which is a property of the emitted
+query rather than of the language.
+
+### Provenance
+
+The datasets were generated from the integration tests that already evaluate these examples against a
+real CQL engine, so they are data that has been run rather than data written by hand to look
+plausible. Regenerating them is a side effect of running those tests with an output directory set.
+
 ## Known issues
 
 None currently.

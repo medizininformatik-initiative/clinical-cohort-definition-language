@@ -19,7 +19,7 @@
 > Everything else should be read as "this is what `cctb` does today." `version: "3"` has not been
 > published or adopted anywhere yet, so there was no reason to stage it behind an intermediate,
 > never-released version — the whole extension ships as one breaking change from today's adopted
-> `version: "2"`. See [example-json/ccdl-v3/](example-json/ccdl-v3/) for worked examples and [Worked
+> `version: "2"`. See [ccdl-tests/ccdl-v3/](ccdl-tests/ccdl-v3/) for worked examples and [Worked
 > examples](#worked-examples) below.
 >
 > Translation targets for this extension are CQL and Delta Lake SQL only. FHIR Search is not a
@@ -743,11 +743,11 @@ today's adopted `"2"`.
 
 ## Worked examples
 
-All nine live in [example-json/ccdl-v3/](example-json/ccdl-v3/), all `version: "3"`, with a reading
-guide in [example-json/ccdl-v3/README.md](example-json/ccdl-v3/README.md). Every one of them
+All nine live in [ccdl-tests/ccdl-v3/](ccdl-tests/ccdl-v3/), all `version: "3"`, with a reading
+guide in [ccdl-tests/ccdl-v3/README.md](ccdl-tests/ccdl-v3/README.md). Every one of them
 translates through `cctb`.
 
-**[ccdl-with-new-time-constraint-draft.json](example-json/ccdl-v3/ccdl-with-new-time-constraint-draft.json)**.
+**[ccdl-with-new-time-constraint-draft.json](ccdl-tests/ccdl-v3/ccdl-with-new-time-constraint-draft.json)**.
 Defines a cohort of female patients with a first dementia diagnosis (F00 or G30) as the index event,
 in a single group array (no OR alternatives in use), and:
 
@@ -766,7 +766,7 @@ in a single group array (no OR alternatives in use), and:
   showing the §2 rule: an OR of independent exclusion reasons with no anchoring difference between
   them stays inside one group, rather than being split across group arrays for no reason.
 
-**[ccdl-example-or-scoped-anchors-draft.json](example-json/ccdl-v3/ccdl-example-or-scoped-anchors-draft.json)**.
+**[ccdl-example-or-scoped-anchors-draft.json](ccdl-tests/ccdl-v3/ccdl-example-or-scoped-anchors-draft.json)**.
 Illustrates §1–§3, the OR level above the group array. Three group arrays, OR'd:
 
 - Group array 1 — `group-gender` AND `group-crp-standalone`. Plain AND, no anchor at all.
@@ -781,7 +781,7 @@ Illustrates §1–§3, the OR level above the group array. Three group arrays, O
   the redundant anchor-own-criteria optimization therefore drops the separate check. The two cases
   diverge in output for a multi-clause anchor, where the guard checks each clause individually.
 
-**[ccdl-example-any-chained-anchors-draft.json](example-json/ccdl-v3/ccdl-example-any-chained-anchors-draft.json)**.
+**[ccdl-example-any-chained-anchors-draft.json](ccdl-tests/ccdl-v3/ccdl-example-any-chained-anchors-draft.json)**.
 The only example of `anchorOccurrence: "any"` and of a chained anchor. One group array, four groups,
 a two-hop chain: a first dementia diagnosis anchors a delirium episode within 30 days, and that
 episode in turn anchors two things of its own.
@@ -812,12 +812,12 @@ not a defect in the file. Its structure, `anchorRef` resolution, acyclicity, and
 checked independently, and every code in it resolves against the current MII ontology snapshot, so it
 should translate unchanged once `"any"` is implemented.
 
-**[ccdl-example-hemoglobin-last-24h.json](example-json/ccdl-v3/ccdl-example-hemoglobin-last-24h.json)**.
+**[ccdl-example-hemoglobin-last-24h.json](ccdl-tests/ccdl-v3/ccdl-example-hemoglobin-last-24h.json)**.
 The minimal case: one group array, `anchor-now` plus a single dependent group requiring a hemoglobin
 measurement in the last 24 hours. No OR, no fan-out, no multi-clause anchor — the smallest complete
 `relativeTimeRestrictions` example, useful as a quickstart.
 
-**[ccdl-example-hemoglobin-after-procedure.json](example-json/ccdl-v3/ccdl-example-hemoglobin-after-procedure.json)**.
+**[ccdl-example-hemoglobin-after-procedure.json](ccdl-tests/ccdl-v3/ccdl-example-hemoglobin-after-procedure.json)**.
 Two group arrays sharing one procedure anchor, `anchor-procedure` — itself a two-clause AND of two
 OPS codes for the same procedure, demonstrating §6 step 3's asymmetric multi-clause anchor bounds.
 Group array 1 lists the anchor as a required member alongside a dependent hemoglobin-and-diagnosis
@@ -827,7 +827,7 @@ array 2 references the *same* anchor by id, with a differently-coded dependent g
 re-listing it — a second illustration of the §4 asymmetric-requiredness pattern, this time paired
 with a genuinely multi-clause anchor rather than the single-clause one above.
 
-**[ccdl-example-any-chain-three-hops-draft.json](example-json/ccdl-v3/ccdl-example-any-chain-three-hops-draft.json)**.
+**[ccdl-example-any-chain-three-hops-draft.json](ccdl-tests/ccdl-v3/ccdl-example-any-chain-three-hops-draft.json)**.
 The deep-chain counterpart to the example above: `"any"` anchors **stacked**, rather than one `"any"`
 anchor with two referencers. Four groups in one group array, a clinical cascade —
 `anchor-sepsis-episode` (A41.5, `"any"`, itself unwindowed) anchors `group-aki-after-sepsis` (N17.0,
@@ -841,7 +841,7 @@ scope rule is trivially satisfied because each anchor has exactly one referencer
 the two-referencer example above, both falling out of the same rule. Not translatable by `cctb`, for
 the same reason.
 
-**[ccdl-example-any-multi-clause-anchor-draft.json](example-json/ccdl-v3/ccdl-example-any-multi-clause-anchor-draft.json)**.
+**[ccdl-example-any-multi-clause-anchor-draft.json](ccdl-tests/ccdl-v3/ccdl-example-any-multi-clause-anchor-draft.json)**.
 The only example of a **multi-clause `"any"` anchor**, where the witness is a tuple rather than a
 single occurrence. `anchor-sepsis-with-aki` is a two-clause AND — a sepsis diagnosis and an acute
 kidney injury, both required — with `anchorOccurrence: "any"`, referenced by a haemoglobin group
@@ -855,7 +855,7 @@ kidney injury lie more than three days apart induces an inverted window, and the
 `Max({...}) + 0 hours <= Min({...}) + 72 hours` conjunct is what turns that into a no-match instead
 of an evaluation failure.
 
-**[ccdl-example-hemoglobin-between-two-anchors.json](example-json/ccdl-v3/ccdl-example-hemoglobin-between-two-anchors.json)**.
+**[ccdl-example-hemoglobin-between-two-anchors.json](ccdl-tests/ccdl-v3/ccdl-example-hemoglobin-between-two-anchors.json)**.
 The "between event A and event B" pattern from §4, and the only example where a single group carries
 more than one `relativeTimeRestrictions` entry. A haemoglobin measured somewhere between a colonic
 diverticular disease diagnosis (`anchor-colon-diverticular-disease`, K57.3) and the resection
@@ -868,7 +868,7 @@ unbounded side of each entry contributing the identity element. It also illustra
 the same query as two separate single-entry groups: those would be satisfied by two *different*
 haemoglobin values, whereas the intersected window demands one value inside both.
 
-**[ccdl-example-all-features-draft.json](example-json/ccdl-v3/ccdl-example-all-features-draft.json)**.
+**[ccdl-example-all-features-draft.json](ccdl-tests/ccdl-v3/ccdl-example-all-features-draft.json)**.
 A reference file rather than a teaching one: thirteen groups across two inclusion group arrays and
 one exclusion group array, exercising every construct in this document at once, plus the
 criterion-level `valueFilter`, `attributeFilters` and absolute `timeRestriction` inherited from

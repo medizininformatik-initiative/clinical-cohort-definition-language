@@ -1,0 +1,360 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [ {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "tight",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/tight"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "tight-sepsis",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "A41.5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/tight"
+      },
+      "recordedDate": "2024-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/tight-sepsis"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "tight-aki",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "N17.0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/tight"
+      },
+      "recordedDate": "2024-01-02"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/tight-aki"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "tight-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/tight"
+      },
+      "effectiveDateTime": "2024-01-03"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/tight-hb"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "tight-crp",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "1988-5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/tight"
+      },
+      "effectiveDateTime": "2024-01-02"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/tight-crp"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "two-options",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/two-options"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "two-options-sepsis-a",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "A41.5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/two-options"
+      },
+      "recordedDate": "2024-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/two-options-sepsis-a"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "two-options-sepsis-b",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "A41.5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/two-options"
+      },
+      "recordedDate": "2024-02-20"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/two-options-sepsis-b"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "two-options-aki",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "N17.0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/two-options"
+      },
+      "recordedDate": "2024-02-21"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/two-options-aki"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "two-options-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/two-options"
+      },
+      "effectiveDateTime": "2024-02-22"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/two-options-hb"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "two-options-crp",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "1988-5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/two-options"
+      },
+      "effectiveDateTime": "2024-02-21"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/two-options-crp"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "far-apart",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/far-apart"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "far-apart-sepsis",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "A41.5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/far-apart"
+      },
+      "recordedDate": "2024-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/far-apart-sepsis"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "far-apart-aki",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "N17.0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/far-apart"
+      },
+      "recordedDate": "2024-01-11"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/far-apart-aki"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "far-apart-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/far-apart"
+      },
+      "effectiveDateTime": "2024-01-12"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/far-apart-hb"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "far-apart-crp",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "1988-5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/far-apart"
+      },
+      "effectiveDateTime": "2024-01-11"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/far-apart-crp"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "no-crp",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/no-crp"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "no-crp-sepsis",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "A41.5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/no-crp"
+      },
+      "recordedDate": "2024-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/no-crp-sepsis"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "no-crp-aki",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "N17.0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/no-crp"
+      },
+      "recordedDate": "2024-01-02"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/no-crp-aki"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "no-crp-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/no-crp"
+      },
+      "effectiveDateTime": "2024-01-03"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/no-crp-hb"
+    }
+  } ]
+}

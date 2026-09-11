@@ -1,0 +1,215 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [ {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "between",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/between"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "between-dx",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "K57.3"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/between"
+      },
+      "recordedDate": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/between-dx"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "between-op",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "5-455.3"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/between"
+      },
+      "performedDateTime": "2024-02-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/between-op"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "between-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/between"
+      },
+      "effectiveDateTime": "2024-01-20"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/between-hb"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "after-op",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/after-op"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "after-op-dx",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "K57.3"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/after-op"
+      },
+      "recordedDate": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/after-op-dx"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "after-op-op",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "5-455.3"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/after-op"
+      },
+      "performedDateTime": "2024-02-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/after-op-op"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "after-op-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/after-op"
+      },
+      "effectiveDateTime": "2024-03-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/after-op-hb"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "inverted",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/inverted"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "inverted-dx",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "K57.3"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/inverted"
+      },
+      "recordedDate": "2024-02-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/inverted-dx"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "inverted-op",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "5-455.3"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/inverted"
+      },
+      "performedDateTime": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/inverted-op"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "inverted-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/inverted"
+      },
+      "effectiveDateTime": "2024-01-20"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/inverted-hb"
+    }
+  } ]
+}

@@ -1,0 +1,78 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [ {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "recent",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/recent"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "recent-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/recent"
+      },
+      "effectiveDateTime": "2026-09-11"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/recent-hb"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "stale",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/stale"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "stale-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/stale"
+      },
+      "effectiveDateTime": "2026-09-08"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/stale-hb"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "none",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/none"
+    }
+  } ]
+}

@@ -1,0 +1,6 @@
+{
+  "ccdl": "ccdl-example-hemoglobin-last-24h.json",
+  "referenceDate": "2026-09-11",
+  "includedPatients": ["recent"],
+  "excludedPatients": ["none", "stale"]
+}

@@ -1,0 +1,6 @@
+{
+  "ccdl": "ccdl-example-any-multi-clause-anchor-draft.json",
+  "referenceDate": "2026-09-11",
+  "includedPatients": ["tight", "two-options"],
+  "excludedPatients": ["far-apart", "no-crp"]
+}

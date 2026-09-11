@@ -201,8 +201,8 @@ published or adopted yet.
 
 ## Examples
 
-Nine worked examples in [example-json/ccdl-v3/](example-json/ccdl-v3/), with a reading guide in
-[example-json/ccdl-v3/README.md](example-json/ccdl-v3/README.md) and per-file notes in
+Nine worked examples in [ccdl-tests/ccdl-v3/](ccdl-tests/ccdl-v3/), with a reading guide in
+[ccdl-tests/ccdl-v3/README.md](ccdl-tests/ccdl-v3/README.md) and per-file notes in
 [ccdl-v3-draft.md § Worked examples](ccdl-v3-draft.md#worked-examples). All nine translate through
 `cctb`. `ccdl-example-all-features-draft.json` exercises every feature at once.
 

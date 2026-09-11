@@ -1,0 +1,325 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [ {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "first-path",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/first-path"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "first-path-p1",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "5-470.1"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/first-path"
+      },
+      "performedDateTime": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/first-path-p1"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "first-path-p2",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "8-718.94"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/first-path"
+      },
+      "performedDateTime": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/first-path-p2"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "first-path-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/first-path"
+      },
+      "effectiveDateTime": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/first-path-hb"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "first-path-dx",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "E10.9"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/first-path"
+      },
+      "recordedDate": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/first-path-dx"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "second-path",
+      "gender": "male",
+      "birthDate": "1955-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/second-path"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "second-path-p1",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "5-470.1"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/second-path"
+      },
+      "performedDateTime": "2024-02-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/second-path-p1"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "second-path-p2",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "8-718.94"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/second-path"
+      },
+      "performedDateTime": "2024-02-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/second-path-p2"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "second-path-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/second-path"
+      },
+      "effectiveDateTime": "2024-02-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/second-path-hb"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "second-path-dx",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "E11.9"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/second-path"
+      },
+      "recordedDate": "2024-02-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/second-path-dx"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "spread-out",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/spread-out"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "spread-out-p1",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "5-470.1"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/spread-out"
+      },
+      "performedDateTime": "2024-03-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/spread-out-p1"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "spread-out-p2",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "8-718.94"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/spread-out"
+      },
+      "performedDateTime": "2024-03-06"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/spread-out-p2"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "spread-out-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/spread-out"
+      },
+      "effectiveDateTime": "2024-03-03"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/spread-out-hb"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "spread-out-dx",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "E10.9"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/spread-out"
+      },
+      "recordedDate": "2024-03-03"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/spread-out-dx"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "no-procedure",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/no-procedure"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "no-procedure-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/no-procedure"
+      },
+      "effectiveDateTime": "2024-04-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/no-procedure-hb"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "no-procedure-dx",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "E10.9"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/no-procedure"
+      },
+      "recordedDate": "2024-04-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/no-procedure-dx"
+    }
+  } ]
+}

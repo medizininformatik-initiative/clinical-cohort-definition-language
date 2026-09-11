@@ -1,0 +1,308 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [ {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "same-episode",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/same-episode"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "same-episode-dx",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "F00"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/same-episode"
+      },
+      "recordedDate": "2024-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/same-episode-dx"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "same-episode-delirium",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "F05"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/same-episode"
+      },
+      "recordedDate": "2024-01-11"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/same-episode-delirium"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Medication",
+      "id": "same-episode-halo-med",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/atc",
+          "code": "N05AD01"
+        } ]
+      }
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Medication/same-episode-halo-med"
+    }
+  }, {
+    "resource": {
+      "resourceType": "MedicationStatement",
+      "id": "same-episode-halo",
+      "status": "active",
+      "medicationReference": {
+        "reference": "Medication/same-episode-halo-med"
+      },
+      "subject": {
+        "reference": "Patient/same-episode"
+      },
+      "effectiveDateTime": "2024-01-12"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "MedicationStatement/same-episode-halo"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "same-episode-na",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "2951-2"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/same-episode"
+      },
+      "effectiveDateTime": "2024-01-11"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/same-episode-na"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "split",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/split"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "split-dx",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "F00"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/split"
+      },
+      "recordedDate": "2024-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/split-dx"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "split-delirium-a",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "F05"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/split"
+      },
+      "recordedDate": "2024-01-05"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/split-delirium-a"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Medication",
+      "id": "split-halo-med",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/atc",
+          "code": "N05AD01"
+        } ]
+      }
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Medication/split-halo-med"
+    }
+  }, {
+    "resource": {
+      "resourceType": "MedicationStatement",
+      "id": "split-halo",
+      "status": "active",
+      "medicationReference": {
+        "reference": "Medication/split-halo-med"
+      },
+      "subject": {
+        "reference": "Patient/split"
+      },
+      "effectiveDateTime": "2024-01-06"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "MedicationStatement/split-halo"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "split-delirium-b",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "F05"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/split"
+      },
+      "recordedDate": "2024-01-20"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/split-delirium-b"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "split-na",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "2951-2"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/split"
+      },
+      "effectiveDateTime": "2024-01-20"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/split-na"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "no-delirium",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/no-delirium"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "no-delirium-dx",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "F00"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/no-delirium"
+      },
+      "recordedDate": "2024-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/no-delirium-dx"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Medication",
+      "id": "no-delirium-halo-med",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/atc",
+          "code": "N05AD01"
+        } ]
+      }
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Medication/no-delirium-halo-med"
+    }
+  }, {
+    "resource": {
+      "resourceType": "MedicationStatement",
+      "id": "no-delirium-halo",
+      "status": "active",
+      "medicationReference": {
+        "reference": "Medication/no-delirium-halo-med"
+      },
+      "subject": {
+        "reference": "Patient/no-delirium"
+      },
+      "effectiveDateTime": "2024-01-12"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "MedicationStatement/no-delirium-halo"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "no-delirium-na",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "2951-2"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/no-delirium"
+      },
+      "effectiveDateTime": "2024-01-11"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/no-delirium-na"
+    }
+  } ]
+}

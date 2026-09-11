@@ -1,0 +1,6 @@
+{
+  "ccdl": "ccdl-with-new-time-constraint-draft.json",
+  "referenceDate": "2026-09-11",
+  "includedPatients": ["anticoagulant-only", "included"],
+  "excludedPatients": ["excluded", "no-heart-rate"]
+}

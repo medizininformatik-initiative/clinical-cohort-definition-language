@@ -1,0 +1,744 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [ {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "main-path",
+      "gender": "female",
+      "birthDate": "1955-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/main-path"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "main-path-dx",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "K57.3"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/main-path"
+      },
+      "recordedDate": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/main-path-dx"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "main-path-resection",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "5-455.3"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/main-path"
+      },
+      "performedDateTime": "2024-02-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/main-path-resection"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "main-path-transfusion",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "8-805.0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/main-path"
+      },
+      "performedDateTime": "2024-02-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/main-path-transfusion"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "main-path-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/main-path"
+      },
+      "effectiveDateTime": "2024-01-20"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/main-path-hb"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "main-path-sepsis",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "A41.5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/main-path"
+      },
+      "recordedDate": "2024-02-15"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/main-path-sepsis"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "main-path-aki",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "N17.0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/main-path"
+      },
+      "recordedDate": "2024-02-18"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/main-path-aki"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "main-path-dialysis",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "8-85a.0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/main-path"
+      },
+      "performedDateTime": "2024-02-25"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/main-path-dialysis"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "main-path-crp",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "1988-5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/main-path"
+      },
+      "effectiveDateTime": "2024-02-17"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/main-path-crp"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "excluded",
+      "gender": "female",
+      "birthDate": "1955-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/excluded"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "excluded-dx",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "K57.3"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/excluded"
+      },
+      "recordedDate": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/excluded-dx"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "excluded-resection",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "5-455.3"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/excluded"
+      },
+      "performedDateTime": "2024-02-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/excluded-resection"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "excluded-transfusion",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "8-805.0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/excluded"
+      },
+      "performedDateTime": "2024-02-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/excluded-transfusion"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "excluded-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/excluded"
+      },
+      "effectiveDateTime": "2024-01-20"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/excluded-hb"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "excluded-sepsis",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "A41.5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/excluded"
+      },
+      "recordedDate": "2024-02-15"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/excluded-sepsis"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "excluded-aki",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "N17.0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/excluded"
+      },
+      "recordedDate": "2024-02-18"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/excluded-aki"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "excluded-dialysis",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "8-85a.0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/excluded"
+      },
+      "performedDateTime": "2024-02-25"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/excluded-dialysis"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "excluded-crp",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "1988-5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/excluded"
+      },
+      "effectiveDateTime": "2024-02-17"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/excluded-crp"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Medication",
+      "id": "excluded-vka-med",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/atc",
+          "code": "B01AA04"
+        } ]
+      }
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Medication/excluded-vka-med"
+    }
+  }, {
+    "resource": {
+      "resourceType": "MedicationStatement",
+      "id": "excluded-vka",
+      "status": "active",
+      "medicationReference": {
+        "reference": "Medication/excluded-vka-med"
+      },
+      "subject": {
+        "reference": "Patient/excluded"
+      },
+      "effectiveDateTime": "2024-02-11"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "MedicationStatement/excluded-vka"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "excluded-ckd",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "N18.8"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/excluded"
+      },
+      "recordedDate": "2023-06-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/excluded-ckd"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "excluded-liver",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "K72"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/excluded"
+      },
+      "recordedDate": "2023-06-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/excluded-liver"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "partial-exclusion",
+      "gender": "female",
+      "birthDate": "1955-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/partial-exclusion"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "partial-exclusion-dx",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "K57.3"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/partial-exclusion"
+      },
+      "recordedDate": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/partial-exclusion-dx"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "partial-exclusion-resection",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "5-455.3"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/partial-exclusion"
+      },
+      "performedDateTime": "2024-02-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/partial-exclusion-resection"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "partial-exclusion-transfusion",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "8-805.0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/partial-exclusion"
+      },
+      "performedDateTime": "2024-02-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/partial-exclusion-transfusion"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "partial-exclusion-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/partial-exclusion"
+      },
+      "effectiveDateTime": "2024-01-20"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/partial-exclusion-hb"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "partial-exclusion-sepsis",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "A41.5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/partial-exclusion"
+      },
+      "recordedDate": "2024-02-15"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/partial-exclusion-sepsis"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "partial-exclusion-aki",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "N17.0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/partial-exclusion"
+      },
+      "recordedDate": "2024-02-18"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/partial-exclusion-aki"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "partial-exclusion-dialysis",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "8-85a.0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/partial-exclusion"
+      },
+      "performedDateTime": "2024-02-25"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/partial-exclusion-dialysis"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "partial-exclusion-crp",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "1988-5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/partial-exclusion"
+      },
+      "effectiveDateTime": "2024-02-17"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/partial-exclusion-crp"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Medication",
+      "id": "partial-exclusion-vka-med",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/atc",
+          "code": "B01AA04"
+        } ]
+      }
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Medication/partial-exclusion-vka-med"
+    }
+  }, {
+    "resource": {
+      "resourceType": "MedicationStatement",
+      "id": "partial-exclusion-vka",
+      "status": "active",
+      "medicationReference": {
+        "reference": "Medication/partial-exclusion-vka-med"
+      },
+      "subject": {
+        "reference": "Patient/partial-exclusion"
+      },
+      "effectiveDateTime": "2024-02-11"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "MedicationStatement/partial-exclusion-vka"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "partial-exclusion-ckd",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "N18.8"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/partial-exclusion"
+      },
+      "recordedDate": "2023-06-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/partial-exclusion-ckd"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "specimen-path",
+      "gender": "male",
+      "birthDate": "1950-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/specimen-path"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "specimen-path-dx",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "K57.3"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/specimen-path"
+      },
+      "recordedDate": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/specimen-path-dx"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "specimen-path-resection",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "5-455.3"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/specimen-path"
+      },
+      "performedDateTime": "2024-02-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/specimen-path-resection"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "specimen-path-transfusion",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "8-805.0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/specimen-path"
+      },
+      "performedDateTime": "2024-02-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/specimen-path-transfusion"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Specimen",
+      "id": "specimen-path-sample",
+      "extension": [ {
+        "url": "https://www.medizininformatik-initiative.de/fhir/ext/modul-biobank/StructureDefinition/Diagnose",
+        "valueReference": {
+          "reference": "Condition/specimen-path-dx"
+        }
+      } ],
+      "type": {
+        "coding": [ {
+          "system": "http://snomed.info/sct",
+          "code": "16213411000119100"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/specimen-path"
+      }
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Specimen/specimen-path-sample"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "specimen-path-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/specimen-path"
+      },
+      "effectiveDateTime": "2024-06-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/specimen-path-hb"
+    }
+  } ]
+}

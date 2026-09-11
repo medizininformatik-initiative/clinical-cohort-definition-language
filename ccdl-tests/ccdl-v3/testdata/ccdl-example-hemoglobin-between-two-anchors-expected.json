@@ -1,0 +1,6 @@
+{
+  "ccdl": "ccdl-example-hemoglobin-between-two-anchors.json",
+  "referenceDate": "2026-09-11",
+  "includedPatients": ["between"],
+  "excludedPatients": ["after-op", "inverted"]
+}

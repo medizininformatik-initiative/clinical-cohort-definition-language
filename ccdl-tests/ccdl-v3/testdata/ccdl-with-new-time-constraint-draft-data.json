@@ -1,0 +1,636 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [ {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "included",
+      "gender": "female",
+      "birthDate": "1955-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/included"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "included-dx",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "F00"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/included"
+      },
+      "recordedDate": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/included-dx"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "included-crp",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "1988-5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/included"
+      },
+      "effectiveDateTime": "2024-01-09"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/included-crp"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Medication",
+      "id": "included-donepezil-med",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/atc",
+          "code": "N06DA02"
+        } ]
+      }
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Medication/included-donepezil-med"
+    }
+  }, {
+    "resource": {
+      "resourceType": "MedicationStatement",
+      "id": "included-donepezil",
+      "status": "active",
+      "medicationReference": {
+        "reference": "Medication/included-donepezil-med"
+      },
+      "subject": {
+        "reference": "Patient/included"
+      },
+      "effectiveDateTime": "2024-01-20"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "MedicationStatement/included-donepezil"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "included-weight",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "29463-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/included"
+      },
+      "effectiveDateTime": "2024-01-07"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/included-weight"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "included-rr",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "9279-1"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/included"
+      },
+      "effectiveDateTime": "2026-09-08"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/included-rr"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "included-hr",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "8867-4"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/included"
+      },
+      "effectiveDateTime": "2024-01-09"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/included-hr"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "anticoagulant-only",
+      "gender": "female",
+      "birthDate": "1955-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/anticoagulant-only"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "anticoagulant-only-dx",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "F00"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/anticoagulant-only"
+      },
+      "recordedDate": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/anticoagulant-only-dx"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "anticoagulant-only-crp",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "1988-5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/anticoagulant-only"
+      },
+      "effectiveDateTime": "2024-01-09"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/anticoagulant-only-crp"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Medication",
+      "id": "anticoagulant-only-donepezil-med",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/atc",
+          "code": "N06DA02"
+        } ]
+      }
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Medication/anticoagulant-only-donepezil-med"
+    }
+  }, {
+    "resource": {
+      "resourceType": "MedicationStatement",
+      "id": "anticoagulant-only-donepezil",
+      "status": "active",
+      "medicationReference": {
+        "reference": "Medication/anticoagulant-only-donepezil-med"
+      },
+      "subject": {
+        "reference": "Patient/anticoagulant-only"
+      },
+      "effectiveDateTime": "2024-01-20"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "MedicationStatement/anticoagulant-only-donepezil"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "anticoagulant-only-weight",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "29463-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/anticoagulant-only"
+      },
+      "effectiveDateTime": "2024-01-07"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/anticoagulant-only-weight"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "anticoagulant-only-rr",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "9279-1"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/anticoagulant-only"
+      },
+      "effectiveDateTime": "2026-09-08"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/anticoagulant-only-rr"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "anticoagulant-only-hr",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "8867-4"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/anticoagulant-only"
+      },
+      "effectiveDateTime": "2024-01-09"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/anticoagulant-only-hr"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "excluded",
+      "gender": "female",
+      "birthDate": "1955-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/excluded"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "excluded-dx",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "F00"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/excluded"
+      },
+      "recordedDate": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/excluded-dx"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "excluded-crp",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "1988-5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/excluded"
+      },
+      "effectiveDateTime": "2024-01-09"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/excluded-crp"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Medication",
+      "id": "excluded-donepezil-med",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/atc",
+          "code": "N06DA02"
+        } ]
+      }
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Medication/excluded-donepezil-med"
+    }
+  }, {
+    "resource": {
+      "resourceType": "MedicationStatement",
+      "id": "excluded-donepezil",
+      "status": "active",
+      "medicationReference": {
+        "reference": "Medication/excluded-donepezil-med"
+      },
+      "subject": {
+        "reference": "Patient/excluded"
+      },
+      "effectiveDateTime": "2024-01-20"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "MedicationStatement/excluded-donepezil"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "excluded-weight",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "29463-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/excluded"
+      },
+      "effectiveDateTime": "2024-01-07"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/excluded-weight"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "excluded-rr",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "9279-1"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/excluded"
+      },
+      "effectiveDateTime": "2026-09-08"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/excluded-rr"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "excluded-hr",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "8867-4"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/excluded"
+      },
+      "effectiveDateTime": "2024-01-09"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/excluded-hr"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "no-heart-rate",
+      "gender": "female",
+      "birthDate": "1955-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/no-heart-rate"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "no-heart-rate-dx",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "F00"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/no-heart-rate"
+      },
+      "recordedDate": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/no-heart-rate-dx"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "no-heart-rate-crp",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "1988-5"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/no-heart-rate"
+      },
+      "effectiveDateTime": "2024-01-09"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/no-heart-rate-crp"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Medication",
+      "id": "no-heart-rate-donepezil-med",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/atc",
+          "code": "N06DA02"
+        } ]
+      }
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Medication/no-heart-rate-donepezil-med"
+    }
+  }, {
+    "resource": {
+      "resourceType": "MedicationStatement",
+      "id": "no-heart-rate-donepezil",
+      "status": "active",
+      "medicationReference": {
+        "reference": "Medication/no-heart-rate-donepezil-med"
+      },
+      "subject": {
+        "reference": "Patient/no-heart-rate"
+      },
+      "effectiveDateTime": "2024-01-20"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "MedicationStatement/no-heart-rate-donepezil"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "no-heart-rate-weight",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "29463-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/no-heart-rate"
+      },
+      "effectiveDateTime": "2024-01-07"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/no-heart-rate-weight"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "no-heart-rate-rr",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "9279-1"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/no-heart-rate"
+      },
+      "effectiveDateTime": "2026-09-08"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/no-heart-rate-rr"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Medication",
+      "id": "anticoagulant-only-vka-med",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/atc",
+          "code": "B01AA04"
+        } ]
+      }
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Medication/anticoagulant-only-vka-med"
+    }
+  }, {
+    "resource": {
+      "resourceType": "MedicationStatement",
+      "id": "anticoagulant-only-vka",
+      "status": "active",
+      "medicationReference": {
+        "reference": "Medication/anticoagulant-only-vka-med"
+      },
+      "subject": {
+        "reference": "Patient/anticoagulant-only"
+      },
+      "effectiveDateTime": "2024-01-11"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "MedicationStatement/anticoagulant-only-vka"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Medication",
+      "id": "excluded-vka-med",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/atc",
+          "code": "B01AA04"
+        } ]
+      }
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Medication/excluded-vka-med"
+    }
+  }, {
+    "resource": {
+      "resourceType": "MedicationStatement",
+      "id": "excluded-vka",
+      "status": "active",
+      "medicationReference": {
+        "reference": "Medication/excluded-vka-med"
+      },
+      "subject": {
+        "reference": "Patient/excluded"
+      },
+      "effectiveDateTime": "2024-01-11"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "MedicationStatement/excluded-vka"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Condition",
+      "id": "excluded-organ",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+          "code": "N18.8"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/excluded"
+      },
+      "recordedDate": "2023-06-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Condition/excluded-organ"
+    }
+  } ]
+}

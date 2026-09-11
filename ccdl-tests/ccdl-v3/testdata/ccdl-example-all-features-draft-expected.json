@@ -1,0 +1,6 @@
+{
+  "ccdl": "ccdl-example-all-features-draft.json",
+  "referenceDate": "2026-09-11",
+  "includedPatients": ["main-path", "partial-exclusion", "specimen-path"],
+  "excludedPatients": ["excluded"]
+}
