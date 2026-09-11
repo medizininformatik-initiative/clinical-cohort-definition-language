@@ -90,8 +90,8 @@
               },
               "termCodes": [
                 {
-                  "code": "F01",
-                  "display": "Vaskuläre Demenz",
+                  "code": "G30",
+                  "display": "Alzheimer-Krankheit",
                   "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
                 }
               ]

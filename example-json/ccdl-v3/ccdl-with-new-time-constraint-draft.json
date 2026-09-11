@@ -71,8 +71,8 @@
               },
               "termCodes": [
                 {
-                  "code": "F01",
-                  "display": "Vaskuläre Demenz",
+                  "code": "G30",
+                  "display": "Alzheimer-Krankheit",
                   "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
                 }
               ]
@@ -261,8 +261,8 @@
               },
               "termCodes": [
                 {
-                  "code": "B01AA",
-                  "display": "Vitamin-K-Antagonisten (orale Antikoagulanzien)",
+                  "code": "B01AA04",
+                  "display": "Phenprocoumon",
                   "system": "http://fhir.de/CodeSystem/bfarm/atc"
                 }
               ]
@@ -283,8 +283,8 @@
               },
               "termCodes": [
                 {
-                  "code": "N18",
-                  "display": "Chronische Nierenkrankheit",
+                  "code": "N18.8",
+                  "display": "Sonstige chronische Nierenkrankheit",
                   "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
                 }
               ]

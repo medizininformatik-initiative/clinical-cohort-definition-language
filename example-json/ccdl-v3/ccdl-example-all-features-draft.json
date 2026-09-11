@@ -67,7 +67,7 @@
         ]
       },
       {
-        "id": "anchor-colon-cancer-diagnosis",
+        "id": "anchor-colon-diverticular-disease",
         "anchorOccurrence": "last",
         "anchorPoint": "start",
         "criteria": [
@@ -81,8 +81,8 @@
               },
               "termCodes": [
                 {
-                  "code": "C18",
-                  "display": "Bösartige Neubildung des Kolons",
+                  "code": "K57.3",
+                  "display": "Divertikelkrankheit des Dickdarmes ohne Perforation oder Abszess",
                   "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
                 }
               ]
@@ -105,8 +105,8 @@
               },
               "termCodes": [
                 {
-                  "code": "5-455",
-                  "display": "Partielle Resektion des Dickdarmes",
+                  "code": "5-455.3",
+                  "display": "Partielle Resektion des Dickdarmes: Zäkumresektion",
                   "system": "http://fhir.de/CodeSystem/bfarm/ops",
                   "version": "2026"
                 }
@@ -123,8 +123,8 @@
               },
               "termCodes": [
                 {
-                  "code": "8-800",
-                  "display": "Transfusion von Vollblut, Erythrozytenkonzentrat",
+                  "code": "8-805.0",
+                  "display": "Transfusion von peripher gewonnenen hämatopoetischen Stammzellen",
                   "system": "http://fhir.de/CodeSystem/bfarm/ops",
                   "version": "2026"
                 }
@@ -137,7 +137,7 @@
         "id": "group-hemoglobin-between-diagnosis-and-resection",
         "relativeTimeRestrictions": [
           {
-            "anchorRef": "anchor-colon-cancer-diagnosis",
+            "anchorRef": "anchor-colon-diverticular-disease",
             "minOffset": "P0D"
           },
           {
@@ -192,8 +192,8 @@
               },
               "termCodes": [
                 {
-                  "code": "A41",
-                  "display": "Sonstige Sepsis",
+                  "code": "A41.5",
+                  "display": "Sepsis durch sonstige gramnegative Erreger",
                   "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
                 }
               ]
@@ -223,8 +223,8 @@
               },
               "termCodes": [
                 {
-                  "code": "N17",
-                  "display": "Akutes Nierenversagen",
+                  "code": "N17.0",
+                  "display": "Akutes Nierenversagen mit Tubulusnekrose",
                   "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
                 }
               ]
@@ -252,8 +252,8 @@
               },
               "termCodes": [
                 {
-                  "code": "8-854",
-                  "display": "Hämodialyse",
+                  "code": "8-85a.0",
+                  "display": "Dialyseverfahren wegen mangelnder Funktionsaufnahme des Transplantats",
                   "system": "http://fhir.de/CodeSystem/bfarm/ops",
                   "version": "2026"
                 }
@@ -339,8 +339,8 @@
                       },
                       "termCodes": [
                         {
-                          "code": "C18",
-                          "display": "Bösartige Neubildung des Kolons",
+                          "code": "K57.3",
+                          "display": "Divertikelkrankheit des Dickdarmes ohne Perforation oder Abszess",
                           "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
                         }
                       ]
@@ -409,8 +409,8 @@
               },
               "termCodes": [
                 {
-                  "code": "B01AA",
-                  "display": "Vitamin-K-Antagonisten",
+                  "code": "B01AA04",
+                  "display": "Phenprocoumon",
                   "system": "http://fhir.de/CodeSystem/bfarm/atc"
                 }
               ]
@@ -431,8 +431,8 @@
               },
               "termCodes": [
                 {
-                  "code": "N18",
-                  "display": "Chronische Nierenkrankheit",
+                  "code": "N18.8",
+                  "display": "Sonstige chronische Nierenkrankheit",
                   "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
                 }
               ]

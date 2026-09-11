@@ -401,7 +401,7 @@ other combination.
 
 1. **Gather candidates.** Evaluate the anchor group's own `criteria` as usual, and collect every
    resource instance belonging to this patient that matches any criterion in the anchor group —
-   e.g. every Condition instance coding F00 or F01, for `anchor-dementia-diagnosis`. "As usual"
+   e.g. every Condition instance coding F00 or G30, for `anchor-dementia-diagnosis`. "As usual"
    includes each criterion's own absolute `timeRestriction` where it has one: a resource the
    criterion does not match is not a candidate, and an anchor group can therefore be date-bounded
    in its own right (§5). If the anchor group is itself windowed relative to something else, its
@@ -591,7 +591,7 @@ group array without any of them constraining another id's choice. Worked through
 **`cctb` implements this.** `Group.resolveAnchorDates` computes the group's own window first and
 passes it down through `aggregateClauseDates` into `resolveClauseDate`, so the emitted candidate
 query carries the window predicate. For a chained anchor the generated CQL reads
-`Min((from [Condition: Code 'N17' ...] C where ToDate(C.recordedDate as dateTime) in
+`Min((from [Condition: Code 'N17.0' ...] C where ToDate(C.recordedDate as dateTime) in
 Interval["AnchorDate_<upstream>" + 0 hours, "AnchorDate_<upstream>" + 168 hours] ...))`, which is the
 rule above.
 
@@ -748,7 +748,7 @@ guide in [example-json/ccdl-v3/README.md](example-json/ccdl-v3/README.md). Every
 translates through `cctb`.
 
 **[ccdl-with-new-time-constraint-draft.json](example-json/ccdl-v3/ccdl-with-new-time-constraint-draft.json)**.
-Defines a cohort of female patients with a first dementia diagnosis (F00 or F01) as the index event,
+Defines a cohort of female patients with a first dementia diagnosis (F00 or G30) as the index event,
 in a single group array (no OR alternatives in use), and:
 
 - `group-infection-signs-before-diagnosis` — `(CRP OR leukocytes) AND heart rate`, all within
@@ -830,8 +830,8 @@ with a genuinely multi-clause anchor rather than the single-clause one above.
 **[ccdl-example-any-chain-three-hops-draft.json](example-json/ccdl-v3/ccdl-example-any-chain-three-hops-draft.json)**.
 The deep-chain counterpart to the example above: `"any"` anchors **stacked**, rather than one `"any"`
 anchor with two referencers. Four groups in one group array, a clinical cascade —
-`anchor-sepsis-episode` (A41, `"any"`, itself unwindowed) anchors `group-aki-after-sepsis` (N17,
-`"any"`, within 7 days), which anchors `group-dialysis-after-aki` (8-854, `"any"`, within 14 days),
+`anchor-sepsis-episode` (A41.5, `"any"`, itself unwindowed) anchors `group-aki-after-sepsis` (N17.0,
+`"any"`, within 7 days), which anchors `group-dialysis-after-aki` (8-85a.0, `"any"`, within 14 days),
 which anchors `group-hemoglobin-after-dialysis` (718-7, within a day). Each hop refers to the
 specific occurrence chosen at the hop above, so the whole query is one nested existential three
 levels deep, and §6's Chaining rule applies transitively: the dialysis candidates are already
@@ -857,28 +857,28 @@ of an evaluation failure.
 
 **[ccdl-example-hemoglobin-between-two-anchors.json](example-json/ccdl-v3/ccdl-example-hemoglobin-between-two-anchors.json)**.
 The "between event A and event B" pattern from §4, and the only example where a single group carries
-more than one `relativeTimeRestrictions` entry. A haemoglobin measured somewhere between a colon
-cancer diagnosis (`anchor-colon-cancer-diagnosis`, C18) and the resection (`anchor-colon-resection`,
-5-455), which is the pre-operative anaemia window. The dependent group's two entries each name a
-different anchor and each bound **one side only** — `minOffset` against the diagnosis, `maxOffset`
-against the resection — so the intersection of the two windows is exactly the interval between the
-two events. The generated CQL shows the §6 step 4 rule literally, `Interval[Max({anchorA + 0 hours,
-@0001-01-01T}), Min({@9999-12-31T, anchorB + 0 hours})]`, with the unbounded side of each entry
-contributing the identity element. It also illustrates why this is not the same query as two separate
-single-entry groups: those would be satisfied by two *different* haemoglobin values, whereas the
-intersected window demands one value inside both.
+more than one `relativeTimeRestrictions` entry. A haemoglobin measured somewhere between a colonic
+diverticular disease diagnosis (`anchor-colon-diverticular-disease`, K57.3) and the resection
+(`anchor-colon-resection`, 5-455.3), which is the pre-operative anaemia window. The dependent
+group's two entries each name a different anchor and each bound **one side only** — `minOffset`
+against the diagnosis, `maxOffset` against the resection — so the intersection of the two windows is
+exactly the interval between the two events. The generated CQL shows the §6 step 4 rule literally,
+`Interval[Max({anchorA + 0 hours, @0001-01-01T}), Min({@9999-12-31T, anchorB + 0 hours})]`, with the
+unbounded side of each entry contributing the identity element. It also illustrates why this is not
+the same query as two separate single-entry groups: those would be satisfied by two *different*
+haemoglobin values, whereas the intersected window demands one value inside both.
 
 **[ccdl-example-all-features-draft.json](example-json/ccdl-v3/ccdl-example-all-features-draft.json)**.
-A reference file rather than a teaching one: thirteen groups across two inclusion group arrays and one
-exclusion group array, exercising every construct in this document at once, plus the criterion-level
-`valueFilter`, `attributeFilters` and absolute `timeRestriction` inherited from `version: "2"`. It is
-the only example carrying `anchorOccurrence: "last"`, `anchorPoint: "end"`, an absolute
-`timeRestriction` on a criterion that also sits in a relative window (§5), and an `attributeFilters`
-entry. It also shows the §6 step 3 asymmetric multi-clause rule consumed from both ends in one query:
-a group bounding `maxOffset` against `anchor-resection-with-transfusion` resolves to that anchor's
-earliest clause date, while a group bounding `minOffset` against the same anchor resolves to its
-latest. Not translatable by `cctb` because of `"any"`, but everything else in it is verified — with
-`"any"` replaced by `"first"` the file produces 1345 lines of valid CQL.
+A reference file rather than a teaching one: thirteen groups across two inclusion group arrays and
+one exclusion group array, exercising every construct in this document at once, plus the
+criterion-level `valueFilter`, `attributeFilters` and absolute `timeRestriction` inherited from
+`version: "2"`. It is the only example carrying `anchorOccurrence: "last"`, `anchorPoint: "end"`, an
+absolute `timeRestriction` on a criterion that also sits in a relative window (§5), and an
+`attributeFilters` entry. It also shows the §6 step 3 asymmetric multi-clause rule consumed from
+both ends in one query: a group bounding `maxOffset` against `anchor-resection-with-transfusion`
+resolves to that anchor's earliest clause date, while a group bounding `minOffset` against the same
+anchor resolves to its latest. It translates at 177 lines of CQL — every construct in this document
+verified end to end against the real translator in one query.
 
 ## Open Questions (not yet decided)
 

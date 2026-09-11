@@ -4,7 +4,7 @@
   "inclusionCriteria": [
     [
       {
-        "id": "anchor-colon-cancer-diagnosis",
+        "id": "anchor-colon-diverticular-disease",
         "anchorOccurrence": "first",
         "anchorPoint": "start",
         "criteria": [
@@ -18,8 +18,8 @@
               },
               "termCodes": [
                 {
-                  "code": "C18",
-                  "display": "Bösartige Neubildung des Kolons",
+                  "code": "K57.3",
+                  "display": "Divertikelkrankheit des Dickdarmes ohne Perforation oder Abszess",
                   "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
                 }
               ]
@@ -42,8 +42,8 @@
               },
               "termCodes": [
                 {
-                  "code": "5-455",
-                  "display": "Partielle Resektion des Dickdarmes",
+                  "code": "5-455.3",
+                  "display": "Partielle Resektion des Dickdarmes: Zäkumresektion",
                   "system": "http://fhir.de/CodeSystem/bfarm/ops",
                   "version": "2026"
                 }
@@ -56,7 +56,7 @@
         "id": "group-hemoglobin-between-diagnosis-and-resection",
         "relativeTimeRestrictions": [
           {
-            "anchorRef": "anchor-colon-cancer-diagnosis",
+            "anchorRef": "anchor-colon-diverticular-disease",
             "minOffset": "P0D"
           },
           {

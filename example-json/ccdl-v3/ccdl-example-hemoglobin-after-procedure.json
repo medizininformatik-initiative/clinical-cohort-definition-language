@@ -49,8 +49,8 @@
             {
               "termCodes": [
                 {
-                  "code": "5-470",
-                  "display": "Appendektomie",
+                  "code": "5-470.1",
+                  "display": "Appendektomie: Laparoskopisch",
                   "system": "http://fhir.de/CodeSystem/bfarm/ops",
                   "version": "2026"
                 }
@@ -115,8 +115,8 @@
             {
               "termCodes": [
                 {
-                  "code": "E13",
-                  "display": "Sonstiger näher bezeichneter Diabetes mellitus",
+                  "code": "E10.9",
+                  "display": "Diabetes mellitus, Typ 1: Ohne Komplikationen",
                   "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
                   "version": "2026"
                 }
@@ -165,8 +165,8 @@
             {
               "termCodes": [
                 {
-                  "code": "E14",
-                  "display": "Sonstiger näher bezeichneter Diabetes mellitus",
+                  "code": "E11.9",
+                  "display": "Diabetes mellitus, Typ 2: Ohne Komplikationen",
                   "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
                   "version": "2026"
                 }

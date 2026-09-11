@@ -10,14 +10,14 @@ a guide to the examples, not a second copy of the spec.
 | # | File | Demonstrates | Translates |
 |---|---|---|---|
 | 1 | `ccdl-example-hemoglobin-last-24h.json` | the minimal anchored query | yes, 18 lines CQL |
-| 2 | `ccdl-with-new-time-constraint-draft.json` | the feature set in one realistic cohort | yes, 216 lines |
-| 3 | `ccdl-example-or-scoped-anchors-draft.json` | the OR level and asymmetric requiredness | yes, 66 lines |
-| 4 | `ccdl-example-hemoglobin-after-procedure.json` | multi-clause AND-anchors | yes, 183 lines |
-| 5 | `ccdl-example-hemoglobin-between-two-anchors.json` | two anchors on one group, windows intersected | yes, 291 lines |
-| 6 | `ccdl-example-any-chained-anchors-draft.json` | `anchorOccurrence: "any"`, one anchor with two referencers | yes, 65 lines |
-| 7 | `ccdl-example-any-chain-three-hops-draft.json` | `"any"` anchors stacked three deep | yes, 251 lines |
-| 8 | `ccdl-example-any-multi-clause-anchor-draft.json` | a multi-clause `"any"` anchor: the witness is a tuple | yes, 92 lines |
-| 9 | `ccdl-example-all-features-draft.json` | everything at once, as a reference | yes, 1254 lines |
+| 2 | `ccdl-with-new-time-constraint-draft.json` | the feature set in one realistic cohort | yes, 125 lines |
+| 3 | `ccdl-example-or-scoped-anchors-draft.json` | the OR level and asymmetric requiredness | yes, 62 lines |
+| 4 | `ccdl-example-hemoglobin-after-procedure.json` | multi-clause AND-anchors | yes, 61 lines |
+| 5 | `ccdl-example-hemoglobin-between-two-anchors.json` | two anchors on one group, windows intersected | yes, 41 lines |
+| 6 | `ccdl-example-any-chained-anchors-draft.json` | `anchorOccurrence: "any"`, one anchor with two referencers | yes, 61 lines |
+| 7 | `ccdl-example-any-chain-three-hops-draft.json` | `"any"` anchors stacked three deep | yes, 56 lines |
+| 8 | `ccdl-example-any-multi-clause-anchor-draft.json` | a multi-clause `"any"` anchor: the witness is a tuple | yes, 34 lines |
+| 9 | `ccdl-example-all-features-draft.json` | everything at once, as a reference | yes, 177 lines |
 
 ---
 
@@ -35,7 +35,7 @@ shape of a `relativeTimeRestrictions` entry, then move on.
 ### 2. `ccdl-with-new-time-constraint-draft.json` — the realistic one
 
 The broadest example. One inclusion group array, one exclusion group array, nine groups. Female
-patients whose first dementia diagnosis (F00 or F01) is the index event, plus:
+patients whose first dementia diagnosis (F00 or G30) is the index event, plus:
 
 - `group-infection-signs-before-diagnosis` — `(CRP OR leukocytes) AND heart rate`, all inside the
   3 days up to the diagnosis. Levels 3 and 4 both in use inside one time-restricted group.
@@ -82,11 +82,11 @@ rest of the query.
 ### 5. `ccdl-example-hemoglobin-between-two-anchors.json` — "between event A and event B"
 
 The only example where one group carries **more than one** `relativeTimeRestrictions` entry. A
-haemoglobin measured somewhere between the colon cancer diagnosis and the resection, which is the
+haemoglobin measured somewhere between the diverticular disease diagnosis and the resection, which is the
 pre-operative anaemia window.
 
-- `anchor-colon-cancer-diagnosis` — C18, `"first"`.
-- `anchor-colon-resection` — 5-455, `"first"`.
+- `anchor-colon-diverticular-disease` — K57.3, `"first"`.
+- `anchor-colon-resection` — 5-455.3, `"first"`.
 - `group-hemoglobin-between-diagnosis-and-resection` — two entries, each naming a different anchor
   and each bounded on **one side only**: `minOffset: "P0D"` against the diagnosis, `maxOffset: "P0D"`
   against the resection. Every entry needs at least one offset, never both, and leaving the other
@@ -97,7 +97,7 @@ the `Min` of every entry's end, so one open-ended entry contributes nothing on i
 generated CQL makes this literal:
 
 ```
-Interval[ Max({ "AnchorDate_anchor-colon-cancer-diagnosis" + 0 hours, @0001-01-01T }),
+Interval[ Max({ "AnchorDate_anchor-colon-diverticular-disease" + 0 hours, @0001-01-01T }),
           Min({ @9999-12-31T, "AnchorDate_anchor-colon-resection" + 0 hours }) ]
 ```
 
@@ -146,9 +146,9 @@ direction: `"any"` anchors **stacked**, each hop anchored to the specific occurr
 hop above. A clinical cascade, four groups in one group array:
 
 ```
-anchor-sepsis-episode            A41,    "any"   ← head of the chain, no window of its own
-  └── group-aki-after-sepsis     N17,    "any"   P0D..P7D  after that sepsis episode
-        └── group-dialysis-after-aki  8-854, "any"  P0D..P14D after that AKI
+anchor-sepsis-episode            A41.5,  "any"   ← head of the chain, no window of its own
+  └── group-aki-after-sepsis     N17.0,  "any"   P0D..P7D  after that sepsis episode
+        └── group-dialysis-after-aki  8-85a.0, "any"  P0D..P14D after that AKI
               └── group-hemoglobin-after-dialysis  718-7  P0D..P1D after that session
 ```
 
@@ -216,7 +216,7 @@ one exclusion group array, exercising every feature of the extension plus the cr
 features it inherits from `version: "2"`. Read examples 1 to 7 first. Come here when you need to see
 how two features interact, or to copy a shape.
 
-The cohort: adults with colon cancer who had a resection with transfusion, and either developed a
+The cohort: adults with colonic diverticular disease who had a resection with a transfusion, and either developed a
 post-operative sepsis cascade or have a matching biopsy specimen and recent follow-up labs, excluding
 those on vitamin K antagonists around surgery or with chronic organ failure.
 
@@ -224,15 +224,15 @@ Group array 1, the main clinical path:
 
 - `group-demographics` — gender (`concept` value filter) AND age (`quantity-comparator`, `ge` 18
   years). No anchor. Level 3 AND across two single-criterion clauses.
-- `anchor-colon-cancer-diagnosis` — C18, `anchorOccurrence: "last"`, `anchorPoint: "start"`.
+- `anchor-colon-diverticular-disease` — K57.3, `anchorOccurrence: "last"`, `anchorPoint: "start"`.
 - `anchor-resection-with-transfusion` — a **two-clause AND anchor**, resection AND transfusion, with
   `anchorOccurrence: "first"` and `anchorPoint: "end"`.
 - `group-hemoglobin-between-diagnosis-and-resection` — **two `relativeTimeRestrictions` entries**,
   each bounded on one side, intersecting into the window between the two anchors, **plus** an
   absolute `timeRestriction` on the criterion itself, which intersects with the relative window.
-- `group-sepsis-after-resection` — A41 within 30 days of the resection, `anchorOccurrence: "any"`.
+- `group-sepsis-after-resection` — A41.5 within 30 days of the resection, `anchorOccurrence: "any"`.
   Both a dependent and an anchor, and it has **two referencers**, so the shared-witness rule applies.
-- `group-aki-after-sepsis` — N17 within 7 days of that sepsis episode, also `"any"`, also an anchor.
+- `group-aki-after-sepsis` — N17.0 within 7 days of that sepsis episode, also `"any"`, also an anchor.
 - `group-dialysis-after-aki` — the leaf of a three-hop chain.
 - `group-crp-after-sepsis` — the sepsis anchor's second referencer.
 
@@ -240,7 +240,7 @@ Group array 2, an alternative qualifying path:
 
 - `anchor-now` — the `now` criterion.
 - `group-colon-biopsy-specimen` — a Specimen criterion carrying an **`attributeFilters`** entry of
-  type `reference`, joining the sample to a colon cancer diagnosis through the biobank extension.
+  type `reference`, joining the sample to a diverticular disease diagnosis through the biobank extension.
 - `group-followup-lab-since-resection` — references `anchor-resection-with-transfusion`, which is
   **defined in the other group array and not listed here**, and bounds the other side against `now`.
 
@@ -256,7 +256,7 @@ resolves to `Min("AnchorDate_anchor-resection-with-transfusion")`, its earliest 
 `group-followup-lab-since-resection` bounds a `minOffset` and resolves to `Max(...)`, its latest. That
 is the asymmetric rule from the spec, visible twice in one file.
 
-**Translates**, at 1254 lines - every feature in this document exercised in one query, verified end
+**Translates**, at 177 lines - every feature in this document exercised in one query, verified end
 to end against the real translator, including the attribute filter join, the absolute-plus-relative
 window intersection and the `AgeInYears() >= 18` comparison.
 
