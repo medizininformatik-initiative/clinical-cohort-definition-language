@@ -139,7 +139,51 @@ Patient = none                │                                               
 ══════════════════════════════╧════════════════════════════════════════════════════════════╧
 ```
 
-## `ccdl-example-hemoglobin-after-procedure`
+## `ccdl-example-hemoglobin-24h-after-procedure`
+
+The minimal anchor on a clinical event: one procedure, one haemoglobin, `PT0H..PT24H`. Every patient
+has the same procedure date, so the lanes share one timeline.
+
+```
+                              │    Jan 9       Jan 10       Jan 11         Jan 13          │ result
+                              │    |           |            |              |               │
+══════════════════════════════╪════════════════════════════════════════════════════════════╪
+Patient = same-day            │                                                            │ ✓ selected
+  resources                   │                ◇5-470.1                                    │
+                              │                ●Hb                                         │
+  window                      │                ▓▓▓▓▓▓▓▓▓▓▓▓▓▓                              │ Hb on the day of the procedure
+──────────────────────────────┼────────────────────────────────────────────────────────────┼
+Patient = next-day            │                                                            │ ✓ selected
+  resources                   │                ◇5-470.1     ●Hb                            │
+  window                      │                ▓▓▓▓▓▓▓▓▓▓▓▓▓▓                              │ PT24H reaches the following date
+──────────────────────────────┼────────────────────────────────────────────────────────────┼
+Patient = before              │                                                            │ ✗ not selected
+  resources                   │    ●Hb         ◇5-470.1                                    │
+  window                      │                ▓▓▓▓▓▓▓▓▓▓▓▓▓▓                              │ a symmetric ±24h window would admit it
+──────────────────────────────┼────────────────────────────────────────────────────────────┼
+Patient = too-late            │                                                            │ ✗ not selected
+  resources                   │                ◇5-470.1                    ●Hb             │
+  window                      │                ▓▓▓▓▓▓▓▓▓▓▓▓▓▓                              │ three days past the procedure
+──────────────────────────────┼────────────────────────────────────────────────────────────┼
+Patient = no-procedure        │                                                            │ ✗ not selected
+  resources                   │                ●Hb                                         │
+  window                      │                                                            │ the anchor never resolves
+══════════════════════════════╧════════════════════════════════════════════════════════════╧
+```
+
+Two patients decide whether an implementation is right. `before` is the one-sided test. Its
+haemoglobin is a day ahead of the procedure, so it matches under a symmetric window and must not match
+under this one, which is exactly the difference between this example and
+`ccdl-example-multi-clause-anchor` below, whose window is `-PT24H..PT24H`. `next-day` is the precision
+test: the offset is applied at the anchor date's own precision, so `PT24H` reaches the following
+*date* rather than 24 clock hours, and an implementation reading the offset as elapsed hours drops
+this patient.
+
+`no-procedure` is the null-anchor case, kept here because it is cheapest to see in the smallest file.
+The patient has a haemoglobin and nothing to measure it from, so the guard has to exclude it rather
+than leave the outcome to the engine's own null handling.
+
+## `ccdl-example-multi-clause-anchor`
 
 A multi-clause AND-anchor. The two OPS codes are separate clauses, so the anchor resolves to *two*
 dates: the window runs from the later one minus 24h to the earlier one plus 24h. Same-day clauses

@@ -147,6 +147,12 @@ Per `relativeTimeRestrictions` entry (potentially a different anchor group each 
      member, `minOffset` from the latest. Under `"first"`/`"last"` each clause contributes one
      candidate, so the product is a single tuple and this is today's behavior. Single-clause:
      earliest == latest, no change.
+   - That is the **per-clause** reading, in which every clause binds. Adopted because it gives a
+     multi-clause anchor the same meaning as splitting it into N single-clause anchors with one
+     `relativeTimeRestrictions` entry each. Consequence for authors: the window narrows by the
+     clause spread, so `minOffset: 0` / `maxOffset: P7D` is empty for any patient whose clauses lie
+     more than 7 days apart. The alternative "completion" reading (both bounds off the latest
+     clause) is an open question, not a mode.
    - **Empty candidate set ⇒ no witness ⇒ the group does not match this patient.** This is what an
      existential over an empty set means, not a separate rule, so it holds for every mode, every
      entry (any one empty entry is enough) and every clause. Not configurable, not a schema field.
@@ -201,9 +207,9 @@ published or adopted yet.
 
 ## Examples
 
-Nine worked examples in [ccdl-tests/ccdl-v3/](ccdl-tests/ccdl-v3/), with a reading guide in
+Ten worked examples in [ccdl-tests/ccdl-v3/](ccdl-tests/ccdl-v3/), with a reading guide in
 [ccdl-tests/ccdl-v3/README.md](ccdl-tests/ccdl-v3/README.md) and per-file notes in
-[ccdl-v3-draft.md § Worked examples](ccdl-v3-draft.md#worked-examples). All nine translate through
+[ccdl-v3-draft.md § Worked examples](ccdl-v3-draft.md#worked-examples). All ten translate through
 `cctb`. `ccdl-example-all-features-draft.json` exercises every feature at once.
 
 ## Open questions
@@ -217,3 +223,7 @@ Nine worked examples in [ccdl-tests/ccdl-v3/](ccdl-tests/ccdl-v3/), with a readi
   settled semantics, open implementation gap, changes results rather than only performance.
 - Overlap vs. containment for narrow relative windows — step 5's inherited overlap-sufficiency rule
   may be too lenient at 72h-scale windows. Not yet decided.
+- A "completion" reading for multi-clause anchors (both bounds off the latest clause, so the
+  anchor's own clause spread does not narrow the window). Not reachable by decomposition, unlike the
+  adopted per-clause reading, since the index clause would vary per patient. Not offered as a mode:
+  per-clause is strictly stronger and nothing has asked for the weaker one.

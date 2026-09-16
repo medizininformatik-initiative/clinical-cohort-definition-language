@@ -1,6 +1,6 @@
 # CCDL v3 worked examples
 
-Nine `version: "3"` cohort definitions, each chosen to demonstrate a different part of the relative
+Ten `version: "3"` cohort definitions, each chosen to demonstrate a different part of the relative
 time constraint extension. The specification itself is [../../ccdl-v3-draft.md](../../ccdl-v3-draft.md),
 with a rules-only summary in [../../ccdl-v3-draft-tldr.md](../../ccdl-v3-draft-tldr.md). This file is
 a guide to the examples, not a second copy of the spec.
@@ -10,14 +10,15 @@ a guide to the examples, not a second copy of the spec.
 | # | File | Demonstrates | Translates |
 |---|---|---|---|
 | 1 | `ccdl-example-hemoglobin-last-24h.json` | the minimal anchored query | yes, 18 lines CQL |
-| 2 | `ccdl-with-new-time-constraint-draft.json` | the feature set in one realistic cohort | yes, 125 lines |
-| 3 | `ccdl-example-or-scoped-anchors-draft.json` | the OR level and asymmetric requiredness | yes, 62 lines |
-| 4 | `ccdl-example-hemoglobin-after-procedure.json` | multi-clause AND-anchors | yes, 61 lines |
-| 5 | `ccdl-example-hemoglobin-between-two-anchors.json` | two anchors on one group, windows intersected | yes, 41 lines |
-| 6 | `ccdl-example-any-chained-anchors-draft.json` | `anchorOccurrence: "any"`, one anchor with two referencers | yes, 61 lines |
-| 7 | `ccdl-example-any-chain-three-hops-draft.json` | `"any"` anchors stacked three deep | yes, 56 lines |
-| 8 | `ccdl-example-any-multi-clause-anchor-draft.json` | a multi-clause `"any"` anchor: the witness is a tuple | yes, 34 lines |
-| 9 | `ccdl-example-all-features-draft.json` | everything at once, as a reference | yes, 177 lines |
+| 2 | `ccdl-example-hemoglobin-24h-after-procedure.json` | the minimal anchor on a clinical event | yes, 26 lines |
+| 3 | `ccdl-with-new-time-constraint-draft.json` | the feature set in one realistic cohort | yes, 125 lines |
+| 4 | `ccdl-example-or-scoped-anchors-draft.json` | the OR level and asymmetric requiredness | yes, 62 lines |
+| 5 | `ccdl-example-multi-clause-anchor.json` | multi-clause AND-anchors | yes, 61 lines |
+| 6 | `ccdl-example-hemoglobin-between-two-anchors.json` | two anchors on one group, windows intersected | yes, 41 lines |
+| 7 | `ccdl-example-any-chained-anchors-draft.json` | `anchorOccurrence: "any"`, one anchor with two referencers | yes, 61 lines |
+| 8 | `ccdl-example-any-chain-three-hops-draft.json` | `"any"` anchors stacked three deep | yes, 56 lines |
+| 9 | `ccdl-example-any-multi-clause-anchor-draft.json` | a multi-clause `"any"` anchor: the witness is a tuple | yes, 34 lines |
+| 10 | `ccdl-example-all-features-draft.json` | everything at once, as a reference | yes, 177 lines |
 
 ---
 
@@ -32,7 +33,26 @@ One group array, two groups, one restriction. A hemoglobin measurement in the 24
 Nothing else is in play: no OR level, no fan-out, no multi-clause anchor. Read this one to see the
 shape of a `relativeTimeRestrictions` entry, then move on.
 
-### 2. `ccdl-with-new-time-constraint-draft.json` — the realistic one
+### 2. `ccdl-example-hemoglobin-24h-after-procedure.json` — the same, anchored to an event
+
+Example 1 anchors to the clock. This one is the same minimal shape anchored to something that happens
+to a patient, which is what an anchor is normally for. A haemoglobin in the 24 hours after the first
+laparoscopic appendectomy.
+
+- `anchor-procedure` — one OPS code, one clause, `anchorOccurrence: "first"`.
+- `group-hemoglobin-after-procedure` — `minOffset: "PT0H"`, `maxOffset: "PT24H"`.
+
+Because the anchor is a real retrieve rather than `now`, its `"AnchorDate_anchor-procedure" is not
+null` guard can actually fail, and for a patient with no appendectomy it does. That guard is the whole
+of §7 in one line: a dependent whose anchor does not resolve must select nobody, and cannot be left to
+the target engine's own null handling.
+
+Two details in the output are worth seeing here rather than in a bigger file. The anchor expands to
+four OPS codes, not one, because the concept tree resolves children of `5-470.1`. And `PT24H` reaches
+the **following date**, not 24 clock hours: offsets are applied at the anchor date's own precision, so
+a haemoglobin the next morning is inside the window and one the previous evening is not.
+
+### 3. `ccdl-with-new-time-constraint-draft.json` — the realistic one
 
 The broadest example. One inclusion group array, one exclusion group array, nine groups. Female
 patients whose first dementia diagnosis (F00 or G30) is the index event, plus:
@@ -47,7 +67,7 @@ patients whose first dementia diagnosis (F00 or G30) is the index event, plus:
 - `group-excl-organ-failure` — an OR of two unanchored exclusion reasons, kept inside one group
   rather than split across group arrays.
 
-### 3. `ccdl-example-or-scoped-anchors-draft.json` — the OR level
+### 4. `ccdl-example-or-scoped-anchors-draft.json` — the OR level
 
 Three group arrays, OR'd, which is the structure §1–§3 of the spec argues for.
 
@@ -60,9 +80,9 @@ Three group arrays, OR'd, which is the structure §1–§3 of the spec argues fo
 Group arrays 2 and 3 are the asymmetric requiredness pattern: the same anchor is required in one path
 and merely a date source in another. Note that this distinction is invisible in the generated CQL for
 a single-clause anchor, because the null-guard `"AnchorDate_X" is not null` is already equivalent to
-"the anchor matched". Example 4 is where the two cases produce different output.
+"the anchor matched". Example 5 is where the two cases produce different output.
 
-### 4. `ccdl-example-hemoglobin-after-procedure.json` — multi-clause anchors
+### 5. `ccdl-example-multi-clause-anchor.json` — multi-clause anchors
 
 `anchor-procedure` is a **two-clause AND**: two OPS codes that must both be present. A multi-clause
 anchor does not collapse to one date. It keeps two, the earliest and the latest across its clauses,
@@ -71,7 +91,7 @@ the latest. The generated CQL shows this as an indexed guard, `"AnchorDate_ancho
 `[1]`, one check per clause rather than one aggregate check.
 
 Two group arrays share that anchor, one listing it and one only referencing it, so this is the
-asymmetric pattern from example 3 again, this time where it actually changes the output.
+asymmetric pattern from example 4 again, this time where it actually changes the output.
 
 Group array 1 also carries `group-gender`, an ordinary unanchored group AND'd in beside the anchor
 and its dependent. Anchored and unanchored groups mix freely inside a group array. Keep such a filter
@@ -79,7 +99,7 @@ and its dependent. Anchored and unanchored groups mix freely inside a group arra
 so a lone demographic group would become an alternative qualifying path on its own and swallow the
 rest of the query.
 
-### 5. `ccdl-example-hemoglobin-between-two-anchors.json` — "between event A and event B"
+### 6. `ccdl-example-hemoglobin-between-two-anchors.json` — "between event A and event B"
 
 The only example where one group carries **more than one** `relativeTimeRestrictions` entry. A
 haemoglobin measured somewhere between the diverticular disease diagnosis and the resection, which is the
@@ -108,7 +128,7 @@ once. Reach for multiple entries only when that "one value, between A and B" rea
 mean. Note also that the null-guard covers every entry, so a patient missing either anchor does not
 match.
 
-### 6. `ccdl-example-any-chained-anchors-draft.json` — `any` and chaining
+### 7. `ccdl-example-any-chained-anchors-draft.json` — `any` and chaining
 
 The only example of `anchorOccurrence: "any"`, and the only one where a group is both a dependent and
 an anchor. A two-hop chain:
@@ -139,9 +159,9 @@ witness - which is the shared-witness rule made concrete in the output.
 
 ---
 
-### 7. `ccdl-example-any-chain-three-hops-draft.json` — `"any"` all the way down
+### 8. `ccdl-example-any-chain-three-hops-draft.json` — `"any"` all the way down
 
-Example 6 has one `"any"` anchor with two referencers, which is fan-out. This one is the other
+Example 7 has one `"any"` anchor with two referencers, which is fan-out. This one is the other
 direction: `"any"` anchors **stacked**, each hop anchored to the specific occurrence chosen at the
 hop above. A clinical cascade, four groups in one group array:
 
@@ -169,7 +189,7 @@ What it adds over example 6:
 - **No `"first"`/`"last"` anywhere.** Even the head of the chain is `"any"`, so no occurrence is
   fixed in advance. Nothing in the query collapses to a date.
 - **The shared-witness rule is trivial here**, because each anchor has exactly one referencer. That
-  is the contrast with example 6, where two referencers on one anchor make the rule bite. Both
+  is the contrast with example 7, where two referencers on one anchor make the rule bite. Both
   behaviours come from the same rule.
 
 This is the cohort shape that motivated `"any"` in the first place, and the one `"first"`/`"last"`
@@ -181,7 +201,7 @@ dialysis sessions where only one particular path through them is the qualifying 
 
 ---
 
-### 8. `ccdl-example-any-multi-clause-anchor-draft.json` — a tuple witness
+### 9. `ccdl-example-any-multi-clause-anchor-draft.json` — a tuple witness
 
 The only example of a **multi-clause `"any"` anchor**. `anchor-sepsis-with-aki` is a two-clause AND —
 a sepsis diagnosis and an acute kidney injury, both required — carrying `anchorOccurrence: "any"`,
@@ -209,11 +229,11 @@ apart than the offsets allow induces an inverted window, and the check turns tha
 rather than an evaluation failure — Blaze rejects an inverted `Interval` outright. This is the
 clearest place in the examples to see it.
 
-### 9. `ccdl-example-all-features-draft.json` — every feature in one query
+### 10. `ccdl-example-all-features-draft.json` — every feature in one query
 
 A reference file rather than a teaching one. Thirteen groups across two inclusion group arrays and
 one exclusion group array, exercising every feature of the extension plus the criterion-level
-features it inherits from `version: "2"`. Read examples 1 to 7 first. Come here when you need to see
+features it inherits from `version: "2"`. Read examples 1 to 8 first. Come here when you need to see
 how two features interact, or to copy a shape.
 
 The cohort: adults with colonic diverticular disease who had a resection with a transfusion, and either developed a
@@ -264,30 +284,30 @@ window intersection and the `AgeInYears() >= 18` comparison.
 
 ## Feature coverage
 
-| | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
-|---|---|---|---|---|---|---|---|---|---|
-| OR level (more than one group array) | | | yes | yes | | | | | yes |
-| `exclusionCriteria` | | yes | | | | | | | yes |
-| `now` criterion | yes | yes | | | | | | | yes |
-| open-ended window (one offset omitted) | | yes | yes | | yes | | | | yes |
-| anchor referenced without being listed | | | yes | yes | | | | | yes |
-| cross-side anchor reference | | yes | | | | | | | yes |
-| multi-clause AND-anchor (`first`/`last`) | | | | yes | | | | | yes |
-| multiple `relativeTimeRestrictions` entries | | | | | yes | | | | yes |
-| `anchorOccurrence: "first"` | | yes | yes | yes | yes | yes | | | yes |
-| `anchorOccurrence: "last"` | | | | | | | | | yes |
-| `anchorOccurrence: "any"` | | | | | | yes | yes | yes | yes |
-| `anchorPoint: "end"` | | | | | | | | | yes |
-| chained anchor | | | | | | yes | yes | | yes |
-| one anchor, two referencers (shared witness) | | | | | | yes | | yes | yes |
-| chain deeper than two hops | | | | | | | yes | | |
-| multi-clause `"any"` anchor (tuple witness) | | | | | | | | yes | |
-| absolute `timeRestriction` on a windowed criterion | | | | | | | | | yes |
-| `valueFilter` | | yes | yes | yes | | | | | yes |
-| `attributeFilters` | | | | | | | | | yes |
+| | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OR level (more than one group array) | | | | yes | yes | | | | | yes |
+| `exclusionCriteria` | | | yes | | | | | | | yes |
+| `now` criterion | yes | | yes | | | | | | | yes |
+| open-ended window (one offset omitted) | | | yes | yes | | yes | | | | yes |
+| anchor referenced without being listed | | | | yes | yes | | | | | yes |
+| cross-side anchor reference | | | yes | | | | | | | yes |
+| multi-clause AND-anchor (`first`/`last`) | | | | | yes | | | | | yes |
+| multiple `relativeTimeRestrictions` entries | | | | | | yes | | | | yes |
+| `anchorOccurrence: "first"` | | yes | yes | yes | yes | yes | yes | | | yes |
+| `anchorOccurrence: "last"` | | | | | | | | | | yes |
+| `anchorOccurrence: "any"` | | | | | | | yes | yes | yes | yes |
+| `anchorPoint: "end"` | | | | | | | | | | yes |
+| chained anchor | | | | | | | yes | yes | | yes |
+| one anchor, two referencers (shared witness) | | | | | | | yes | | yes | yes |
+| chain deeper than two hops | | | | | | | | yes | | |
+| multi-clause `"any"` anchor (tuple witness) | | | | | | | | | yes | |
+| absolute `timeRestriction` on a windowed criterion | | | | | | | | | | yes |
+| `valueFilter` | | | yes | yes | yes | | | | | yes |
+| `attributeFilters` | | | | | | | | | | yes |
 
-Every feature has at least one worked example, and example 9 has all of them except the tuple
-witness, which example 8 covers on its own.
+Every feature has at least one worked example, and example 10 has all of them except the tuple
+witness, which example 9 covers on its own.
 
 ## Running them
 
@@ -302,7 +322,7 @@ java -jar cli/target/cctb-cli-<version>.jar translate CQL \
 
 The mapping and concept-tree files are downloaded by `mvn generate-resources`. Every term code used in
 these examples resolves against that snapshot, so a translation failure means a real problem, not a
-missing code. All nine translate.
+missing code. All ten translate.
 
 ## Test data
 
@@ -348,7 +368,7 @@ Dates in the bundles are absolute, but two examples are anchored to `now`
 (`ccdl-example-hemoglobin-last-24h` and the respiratory-rate group in
 `ccdl-with-new-time-constraint-draft`), and a fixed date cannot express "yesterday". `referenceDate`
 records the day the dataset was generated. To exercise those two, shift every date in the bundle by
-`today - referenceDate` when loading. The other seven use only relative-to-each-other dates and can be
+`today - referenceDate` when loading. The other eight use only relative-to-each-other dates and can be
 loaded unchanged.
 
 ### What each dataset probes
@@ -356,9 +376,10 @@ loaded unchanged.
 | example | the patient that decides it |
 |---|---|
 | `hemoglobin-last-24h` | one observation today, one three days ago |
+| `hemoglobin-24h-after-procedure` | a haemoglobin the day *before* the procedure, which a symmetric window would admit |
 | `hemoglobin-between-two-anchors` | a resection *preceding* its diagnosis, so the window inverts |
 | `or-scoped-anchors` | three patients qualifying through different group arrays, one through none |
-| `hemoglobin-after-procedure` | two procedures five days apart, inverting a multi-clause anchor's window |
+| `multi-clause-anchor` | two procedures five days apart, inverting a multi-clause anchor's window |
 | `any-chained-anchors` | `split`: treated after one episode, worked up after another |
 | `any-chain-three-hops` | `late-episode`: qualifies only via its *second* sepsis |
 | `any-multi-clause-anchor` | `two-options`: only one pairing of the tuple satisfies both windows |

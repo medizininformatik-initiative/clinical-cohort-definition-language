@@ -1,0 +1,240 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [ {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "same-day",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/same-day"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "same-day-op",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "5-470.1"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/same-day"
+      },
+      "performedDateTime": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/same-day-op"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "same-day-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/same-day"
+      },
+      "effectiveDateTime": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/same-day-hb"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "next-day",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/next-day"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "next-day-op",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "5-470.1"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/next-day"
+      },
+      "performedDateTime": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/next-day-op"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "next-day-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/next-day"
+      },
+      "effectiveDateTime": "2024-01-11"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/next-day-hb"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "before",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/before"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "before-op",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "5-470.1"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/before"
+      },
+      "performedDateTime": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/before-op"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "before-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/before"
+      },
+      "effectiveDateTime": "2024-01-09"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/before-hb"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "too-late",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/too-late"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Procedure",
+      "id": "too-late-op",
+      "status": "completed",
+      "code": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/ops",
+          "code": "5-470.1"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/too-late"
+      },
+      "performedDateTime": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Procedure/too-late-op"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "too-late-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/too-late"
+      },
+      "effectiveDateTime": "2024-01-13"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/too-late-hb"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Patient",
+      "id": "no-procedure",
+      "gender": "female",
+      "birthDate": "1960-01-01"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Patient/no-procedure"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "id": "no-procedure-hb",
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "718-7"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient/no-procedure"
+      },
+      "effectiveDateTime": "2024-01-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation/no-procedure-hb"
+    }
+  } ]
+}

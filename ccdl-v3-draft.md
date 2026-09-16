@@ -421,12 +421,40 @@ other combination.
    1–3 running per clause (`anchorOccurrence` filtering each clause's own candidates). A tuple
    induces a window from both of its extremes, asymmetrically, rather than from a single collapsed
    point: `maxOffset` is measured from the **earliest** date in the tuple, `minOffset` from the
-   **latest**. This is not a simplification for convenience — collapsing to a single point
-   (whichever direction) always gets one of the two bounds wrong. The group (all clauses required)
-   is only satisfied once its *last* clause occurs, so nothing can be "at/after" it before that
-   moment — the latest clause is the binding constraint for the lower bound. But something is
-   "within `maxOffset` after" the group only if it's within `maxOffset` of *every* clause, and the
-   earliest clause produces the tightest (most binding) ceiling for that.
+   **latest**.
+
+   **Why this pair of bounds, and not a single collapsed point.** Two readings of "within
+   `maxOffset` of a multi-clause anchor" are defensible, and this document adopts the first:
+
+   - **Per-clause** (adopted): the dependent must fall within the offset range of *every* clause.
+     The latest clause binds `minOffset`, since the group is only satisfied once its last clause
+     occurs and nothing can be "at/after" it before that moment. The earliest clause binds
+     `maxOffset`, since it gives the tightest ceiling.
+   - **Completion**: the dependent must fall within the offset range of the moment the group was
+     *established*, that is, both bounds measured from the latest clause.
+
+   Per-clause is adopted because it makes a multi-clause anchor mean exactly what the equivalent
+   decomposition already means. Split an N-clause anchor into N single-clause anchors carrying the
+   same `anchorOccurrence`/`anchorPoint`, give the dependent one `relativeTimeRestrictions` entry
+   per anchor, and §4's intersection rule yields `windowStart = Max(dᵢ) + minOffset` and
+   `windowEnd = Min(dᵢ) + maxOffset`, the same window this rule produces. The two agree under
+   `"any"` as well, since the shared-witness scope rule applied per anchor to N single-clause
+   anchors quantifies over the same product as one N-clause anchor's shared tuple. Under the
+   completion reading the two constructs would disagree, and splitting an anchor would silently
+   change a query's meaning.
+
+   The completion reading is not expressible by any other means, because it needs the maximum over
+   clause dates as a value that varies per patient rather than an author-named index clause. It is
+   recorded in Open Questions rather than offered here as a second mode.
+
+   **Consequence for authors.** Because every clause binds, the window narrows by the spread of the
+   anchor's own clauses. With `minOffset: 0` and `maxOffset: P7D` the window is
+   `[latest, earliest + 7d]`, which is empty unless the clauses themselves lie within 7 days of
+   each other, and a patient whose clauses are further apart matches nothing whatever the
+   dependent's own dates. That is a real constraint on the anchor which the query states nowhere,
+   so an anchor whose clauses are not clinically close in time needs offsets wide enough to span
+   them, or should be split into separate groups. §7 covers what a translator must do to make such
+   an empty window behave as no-match rather than fail.
 
    The tuple rule is uniform across all three modes, and nothing about it is specific to
    multi-clause anchors. Under `"first"`/`"last"` each clause contributes exactly one eligible
@@ -743,7 +771,7 @@ today's adopted `"2"`.
 
 ## Worked examples
 
-All nine live in [ccdl-tests/ccdl-v3/](ccdl-tests/ccdl-v3/), all `version: "3"`, with a reading
+All ten live in [ccdl-tests/ccdl-v3/](ccdl-tests/ccdl-v3/), all `version: "3"`, with a reading
 guide in [ccdl-tests/ccdl-v3/README.md](ccdl-tests/ccdl-v3/README.md). Every one of them
 translates through `cctb`.
 
@@ -806,18 +834,26 @@ Also the reason `"first"`/`"last"` cannot express this cohort at all: collapsing
 to one episode before evaluating the two dependents gets patients wrong whichever end is chosen,
 since the qualifying episode need not be the earliest or the latest.
 
-**Not translatable by `cctb`.** It fails at deserialization, because the Java `AnchorOccurrence` enum
-accepts only `first` and `last`. That is the expected and correct outcome for a spec-only feature,
-not a defect in the file. Its structure, `anchorRef` resolution, acyclicity, and term codes have been
-checked independently, and every code in it resolves against the current MII ontology snapshot, so it
-should translate unchanged once `"any"` is implemented.
+**Translates**, as of `cctb`'s `"any"` support. The group array compiles to a single `exists` over
+the window-filtered delirium candidate dates, aliased `W1`, with both dependents evaluated inside it
+against that one alias. That is the §6 scope rule made concrete in the output: the haloperidol check
+and the sodium check see the same bound occurrence rather than the candidate set independently.
+`WorkedExampleIT.anyChainedAnchors` evaluates it against a real engine, where `split`, a patient
+treated after one episode and worked up after another, is correctly excluded.
 
 **[ccdl-example-hemoglobin-last-24h.json](ccdl-tests/ccdl-v3/ccdl-example-hemoglobin-last-24h.json)**.
 The minimal case: one group array, `anchor-now` plus a single dependent group requiring a hemoglobin
 measurement in the last 24 hours. No OR, no fan-out, no multi-clause anchor — the smallest complete
 `relativeTimeRestrictions` example, useful as a quickstart.
 
-**[ccdl-example-hemoglobin-after-procedure.json](ccdl-tests/ccdl-v3/ccdl-example-hemoglobin-after-procedure.json)**.
+**[ccdl-example-hemoglobin-24h-after-procedure.json](ccdl-tests/ccdl-v3/ccdl-example-hemoglobin-24h-after-procedure.json)**.
+The same minimal shape as the file above, anchored to a clinical event rather than to the clock: one
+group array, a single-clause `anchor-procedure` with `anchorOccurrence: "first"`, and one dependent
+group requiring a hemoglobin measurement in the 24 hours after it. The smallest example in which §7's
+null-anchor requirement is observable — `anchor-now` always resolves, so a real retrieve is needed
+before the guard can fail on anyone.
+
+**[ccdl-example-multi-clause-anchor.json](ccdl-tests/ccdl-v3/ccdl-example-multi-clause-anchor.json)**.
 Two group arrays sharing one procedure anchor, `anchor-procedure` — itself a two-clause AND of two
 OPS codes for the same procedure, demonstrating §6 step 3's asymmetric multi-clause anchor bounds.
 Group array 1 lists the anchor as a required member alongside a dependent hemoglobin-and-diagnosis
@@ -838,8 +874,10 @@ levels deep, and §6's Chaining rule applies transitively: the dialysis candidat
 filtered to the AKI window, whose candidates are already filtered to the sepsis window. Note that no
 group here fixes an occurrence in advance, not even the head of the chain, and that the shared-witness
 scope rule is trivially satisfied because each anchor has exactly one referencer — the contrast with
-the two-referencer example above, both falling out of the same rule. Not translatable by `cctb`, for
-the same reason.
+the two-referencer example above, both falling out of the same rule. **Translates**, nesting one
+`exists` per hop: `W1` (the sepsis episode) wraps `W2` (the AKI, windowed by `W1`) wraps `W3` (the
+dialysis session, windowed by `W2`), with the haemoglobin check innermost. Covered end to end by
+`WorkedExampleIT.anyChainThreeHops`, where `late-episode` qualifies only through its second sepsis.
 
 **[ccdl-example-any-multi-clause-anchor-draft.json](ccdl-tests/ccdl-v3/ccdl-example-any-multi-clause-anchor-draft.json)**.
 The only example of a **multi-clause `"any"` anchor**, where the witness is a tuple rather than a
@@ -899,6 +937,16 @@ verified end to end against the real translator in one query.
   others where overlap is exactly what's wanted. Not yet decided whether the single inherited
   default is enough, or whether a configurable match mode (`overlaps` / `contains` /
   `starts-within` / `ends-within`) is needed.
+- **A "completion" reading for multi-clause anchors.** §6 step 3 adopts the per-clause reading, in
+  which every clause of a multi-clause anchor binds the window. The alternative is to measure both
+  bounds from the moment the anchor group was *established*, i.e. from its latest clause, so that
+  "within 7 days of the anchor" does not additionally require the anchor's own clauses to lie within
+  7 days of each other. Unlike per-clause, it is not reachable by decomposing the anchor, since the
+  index clause would have to be whichever one happens to be later for each patient rather than one
+  the author names up front. Not offered as a second mode: per-clause is strictly stronger, so it
+  never admits a patient the completion reading would reject, and no use case has asked for the
+  weaker one yet. Worth revisiting if authors turn out to write multi-clause anchors whose clauses
+  are routinely further apart than the dependent's offsets.
 - **Signed duration format — resolved for CQL.** `"-P3D"`-style signed ISO 8601, matching
   `java.time.Duration.parse`, is what the CQL translation path actually parses `minOffset`/
   `maxOffset` with, confirming the convention this draft assumed. One implementation detail worth

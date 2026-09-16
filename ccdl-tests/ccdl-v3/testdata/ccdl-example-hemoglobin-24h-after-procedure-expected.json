@@ -1,0 +1,6 @@
+{
+  "ccdl": "ccdl-example-hemoglobin-24h-after-procedure.json",
+  "referenceDate": "2026-09-16",
+  "includedPatients": ["next-day", "same-day"],
+  "excludedPatients": ["before", "no-procedure", "too-late"]
+}
