@@ -11,8 +11,15 @@
 |---|---|---|---|
 | 1 | `inclusionCriteria`/`exclusionCriteria` — array of group arrays | OR | OR |
 | 2 | A group array — array of `Group` objects | AND | AND |
-| 3 | A group's `criteria`, outer array | AND | OR |
-| 4 | A group's `criteria`, inner array | OR | AND |
+| 3 | A group's `criteria`, outer array | AND | AND |
+| 4 | A group's `criteria`, inner array | OR | OR |
+
+Every level is uniform across both sides. Levels 3 and 4 alternated by polarity in `version: "2"`
+and no longer do, because levels 1 and 2 supply the same OR-of-AND shape that inversion existed to
+provide. One consequence matters beyond tidiness: a group means the same thing wherever it sits, so
+§6's witness rule has a single form and applies to an anchor defined in `exclusionCriteria`
+unchanged. Migration of a v2 exclusion side is in the full draft's Compatibility section, and its
+rule is "split at level 1, never distribute".
 
 No metadata (`id`, `relativeTimeRestrictions`, `anchorOccurrence`, `anchorPoint`) outside level 2. Not
 recursive: a group array can't contain another group array, `criteria` can't contain another group.
@@ -38,7 +45,7 @@ element.
 ## Group fields
 
 - `id` — required only if referenced as an anchor elsewhere.
-- `criteria` — unchanged two-level CNF/DNF shape.
+- `criteria` — two-level AND-of-OR shape, the same on both sides.
 - `relativeTimeRestrictions` — array, see below; omit if the group has no time constraint.
 - `anchorOccurrence: "first" | "last" | "any"` — required if this group is used as an anchor (not
   for `now`). Selects which candidates may serve as the witness: earliest only, latest only, or all
@@ -55,7 +62,9 @@ Array of:
 
 - `anchorRef` — id of the anchor group. Resolution is global (any group in the document, either side).
 - `minOffset`/`maxOffset` — signed ISO 8601 duration, negative = before anchor, positive = after. At
-  least one required per entry; omitting one leaves that side unbounded.
+  least one required per entry; omitting one leaves that side unbounded. `cctb` normalizes the
+  duration to whole hours before printing it into CQL offset arithmetic, so sub-hour offsets
+  (`"PT30M"`) truncate to zero.
 - **Multiple entries → AND-intersected window, single shared matching resource:** `windowStart =
   Max` of every entry's own start, `windowEnd = Min` of every entry's own end. Distinct from
   duplicating the group across two separate groups (independent existence checks vs. one resource
@@ -142,7 +151,7 @@ Per `relativeTimeRestrictions` entry (potentially a different anchor group each 
 2. **Reduce to a point** — `dateTime` as-is; `Period` reduced via `anchorPoint` (default `start`).
 3. **Select the eligible witnesses** — earliest only (`"first"`), latest only (`"last"`), or all
    (`"any"`).
-   - If the anchor group's level 3 is AND (multiple required clauses), a witness is a **tuple**, one
+   - If the anchor group has more than one clause, a witness is a **tuple**, one
      candidate per clause, and the window comes from its extremes: `maxOffset` from the earliest
      member, `minOffset` from the latest. Under `"first"`/`"last"` each clause contributes one
      candidate, so the product is a single tuple and this is today's behavior. Single-clause:
@@ -174,9 +183,8 @@ a downstream `"any"` reference quantifies over the intermediate group's already-
 matches, and each anchor id is shared per group array independently of the others.
 
 **`cctb` does this** — `resolveAnchorDates` passes the group's own window down into candidate
-resolution. What it does not pass down is the §7 null-guard, so an unresolved upstream anchor leaves
-the window unbounded instead of producing no-match. A translation gap rather than a semantics one,
-but it does change which patients match.
+resolution, and ANDs the upstream window's §7 null-guard into the chained anchor's own, so an
+unresolved anchor anywhere up the chain forces no-match at every point below it.
 
 ## Translation obligations (not semantics)
 
@@ -214,13 +222,6 @@ Ten worked examples in [ccdl-tests/ccdl-v3/](ccdl-tests/ccdl-v3/), with a readin
 
 ## Open questions
 
-- `anchorOccurrence: "any"` implementation in `cctb` — semantics are settled (above), the
-  translator work is not done yet. Known costs, largest first: a chained `"any"` anchor's candidates
-  must become a correlated query rather than a hoisted per-patient date; sibling groups' translation
-  is coupled; and multi-clause `"any"` quantifies over a product of candidate sets, so single-clause
-  is the sensible first increment.
-- Chained anchors in `cctb` do not apply the chained group's own window when gathering candidates —
-  settled semantics, open implementation gap, changes results rather than only performance.
 - Overlap vs. containment for narrow relative windows — step 5's inherited overlap-sufficiency rule
   may be too lenient at 72h-scale windows. Not yet decided.
 - A "completion" reading for multi-clause anchors (both bounds off the latest clause, so the

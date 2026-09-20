@@ -288,9 +288,7 @@
                   "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
                 }
               ]
-            }
-          ],
-          [
+            },
             {
               "context": {
                 "code": "Diagnose",

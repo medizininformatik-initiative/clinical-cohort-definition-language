@@ -16,6 +16,12 @@
 > deliberately refused rather than translated: a `"first"`/`"last"` anchor chained off an `"any"`
 > anchor, which would need a per-patient value computed from a witness that only exists inside a
 > correlated query. `cctb` rejects it at validation with a message saying so.
+>
+> **One exception, added after `cctb` caught up: the uniform levels 3 and 4 of §1 are not yet
+> implemented.** `cctb` still applies the `version: "2"` polarity, AND-of-OR for inclusion and
+> OR-of-AND for exclusion, which is why its anchor resolution is currently correct only for
+> inclusion-side anchor groups. Until it follows, an anchor group defined inside `exclusionCriteria`
+> with more than one criterion is mistranslated rather than rejected.
 > Everything else should be read as "this is what `cctb` does today." `version: "3"` has not been
 > published or adopted anywhere yet, so there was no reason to stage it behind an intermediate,
 > never-released version — the whole extension ships as one breaking change from today's adopted
@@ -49,11 +55,12 @@ level 2 — levels 3 and 4 are plain boolean grouping, nothing more:
 2. **The group array** — the array directly inside level 1 — an array of named **group** objects.
    **Always combined with AND**, on both sides. Every
    group listed in a group array is unconditionally required for that array to be satisfied — see §4 for how this interacts with `relativeTimeRestrictions`.
-3. **A group's `criteria`, outer array** — AND for a group inside `inclusionCriteria`, OR for a
-   group inside `exclusionCriteria`. Matches today's existing polarity exactly, just relocated two
-   levels in instead of one.
-4. **A group's `criteria`, inner array** — OR for inclusion-groups, AND for exclusion-groups (the
-   opposite of level 3, as in today's CNF/DNF).
+3. **A group's `criteria`, outer array** — **always combined with AND**, on both sides. This is a
+   change from `version: "2"`, where the outer array was OR on the exclusion side. See §3 for why
+   the polarity no longer alternates by side, and Compatibility for what it means for existing
+   documents.
+4. **A group's `criteria`, inner array** — **always combined with OR**, on both sides (the opposite
+   of level 3).
 
 ```json
 {
@@ -64,7 +71,7 @@ level 2 — levels 3 and 4 are plain boolean grouping, nothing more:
         "relativeTimeRestrictions": [ { "...": "optional, see §4" } ],
         "anchorOccurrence": "optional, see §4 — only when this group is used as an anchor",
         "criteria": [
-          [ /* level 4: OR (inclusion) / AND (exclusion) */ ],
+          [ /* level 4: OR, on both sides */ ],
           [ /* another level-3 clause */ ]
         ]
       }
@@ -82,26 +89,25 @@ tooling to parse either way, no branching on whether a given document happens to
 
 This is still a fixed depth, not recursion: a group's internal levels 3/4 cannot themselves contain
 another named, anchorable group, and a group array cannot itself contain another group array. Depth is
-capped deliberately, for the same reason as originally — a group's internal AND/OR structure is
-exactly as expressive as the CNF/DNF a group array's own AND already provides (see §2), so nothing is
-lost by capping it there, and a fixed, shallow shape is far easier to debug and to translate into
-CQL/Delta Lake SQL than an open-ended tree.
+capped deliberately, for the same reason as originally — between a group's internal AND-of-OR and
+the OR-of-AND that levels 1 and 2 provide above it (see §2), every boolean shape is already
+reachable, so nothing is lost by capping it there, and a fixed, shallow shape is far easier to debug
+and to translate into CQL/Delta Lake SQL than an open-ended tree.
 
 ## 2. When you actually need a second group in one array, or a second array
 
 **A second group inside one group array** is only ever created because something needs a separate,
 addressable identity to participate in an anchor relationship (§4). It is not an alternative way to
 express ordinary boolean combination — that capability lives in a single group's own `criteria`
-(levels 3/4), which already reproduces the full old CNF/DNF shape on its own.
+(levels 3/4), an AND of ORs on either side.
 
 **A second group array** is created when two (or more) requirements are genuine alternatives — a
-patient should qualify by satisfying *either* one, not both. Before level 1 existed, "exclude if X, or
-exclude if Y" with no time relation between them had to stay inside one group's own `criteria`
-(`{ "criteria": [ [X], [Y] ] }`, OR internally per the exclusion polarity in §1) — `group-excl-organ-failure`
-in the worked example is exactly this case, and it's *still* the right shape when X and Y share the
-same (lack of) time constraint: splitting into two group arrays just to express an ordinary OR, when
-nothing about anchoring differs between the branches, adds structure without buying anything. Reach
-for a second group array specifically when the alternatives need genuinely different anchoring —
+patient should qualify by satisfying *either* one, not both. A plain OR between single criteria does
+not need one: "exclude if X, or exclude if Y" with no time relation between them is one group whose
+`criteria` are `[[X, Y]]`, a single level-4 OR, which is what `group-excl-organ-failure` in the
+worked examples is. Splitting that into two group arrays adds structure without buying anything.
+Reach for a second group array when the alternatives are *compound* — each one a conjunction in its
+own right, which level 3's AND cannot disjoin — or when they need genuinely different anchoring —
 different anchors, or none at all on one side — which a single group's `criteria` has no way to
 express, even with multiple `relativeTimeRestrictions` entries (§4): those combine via
 AND-intersection onto one shared matching resource, never OR between alternatives, and whatever window results
@@ -149,14 +155,13 @@ ruled out. There was simply nowhere to put that OR at all, before level 1 existe
 
 Three independent reasons, not just "because that's what was missing":
 
-1. **There's no live alternation left to preserve.** Levels 3/4 (a group's own `criteria`) alternate
-   by polarity — AND-of-OR for inclusion, OR-of-AND for exclusion. That alternation used to *also*
-   exist one level up (pre-anchor-feature, exclusion's top level was OR-of-AND-groups while
-   inclusion's was AND-of-OR-groups) but was deliberately flattened to uniform AND when anchors were
-   introduced, specifically to avoid "a rule that depends on which side you're on." Holding the group
-   array's own meaning fixed (AND, both sides — unchanged, still correct), there's no alternating
-   pattern left at that level to consistently extend outward; the level above it comes out uniform
-   either way.
+1. **There's no alternation left to preserve.** Alternation by polarity used to exist at the group
+   level (pre-anchor-feature, exclusion's top level was OR-of-AND-groups while inclusion's was
+   AND-of-OR-groups) and was deliberately flattened to uniform AND when anchors were introduced,
+   specifically to avoid "a rule that depends on which side you're on." This document applies that
+   same reasoning to levels 3 and 4 (see "Why the polarity no longer alternates" below), so there is
+   no alternating pattern anywhere left to extend outward, and the level above the group array comes
+   out uniform either way.
 2. **It's the semantically natural choice for both sides independently**, not just structurally
    convenient. Inclusion wants "qualifies via any of several alternative pathways." Exclusion wants
    "excluded via any of several independent disqualifying pathways" — if anything an even more
@@ -171,6 +176,30 @@ Three independent reasons, not just "because that's what was missing":
 Nothing is lost by going uniform: "this only applies when X and Y both hold" is still fully
 expressible — put X and Y in the same group array (§2). The AND case doesn't disappear, it's just
 expressed at level 2 rather than needing level 1 to also alternate.
+
+### Why the polarity no longer alternates at levels 3 and 4
+
+In `version: "2"` there were no groups. `inclusionCriteria` and `exclusionCriteria` were two levels
+of arrays of criteria and nothing else, and the polarity lived only in the schema's `description`
+strings. Inverting it by side was the only way to get both "all of these" and "any of these" out of
+one fixed two-level nesting. It was scaffolding for a missing level, not a design position.
+
+Levels 1 and 2 are that missing level. An OR of group arrays over an AND of groups is precisely the
+OR-of-AND shape the exclusion side's inverted `criteria` was providing, so the inner levels were
+supplying it a second time and in the opposite direction. Removing the inversion therefore costs no
+expressiveness. A disjunction of compound disqualifying reasons becomes one group array per reason,
+which is level 1 doing the job it was added for.
+
+What it buys is that a group means the same thing wherever it sits. That matters for anything which
+reads a group's internal structure rather than just evaluating it to a boolean. §6's witness rule is
+the first such consumer and would otherwise need a second, mirrored definition for exclusion-side
+anchors, with every translator obliged to implement both. Occurrence counts and group-level time
+constraints, if they are ever added, would need the same. One shape, one rule, one implementation.
+
+The cost is borne by disjunctive compound exclusions, which read more naturally as a list of
+alternatives than as one group array each. Since CCDL documents are generated by query-building
+tools rather than hand-written, that cost falls on a presentation layer that can render whatever it
+likes, and never on a reader of the JSON.
 
 ## 4. `relativeTimeRestrictions` and anchors
 
@@ -399,9 +428,13 @@ potentially a different anchor group each time). Step 4 then intersects the per-
 §4's "multiple entries" for the single-shared-resource reasoning behind intersecting rather than any
 other combination.
 
-1. **Gather candidates.** Evaluate the anchor group's own `criteria` as usual, and collect every
-   resource instance belonging to this patient that matches any criterion in the anchor group —
-   e.g. every Condition instance coding F00 or G30, for `anchor-dementia-diagnosis`. "As usual"
+1. **Gather candidates.** Evaluate the anchor group's own `criteria` as usual, per clause: within
+   one level-4 clause the criteria are OR'd, so a candidate is every resource instance belonging to
+   this patient that matches any criterion in that clause — e.g. every Condition instance coding F00
+   or G30, for `anchor-dementia-diagnosis`, whose single clause holds both codes. A group with
+   several clauses gathers a separate candidate set for each, since level 3 is AND and every clause
+   binds (see step 3). This reads the same way on either side of the query, because §1's levels 3
+   and 4 no longer alternate by polarity. "As usual"
    includes each criterion's own absolute `timeRestriction` where it has one: a resource the
    criterion does not match is not a candidate, and an anchor group can therefore be date-bounded
    in its own right (§5). If the anchor group is itself windowed relative to something else, its
@@ -416,9 +449,11 @@ other combination.
    witness is chosen existentially, shared across every reference to that anchor within a group
    array — see the dedicated subsection below.
 
-   **When the anchor group's level 3 is AND (multiple required clauses), a witness is a tuple** —
-   one candidate per clause, drawn from the product of the clauses' own eligible sets, with steps
-   1–3 running per clause (`anchorOccurrence` filtering each clause's own candidates). A tuple
+   **When the anchor group has more than one clause, a witness is a tuple** — one candidate per
+   clause, drawn from the product of the clauses' own eligible sets, with steps
+   1–3 running per clause (`anchorOccurrence` filtering each clause's own candidates). Level 3 is
+   AND on both sides (§1), so this rule has one form and an anchor group means the same thing
+   wherever in the document it is defined, including inside `exclusionCriteria`. A tuple
    induces a window from both of its extremes, asymmetrically, rather than from a single collapsed
    point: `maxOffset` is measured from the **earliest** date in the tuple, `minOffset` from the
    **latest**.
@@ -623,11 +658,12 @@ query carries the window predicate. For a chained anchor the generated CQL reads
 Interval["AnchorDate_<upstream>" + 0 hours, "AnchorDate_<upstream>" + 168 hours] ...))`, which is the
 rule above.
 
-What is **not** applied on that path is the §7 null-guard. The interval is passed down, the guard is
-not, so if the upstream anchor fails to resolve for a patient the interval degenerates to unbounded
-rather than to no-match, and the chained anchor can still supply a date downstream. That is a
-translation obligation left unmet rather than a gap in the semantics above, and it does change which
-patients match. Listed under Open Questions.
+The §7 null-guard travels down the same path: `Group.resolveAnchorDates` ANDs the upstream window's
+guard into the chained anchor's own, so an anchor that fails to resolve anywhere up the chain forces
+no-match at every point below it rather than leaving a downstream window unbounded. Verified against
+real Blaze by `EvaluationIT.evaluateChainedAnchorGuardPropagatesFromHeadOfChain`, which translates
+the last link of a three-group chain in isolation so nothing but the propagated guard can exclude a
+patient missing the head.
 
 ### Applying the window
 
@@ -768,6 +804,30 @@ shape described in §1, even for the common case of a single group array with no
 alternative in use. `version: "3"` has not been published or adopted anywhere yet, so there was no
 reason to split this behind an intermediate, never-released version — it ships as one step from
 today's adopted `"2"`.
+
+### Migrating an exclusion side
+
+Levels 3 and 4 no longer alternate by side (§1, §3), so a `version: "2"` exclusion group means
+something different read as `version: "3"`. This cannot be missed by accident: a v2 document does
+not parse as v3 at all, because its criteria arrays hold bare criteria where v3 requires group
+objects, so every document passes through a converter regardless. The conversion of the boolean
+content is mechanical, and there is one rule for it.
+
+**Split at level 1. Never distribute.** Each clause of a v2 exclusion group's outer array is one
+disqualifying alternative, so each becomes its own group array. A clause's own criteria were AND'd,
+so they become that group's clauses, one criterion each. `[[A, B], [C]]`, which read as
+`(A and B) or C`, becomes two group arrays, the first holding a group with `criteria` `[[A], [B]]`
+and the second a group with `criteria` `[[C]]`. A single-clause exclusion group, the common case,
+becomes one group array with one group, and a v2 group of the shape `[[X], [Y]]`, which read as
+`X or Y`, collapses to the single clause `[[X, Y]]`.
+
+Distributing into conjunctive normal form inside one group is also exact and is occasionally what
+you want, specifically when the alternatives must share one group's `relativeTimeRestrictions` or
+`anchorOccurrence`. It should never be generated automatically. It duplicates criteria
+multiplicatively, and a builder that stores it has to redistribute on load, which does not round
+trip and silently regroups the author's alternatives. Where alternatives in separate group arrays
+share a time constraint, repeat the `relativeTimeRestrictions` entry in each. The anchor group
+itself stays single and is referenced by `id` from all of them (§4).
 
 ## Worked examples
 
@@ -920,15 +980,6 @@ verified end to end against the real translator in one query.
 
 ## Open Questions (not yet decided)
 
-- **Window match mode is the only open item left about `"any"`.** `cctb` now implements
-  `anchorOccurrence: "any"` in full, single- and multi-clause, including chains and the shared-witness
-  coupling, so what used to sit here as unimplemented is retired below.
-- **The null-guard is not applied along `cctb`'s chaining path.** Not an open design question, and
-  not a gap in §6: the window interval *is* applied when a chained anchor gathers its candidates.
-  The §7 guard is not. So when an upstream anchor fails to resolve, the chained anchor's window
-  degenerates to unbounded rather than producing no-match, and the group downstream of it can match
-  a patient it should exclude. It changes results rather than only performance, which is why it is
-  tracked here rather than only in a code comment.
 - **Overlap vs. containment for narrow relative windows.** §6 step 5 inherits the existing
   `timeRestriction` rule that overlap between a criterion's own interval and the window is
   sufficient. That's reasonable for the looser windows the absolute case was designed around, but
@@ -966,6 +1017,17 @@ verified end to end against the real translator in one query.
   group-array membership" rule. A `now`-only group only needs to live in whichever group array
   actually references it; it no longer has to sit as a vacuous member of a single,
   universally-required list.
+- ~~The null-guard is not applied along `cctb`'s chaining path~~ — fixed in `cctb`.
+  `Group.resolveAnchorDates` now ANDs the upstream window's guard into the chained anchor's own, so
+  an unresolved anchor anywhere up the chain forces no-match at every point below it instead of
+  leaving the downstream window unbounded. Never an open design question, only a translation
+  obligation left unmet; see §6 Chaining and §7.
+- ~~`anchorOccurrence: "any"` is unimplemented in `cctb`~~ — implemented, single- and multi-clause,
+  including chains and the shared-witness coupling, and covered by
+  `EvaluationIT.evaluateAnyAnchorRequiresOneSharedWitness`. One shape is refused at validation
+  rather than translated: a `"first"`/`"last"` anchor chained off an `"any"` anchor (see the status
+  banner). The only `"any"`-adjacent item still undecided is the window match mode above, which is
+  not specific to `"any"`.
 - ~~Multiple anchors per dependent group~~ — resolved by §4's "multiple entries" subsection: a
   group's `relativeTimeRestrictions` is a list, more than one entry AND-intersects their windows
   onto a single shared matching resource, which is exactly the "between event A and event B" pattern
