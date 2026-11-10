@@ -91,7 +91,7 @@
         ]
       },
       {
-        "id": "anchor-resection-with-transfusion",
+        "id": "anchor-colon-resection",
         "anchorOccurrence": "first",
         "anchorPoint": "end",
         "criteria": [
@@ -112,7 +112,19 @@
                 }
               ]
             }
-          ],
+          ]
+        ]
+      },
+      {
+        "id": "group-transfusion-with-resection",
+        "relativeTimeRestrictions": [
+          {
+            "anchorRef": "anchor-colon-resection",
+            "minOffset": "-P1D",
+            "maxOffset": "P1D"
+          }
+        ],
+        "criteria": [
           [
             {
               "context": {
@@ -141,7 +153,7 @@
             "minOffset": "P0D"
           },
           {
-            "anchorRef": "anchor-resection-with-transfusion",
+            "anchorRef": "anchor-colon-resection",
             "maxOffset": "P0D"
           }
         ],
@@ -176,7 +188,7 @@
         "anchorPoint": "start",
         "relativeTimeRestrictions": [
           {
-            "anchorRef": "anchor-resection-with-transfusion",
+            "anchorRef": "anchor-colon-resection",
             "minOffset": "P0D",
             "maxOffset": "P30D"
           }
@@ -356,7 +368,7 @@
         "id": "group-followup-lab-since-resection",
         "relativeTimeRestrictions": [
           {
-            "anchorRef": "anchor-resection-with-transfusion",
+            "anchorRef": "anchor-colon-resection",
             "minOffset": "P0D"
           },
           {
@@ -393,7 +405,7 @@
         "id": "group-excl-anticoagulant-around-resection",
         "relativeTimeRestrictions": [
           {
-            "anchorRef": "anchor-resection-with-transfusion",
+            "anchorRef": "anchor-colon-resection",
             "minOffset": "-P2D",
             "maxOffset": "P2D"
           }

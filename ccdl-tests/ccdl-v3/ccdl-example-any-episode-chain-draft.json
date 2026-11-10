@@ -1,10 +1,10 @@
 {
   "version": "3",
-  "display": "Example-Any-Multi-Clause-Anchor (DRAFT)",
+  "display": "Example-Any-Episode-Chain (DRAFT)",
   "inclusionCriteria": [
     [
       {
-        "id": "anchor-sepsis-with-aki",
+        "id": "anchor-sepsis",
         "anchorOccurrence": "any",
         "anchorPoint": "start",
         "criteria": [
@@ -24,7 +24,21 @@
                 }
               ]
             }
-          ],
+          ]
+        ]
+      },
+      {
+        "id": "group-aki-near-sepsis",
+        "anchorOccurrence": "any",
+        "anchorPoint": "start",
+        "relativeTimeRestrictions": [
+          {
+            "anchorRef": "anchor-sepsis",
+            "minOffset": "-P3D",
+            "maxOffset": "P3D"
+          }
+        ],
+        "criteria": [
           [
             {
               "context": {
@@ -48,7 +62,12 @@
         "id": "group-hemoglobin-after-episode",
         "relativeTimeRestrictions": [
           {
-            "anchorRef": "anchor-sepsis-with-aki",
+            "anchorRef": "anchor-sepsis",
+            "minOffset": "P0D",
+            "maxOffset": "P3D"
+          },
+          {
+            "anchorRef": "group-aki-near-sepsis",
             "minOffset": "P0D",
             "maxOffset": "P3D"
           }
@@ -78,7 +97,12 @@
         "id": "group-crp-after-episode",
         "relativeTimeRestrictions": [
           {
-            "anchorRef": "anchor-sepsis-with-aki",
+            "anchorRef": "anchor-sepsis",
+            "minOffset": "P0D",
+            "maxOffset": "P1D"
+          },
+          {
+            "anchorRef": "group-aki-near-sepsis",
             "minOffset": "P0D",
             "maxOffset": "P1D"
           }

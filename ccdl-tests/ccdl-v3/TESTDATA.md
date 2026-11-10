@@ -174,7 +174,7 @@ Patient = no-procedure        │                                               
 Two patients decide whether an implementation is right. `before` is the one-sided test. Its
 haemoglobin is a day ahead of the procedure, so it matches under a symmetric window and must not match
 under this one, which is exactly the difference between this example and
-`ccdl-example-multi-clause-anchor` below, whose window is `-PT24H..PT24H`. `next-day` is the precision
+`ccdl-example-and-as-chain` below, whose window is `-PT24H..PT24H`. `next-day` is the precision
 test: the offset is applied at the anchor date's own precision, so `PT24H` reaches the following
 *date* rather than 24 clock hours, and an implementation reading the offset as elapsed hours drops
 this patient.
@@ -183,41 +183,43 @@ this patient.
 The patient has a haemoglobin and nothing to measure it from, so the guard has to exclude it rather
 than leave the outcome to the engine's own null handling.
 
-## `ccdl-example-multi-clause-anchor`
+## `ccdl-example-and-as-chain`
 
-A multi-clause AND-anchor. The two OPS codes are separate clauses, so the anchor resolves to *two*
-dates: the window runs from the later one minus 24h to the earlier one plus 24h. Same-day clauses
-give a ±1 day window; clauses that drift apart shrink it and eventually invert it.
+"Two procedures together" written as a chain. The anchor is the first OPS code alone. The second code
+is its own group, windowed to within a day of the anchor, and the haemoglobin-and-diagnosis group is
+measured from the anchor only. The second group array references the anchor without listing the
+second-procedure group, so it needs the anchor's date and nothing else.
 
-Patients sit in different months, so lanes are drawn relative to each patient's own procedure.
+Patients sit in different months, so lanes are drawn relative to each patient's own anchor procedure.
 
 ```
-                              │      −1d  proc +1d             +4d                         │ result
-                              │      |    |    |               |                           │
+                              │    −1d   proc  +1d                     +5d                 │ result
+                              │    |     |     |                       |                   │
 ══════════════════════════════╪════════════════════════════════════════════════════════════╪
 Patient = first-path          │                                                            │ ✓ selected
-  resources                   │           ◇5-470.1                                         │
-                              │           ◇8-718.94                                        │
-                              │           ●Hb                                              │
-                              │           ●E10.9                                           │
-  window                      │      ▓▓▓▓▓▓▓▓▓▓▓                                           │ both clauses same day: ±1 day
+  resources                   │          ◇5-470.1                                          │
+                              │          ●8-718.94                                         │
+                              │          ●Hb                                               │
+                              │          ●E10.9                                            │
+  second procedure            │    ▓▓▓▓▓▓▓▓▓▓▓▓▓                                           │ 8-718.94 within ±1 day of the anchor ✓
+  Hb + E10.9                  │    ▓▓▓▓▓▓▓▓▓▓▓▓▓                                           │ ±24h of the anchor ✓
 ──────────────────────────────┼────────────────────────────────────────────────────────────┼
 Patient = second-path         │                                                            │ ✓ selected
-  resources                   │           ◇5-470.1                                         │
-                              │           ◇8-718.94                                        │
-                              │           ●Hb                                              │
-                              │           ●E11.9                                           │
-  window                      │      ▓▓▓▓▓▓▓▓▓▓▓                                           │ qualifies via the second array
+  resources                   │          ◇5-470.1                                          │
+                              │          ●Hb                                               │
+                              │          ●E11.9                                            │
+  Hb + E11.9                  │    ▓▓▓▓▓▓▓▓▓▓▓▓▓                                           │ second array: references the anchor only
 ──────────────────────────────┼────────────────────────────────────────────────────────────┼
 Patient = spread-out          │                                                            │ ✗ not selected
-  resources                   │      ◇5-470.1  ●Hb             ◇8-718.94                   │
-                              │                ●E10.9                                      │
-  window                      │           end◄────────────►start                           │ latest−24h is after earliest+24h
+  resources                   │          ◇5-470.1                      ●8-718.94           │
+                              │          ●Hb                                               │
+                              │          ●E10.9                                            │
+  second procedure            │    ▓▓▓▓▓▓▓▓▓▓▓▓▓                                           │ 8-718.94 five days out, outside the tolerance
 ──────────────────────────────┼────────────────────────────────────────────────────────────┼
 Patient = no-procedure        │                                                            │ ✗ not selected
-  resources                   │                ●Hb                                         │
-                              │                ●E10.9                                      │
-  window                      │                                                            │ no anchor clause resolves
+  resources                   │          ●Hb                                               │
+                              │          ●E10.9                                            │
+  window                      │                                                            │ no anchor resolves
 ══════════════════════════════╧════════════════════════════════════════════════════════════╧
 ```
 
@@ -311,56 +313,61 @@ Patient = no-hemoglobin       │                                               
 ══════════════════════════════╧════════════════════════════════════════════════════════════╧
 ```
 
-## `ccdl-example-any-multi-clause-anchor-draft`
+## `ccdl-example-any-episode-chain-draft`
 
-A multi-clause `any` anchor: the witness is a **tuple**, one sepsis and one kidney injury, drawn from
-the product of the two clauses' candidates. The window runs from the later tuple member to the earlier
-member plus the offset, so a tuple whose members are far apart produces no window at all.
+A sepsis-with-AKI episode as a chain of two `any` anchors. The AKI is windowed to within three days of
+the sepsis, and each dependent carries one entry per anchor, so it has to fall after both and within
+its offset of each. The witnesses are chosen together: one sepsis, one AKI near it, and both
+dependents bound to that same pair. This is the single-clause decomposition of the former two-clause
+anchor, and it selects the same patients.
 
 ```
-                              │         Jan 1  Jan 2   Jan 3                               │ result
-                              │         |      |       |                                   │
+                              │         Jan 1  Jan 2  Jan 3  Jan 4                         │ result
+                              │         |      |      |      |                             │
 ══════════════════════════════╪════════════════════════════════════════════════════════════╪
 Patient = tight               │                                                            │ ✓ selected
-  resources                   │         ◆A41.5 ◆N17.0  ●Hb                                 │
+  resources                   │         ◆A41.5 ◆N17.0 ●Hb                                  │
                               │                ●CRP                                        │
-  ⤷ tuple Jan 1 + Jan 2       │                ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓                           │ Hb window: latest → earliest+3d
-  ⤷ same tuple, CRP           │                ▓                                           │ CRP window: latest → earliest+1d
+  ⤷ AKI near sepsis Jan 1     │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓                             │ AKI within ±3d ✓
+  ⤷ Hb after both             │                ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓                             │ after Jan 2, within 3d of Jan 1 ✓
+  ⤷ CRP after both            │                ▓                                           │ after Jan 2, within 1d of Jan 1 ✓
 ══════════════════════════════╧════════════════════════════════════════════════════════════╧
 ```
 
 ```
-                              │               Feb 20   Feb 22                              │ result
-                              │               |        |                                   │
+                              │            Feb 20        Feb 22                            │ result
+                              │            |             |                                 │
 ══════════════════════════════╪════════════════════════════════════════════════════════════╪
 Patient = two-options         │                                                            │ ✓ selected
-  resources                   │               ◆A41.5   ●Hb                                 │ (a Jan 1 sepsis also exists, off-chart)
+  resources                   │            ◆A41.5        ●Hb                               │ (a Jan 1 sepsis also exists, off-chart)
                               │                   ◆N17.0                                   │
                               │                   ●CRP                                     │
-  ⤷ tuple Feb 20 + Feb 21     │                   ▓▓▓▓▓▓▓▓▓▓▓                              │ the Jan 1 pairing gives an empty window
-  ⤷ same tuple, CRP           │                   ▓                                        │ CRP on Feb 21 ✓
+  ⤷ AKI near sepsis Feb 20    │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓                          │ the Jan 1 sepsis has no AKI within 3d
+  ⤷ Hb after both             │                   ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓                          │ Hb on Feb 22 ✓
+  ⤷ CRP after both            │                   ▓                                        │ CRP on Feb 21 ✓
 ══════════════════════════════╧════════════════════════════════════════════════════════════╧
 ```
 
 ```
-                              │    Jan 1                            Jan 11                 │ result
-                              │    |                                |                      │
+                              │    Jan 1                         Jan 11                    │ result
+                              │    |                             |                         │
 ══════════════════════════════╪════════════════════════════════════════════════════════════╪
 Patient = far-apart           │                                                            │ ✗ not selected
-  resources                   │    ◆A41.5                           ◆N17.0                 │
-                              │                                     ●CRP                   │
-                              │                                        ●Hb                 │
-  ⤷ the only tuple            │              end◄───────────────────►start                 │ earliest+3d is before latest
+  resources                   │    ◆A41.5                        ◆N17.0                    │
+                              │                                  ●CRP                      │
+                              │                                     ●Hb                    │
+  ⤷ AKI near sepsis Jan 1     │▓▓▓▓▓▓▓▓▓▓▓▓▓▓                                              │ AKI ten days later: not a candidate
 ══════════════════════════════╧════════════════════════════════════════════════════════════╧
 ```
 
 ```
-                              │         Jan 1  Jan 2   Jan 3                               │ result
-                              │         |      |       |                                   │
+                              │         Jan 1  Jan 2  Jan 3  Jan 4                         │ result
+                              │         |      |      |      |                             │
 ══════════════════════════════╪════════════════════════════════════════════════════════════╪
 Patient = no-crp              │                                                            │ ✗ not selected
-  resources                   │         ◆A41.5 ◆N17.0  ●Hb                                 │
-  ⤷ tuple Jan 1 + Jan 2       │                ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓                           │ Hb ✓, but the CRP group has nothing
+  resources                   │         ◆A41.5 ◆N17.0 ●Hb                                  │
+  ⤷ AKI near sepsis Jan 1     │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓                             │ AKI within ±3d ✓
+  ⤷ Hb after both             │                ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓                             │ Hb ✓, but the CRP group has nothing
 ══════════════════════════════╧════════════════════════════════════════════════════════════╧
 ```
 
@@ -370,8 +377,8 @@ The realistic cohort, and the only one exercising both sides at once. All four p
 same inclusion data; they differ only in what they add.
 
 The exclusion array is an **AND** of its two groups — an anticoagulant around the diagnosis *and* an
-organ failure — so one alone does not exclude anyone. That is the opposite of how the same-looking
-group behaves in `all-features`, where the two failures sit in one clause and conjoin instead.
+organ failure — so one alone does not exclude anyone. Within the organ-failure group, the two failures
+are one clause and disjoin, so either one counts.
 
 Every patient also has a respiratory rate three days before the evaluation date, satisfying the
 `now`-anchored group. That is off this timeline, which covers only the diagnosis-anchored part.
@@ -409,13 +416,17 @@ Patient = no-heart-rate       │                                               
 
 ## `ccdl-example-all-features-draft`
 
-Every construct at once, and two inclusion arrays. Three patients take the first array; one takes the
-second and never has the sepsis cascade at all.
+Every construct at once, and two inclusion arrays. Three patients satisfy the first array, and two of
+them are excluded. One takes the second array and never has the sepsis cascade at all.
 
-`partial-exclusion` is the counterpart to `anticoagulant-only` above. Here the two organ failures are
-**one clause with two criteria**, which conjoins on the exclusion side, so N18.8 alone is not enough
-and the patient stays in. In `with-new-time-constraint` they are two clauses and disjoin. The two
-examples look alike and mean different things.
+The resection is the anchor on its own. The transfusion is a separate group in the first array,
+windowed to within a day of the resection, so the second array, which references the resection but
+does not list that group, needs no transfusion. `specimen-path` has none.
+
+`partial-exclusion` has the anticoagulant and only one of the two organ failures. The failures are
+**one clause with two criteria**, which disjoins on both sides, so N18.8 alone is enough and the
+patient is excluded. In `version: "2"` the exclusion side inverted the clause levels, and the same
+clause would have required both failures.
 
 ```
                               │     dx                       op          Feb 25            │ result
@@ -423,18 +434,19 @@ examples look alike and mean different things.
 ══════════════════════════════╪════════════════════════════════════════════════════════════╪
 Patient = main-path           │                                                            │ ✓ selected
   resources                   │     ◇K57.3  ●Hb              ◇5-455.3    ●8-85a.0          │
-                              │                              ◇8-805.0                      │
+                              │                              ●8-805.0                      │
                               │                                  ◆A41.5                    │
                               │                                     ◆N17.0                 │
+  transfusion near op         │                             ▓▓▓                            │ 8-805.0 within ±1 day of the resection ✓
   Hb between anchors          │     ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓                             │ dx → resection, Hb inside ✓
   ⤷ sepsis Feb 15             │                                  ▓▓▓▓▓▓▓                   │ AKI ✓ within 7d, CRP ✓ within 3d
   ⤷ AKI Feb 18                │                                     ▓▓▓▓▓▓▓▓▓▓▓            │ dialysis Feb 25 ✓
 ──────────────────────────────┼────────────────────────────────────────────────────────────┼
-Patient = partial-exclusion   │                                                            │ ✓ selected
+Patient = partial-exclusion   │                                                            │ ✗ not selected
   resources                   │     ◇K57.3                    ◆B01AA04                     │
                               │                                  ◆A41.5                    │
   (rest as main-path)         │                                                            │ same inclusion data as main-path
-  exclusion                   │                                                            │ drug ✓ but only N18.8; the clause needs K72 too
+  exclusion                   │                                                            │ drug ✓ and N18.8 ✓ — one failure is enough, excluded
 ──────────────────────────────┼────────────────────────────────────────────────────────────┼
 Patient = excluded            │                                                            │ ✗ not selected
   resources                   │     ◇K57.3                    ◆B01AA04                     │
@@ -444,8 +456,8 @@ Patient = excluded            │                                               
 ──────────────────────────────┼────────────────────────────────────────────────────────────┼
 Patient = specimen-path       │                                                            │ ✓ selected
   resources                   │     ◇K57.3                   ◇5-455.3        ●Hb           │
-                              │     ▣Specimen                ◇8-805.0                      │
-  array 2                     │                                                            │ specimen references the K57.3 condition ✓
+                              │     ▣Specimen                                              │
+  array 2                     │                                                            │ specimen references the K57.3 condition ✓, no transfusion needed
   follow-up lab               │                              ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓            │ resection → now, Hb inside ✓
 ══════════════════════════════╧════════════════════════════════════════════════════════════╧
 ```

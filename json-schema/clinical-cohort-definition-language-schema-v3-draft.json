@@ -1,0 +1,569 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://medizininformatik-initiative.de/fdpg/ClinicalCohortDefinitionLanguage/v3/schema",
+  "$comment": "DRAFT, not adopted. Specified in ccdl-v3-draft.md. The adopted schema is clinical-cohort-definition-language-schema.json (version 2).",
+  "$defs": {
+    "termCode": {
+      "type": "object",
+      "description": "The termCode defines a concept based on a coding system (i.e. LOINC). The triplet of code, system and version identify the concept.",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "system": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "display": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "system",
+        "display"
+      ]
+    },
+    "criterion": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "$ref": "#/$defs/termCode"
+        },
+        "termCodes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/termCode"
+          }
+        },
+        "valueFilter": {
+          "$ref": "#/$defs/valueFilter"
+        },
+        "attributeFilters": {
+          "$ref": "#/$defs/attributeFilters"
+        },
+        "timeRestriction": {
+          "$ref": "#/$defs/timeRestriction"
+        }
+      },
+      "required": [
+        "termCodes",
+        "context"
+      ]
+    },
+    "timeRestriction": {
+      "type": "object",
+      "description": "TimeRestirction specify the interval within the critiera has to be fullfilled. An intersection of the criterias interval with the interval defined in this timeRestriction is sufficient",
+      "properties": {
+        "afterDate": {
+          "type": "string",
+          "format": "date",
+          "description": "afterDate is the start of the date interval that further limits the resources."
+        },
+        "beforeDate": {
+          "type": "string",
+          "format": "date",
+          "description": "beforeDate is the end of the date interval that further limits the resources."
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "afterDate"
+          ]
+        },
+        {
+          "required": [
+            "beforeDate"
+          ]
+        }
+      ]
+    },
+    "unit": {
+      "type": "object",
+      "title": "UCUM Unit",
+      "description": "The unit is a ucum unit (https://ucum.org/trac)",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "display": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "display"
+      ]
+    },
+    "attributeFilters": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/attributeFilter"
+      }
+    },
+    "valueFilter": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "concept",
+            "quantity-comparator",
+            "quantity-range"
+          ]
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "concept"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "type": {
+                "const": "concept"
+              },
+              "selectedConcepts": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "$ref": "#/$defs/termCode"
+                }
+              }
+            },
+            "required": [
+              "type",
+              "selectedConcepts"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "quantity-comparator"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "type": {
+                "const": "quantity-comparator"
+              },
+              "comparator": {
+                "enum": [
+                  "gt",
+                  "ge",
+                  "lt",
+                  "le",
+                  "eq",
+                  "ne"
+                ]
+              },
+              "value": {
+                "type": "number"
+              },
+              "unit": {
+                "$ref": "#/$defs/unit"
+              }
+            },
+            "required": [
+              "type",
+              "comparator",
+              "value"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "quantity-range"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "type": {
+                "const": "quantity-range"
+              },
+              "minValue": {
+                "type": "number"
+              },
+              "maxValue": {
+                "type": "number"
+              },
+              "unit": {
+                "$ref": "#/$defs/unit"
+              }
+            },
+            "required": [
+              "type",
+              "minValue",
+              "maxValue"
+            ]
+          }
+        }
+      ]
+    },
+    "attributeFilter": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "concept",
+            "quantity-comparator",
+            "quantity-range",
+            "reference"
+          ]
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "concept"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "attributeCode": {
+                "$ref": "#/$defs/termCode"
+              },
+              "type": {
+                "const": "concept"
+              },
+              "selectedConcepts": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "$ref": "#/$defs/termCode"
+                }
+              }
+            },
+            "required": [
+              "type",
+              "selectedConcepts",
+              "attributeCode"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "quantity-comparator"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "attributeCode": {
+                "$ref": "#/$defs/termCode"
+              },
+              "type": {
+                "const": "quantity-comparator"
+              },
+              "comparator": {
+                "enum": [
+                  "gt",
+                  "ge",
+                  "lt",
+                  "le",
+                  "eq",
+                  "ne"
+                ]
+              },
+              "value": {
+                "type": "number"
+              },
+              "unit": {
+                "$ref": "#/$defs/unit"
+              }
+            },
+            "required": [
+              "type",
+              "comparator",
+              "value",
+              "attributeCode"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "quantity-range"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "attributeCode": {
+                "$ref": "#/$defs/termCode"
+              },
+              "type": {
+                "const": "quantity-range"
+              },
+              "minValue": {
+                "type": "number"
+              },
+              "maxValue": {
+                "type": "number"
+              },
+              "unit": {
+                "$ref": "#/$defs/unit"
+              }
+            },
+            "required": [
+              "type",
+              "minValue",
+              "maxValue",
+              "attributeCode"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "reference"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "attributeCode": {
+                "$ref": "#/$defs/termCode"
+              },
+              "type": {
+                "const": "reference"
+              },
+              "criteria": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "allOf": [
+                    {
+                      "properties": {
+                        "attributeFilters": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/$defs/attributeFilter",
+                            "not": {
+                              "properties": {
+                                "type": {
+                                  "const": "reference"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "$ref": "#/$defs/criterion"
+                    }
+                  ]
+                }
+              }
+            },
+            "required": [
+              "type",
+              "criteria",
+              "attributeCode"
+            ]
+          }
+        }
+      ]
+    },
+    "nowCriterion": {
+      "type": "object",
+      "description": "Resolves to the evaluation timestamp and matches every patient. Used only as the single criterion of a group that other groups reference via anchorRef. Carries no context or termCodes.",
+      "properties": {
+        "type": {
+          "const": "now"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "termCodes"
+            ]
+          },
+          {
+            "required": [
+              "context"
+            ]
+          }
+        ]
+      }
+    },
+    "clauseElement": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/criterion"
+        },
+        {
+          "$ref": "#/$defs/nowCriterion"
+        }
+      ]
+    },
+    "duration": {
+      "type": "string",
+      "description": "Signed ISO 8601 duration in days and/or hours, minutes, seconds, as accepted by java.time.Duration.parse, e.g. \"-P3D\", \"PT72H\", \"P0D\". Negative means before the anchor. Years, months and weeks are not allowed. Translators may normalize to whole hours.",
+      "pattern": "^[-+]?P(?!$)(\\d+D)?(T(?=\\d)(\\d+H)?(\\d+M)?(\\d+(\\.\\d+)?S)?)?$"
+    },
+    "relativeTimeRestriction": {
+      "type": "object",
+      "description": "A window relative to the resolved date of the group named by anchorRef. At least one bound is required; an omitted bound leaves that side open.",
+      "properties": {
+        "anchorRef": {
+          "type": "string",
+          "minLength": 1,
+          "description": "id of the anchor group. Resolved globally, across group arrays and both sides. Must resolve, and the reference graph must be acyclic (validator rules, not expressible in JSON Schema)."
+        },
+        "minOffset": {
+          "$ref": "#/$defs/duration"
+        },
+        "maxOffset": {
+          "$ref": "#/$defs/duration"
+        }
+      },
+      "required": [
+        "anchorRef"
+      ],
+      "anyOf": [
+        {
+          "required": [
+            "minOffset"
+          ]
+        },
+        {
+          "required": [
+            "maxOffset"
+          ]
+        }
+      ]
+    },
+    "group": {
+      "type": "object",
+      "description": "A group of criteria, optionally windowed relative to other groups. Validator rules not expressible here: ids are unique across the document, every group named by an anchorRef has anchorOccurrence (unless it is a now group) and exactly one clause.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Required only if the group is referenced via anchorRef."
+        },
+        "criteria": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Level 3: all clauses are conjuncted with AND, on both sides.",
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Level 4: all criteria within a clause are conjuncted with OR, on both sides.",
+            "items": {
+              "$ref": "#/$defs/clauseElement"
+            }
+          }
+        },
+        "relativeTimeRestrictions": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Several entries intersect their windows: one matching resource has to fall inside all of them.",
+          "items": {
+            "$ref": "#/$defs/relativeTimeRestriction"
+          }
+        },
+        "anchorOccurrence": {
+          "enum": [
+            "first",
+            "last",
+            "any"
+          ],
+          "description": "Which candidates may serve as the anchor's witness. Required on a group used as an anchor."
+        },
+        "anchorPoint": {
+          "enum": [
+            "start",
+            "end"
+          ],
+          "description": "Which end of a Period-valued match is the anchor date. Default start."
+        }
+      },
+      "required": [
+        "criteria"
+      ],
+      "if": {
+        "required": [
+          "anchorOccurrence"
+        ]
+      },
+      "then": {
+        "properties": {
+          "criteria": {
+            "maxItems": 1
+          }
+        }
+      }
+    },
+    "groupArray": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Level 2: all groups within the array are conjuncted with AND.",
+      "items": {
+        "$ref": "#/$defs/group"
+      }
+    },
+    "side": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Level 1: all group arrays are conjuncted with OR.",
+      "items": {
+        "$ref": "#/$defs/groupArray"
+      }
+    }
+  },
+  "title": "cohortDefinition",
+  "description": "Within a CCDL the inclusion and exclusion criteria are conjuncted with AND NOT. Both sides have the same four levels: OR of group arrays, AND of groups, AND of clauses, OR of criteria.",
+  "type": "object",
+  "properties": {
+    "version": {
+      "const": "3",
+      "description": "Schema version of the CCDL format this document conforms to. Fixed per schema major version and will change as the schema evolves."
+    },
+    "inclusionCriteria": {
+      "$ref": "#/$defs/side"
+    },
+    "exclusionCriteria": {
+      "$ref": "#/$defs/side"
+    },
+    "display": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "version",
+    "inclusionCriteria"
+  ]
+}

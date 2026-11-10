@@ -678,26 +678,6 @@
     }
   }, {
     "resource": {
-      "resourceType": "Procedure",
-      "id": "specimen-path-transfusion",
-      "status": "completed",
-      "code": {
-        "coding": [ {
-          "system": "http://fhir.de/CodeSystem/bfarm/ops",
-          "code": "8-805.0"
-        } ]
-      },
-      "subject": {
-        "reference": "Patient/specimen-path"
-      },
-      "performedDateTime": "2024-02-10"
-    },
-    "request": {
-      "method": "PUT",
-      "url": "Procedure/specimen-path-transfusion"
-    }
-  }, {
-    "resource": {
       "resourceType": "Specimen",
       "id": "specimen-path-sample",
       "extension": [ {

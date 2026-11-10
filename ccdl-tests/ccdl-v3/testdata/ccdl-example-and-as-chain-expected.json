@@ -1,6 +1,6 @@
 {
-  "ccdl": "ccdl-example-multi-clause-anchor.json",
-  "referenceDate": "2026-09-11",
+  "ccdl": "ccdl-example-and-as-chain.json",
+  "referenceDate": "2026-11-10",
   "includedPatients": ["first-path", "second-path"],
   "excludedPatients": ["no-procedure", "spread-out"]
 }

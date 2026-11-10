@@ -1,6 +1,6 @@
 {
   "version": "3",
-  "display": "Example-Hemoglobin-Around-Multi-Clause-Procedure-Anchor (DRAFT)",
+  "display": "Example-Hemoglobin-Around-Two-Procedure-Chain (DRAFT)",
   "inclusionCriteria": [
     [
       {
@@ -62,7 +62,19 @@
                 "version": "1.0.0"
               }
             }
-          ],
+          ]
+        ]
+      },
+      {
+        "id": "group-second-procedure-near-anchor",
+        "relativeTimeRestrictions": [
+          {
+            "anchorRef": "anchor-procedure",
+            "minOffset": "-P1D",
+            "maxOffset": "P1D"
+          }
+        ],
+        "criteria": [
           [
             {
               "termCodes": [

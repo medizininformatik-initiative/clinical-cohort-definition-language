@@ -13,12 +13,12 @@ a guide to the examples, not a second copy of the spec.
 | 2 | `ccdl-example-hemoglobin-24h-after-procedure.json` | the minimal anchor on a clinical event | yes, 26 lines |
 | 3 | `ccdl-with-new-time-constraint-draft.json` | the feature set in one realistic cohort | yes, 125 lines |
 | 4 | `ccdl-example-or-scoped-anchors-draft.json` | the OR level and asymmetric requiredness | yes, 62 lines |
-| 5 | `ccdl-example-multi-clause-anchor.json` | multi-clause AND-anchors | yes, 61 lines |
+| 5 | `ccdl-example-and-as-chain.json` | "A and B together" as a chain | yes, 63 lines |
 | 6 | `ccdl-example-hemoglobin-between-two-anchors.json` | two anchors on one group, windows intersected | yes, 41 lines |
 | 7 | `ccdl-example-any-chained-anchors-draft.json` | `anchorOccurrence: "any"`, one anchor with two referencers | yes, 61 lines |
 | 8 | `ccdl-example-any-chain-three-hops-draft.json` | `"any"` anchors stacked three deep | yes, 56 lines |
-| 9 | `ccdl-example-any-multi-clause-anchor-draft.json` | a multi-clause `"any"` anchor: the witness is a tuple | yes, 34 lines |
-| 10 | `ccdl-example-all-features-draft.json` | everything at once, as a reference | yes, 177 lines |
+| 9 | `ccdl-example-any-episode-chain-draft.json` | an episode as a chain of `"any"` anchors, two entries per dependent | yes, 39 lines |
+| 10 | `ccdl-example-all-features-draft.json` | everything at once, as a reference | yes, 179 lines |
 
 ---
 
@@ -80,18 +80,22 @@ Three group arrays, OR'd, which is the structure §1–§3 of the spec argues fo
 Group arrays 2 and 3 are the asymmetric requiredness pattern: the same anchor is required in one path
 and merely a date source in another. Note that this distinction is invisible in the generated CQL for
 a single-clause anchor, because the null-guard `"AnchorDate_X" is not null` is already equivalent to
-"the anchor matched". Example 5 is where the two cases produce different output.
+"the anchor matched". Example 5 shows what the pattern buys when the path that lists the anchor also
+requires more than the anchor.
 
-### 5. `ccdl-example-multi-clause-anchor.json` — multi-clause anchors
+### 5. `ccdl-example-and-as-chain.json` — "A and B together" as a chain
 
-`anchor-procedure` is a **two-clause AND**: two OPS codes that must both be present. A multi-clause
-anchor does not collapse to one date. It keeps two, the earliest and the latest across its clauses,
-and they feed the dependent's bounds asymmetrically — `maxOffset` from the earliest, `minOffset` from
-the latest. The generated CQL shows this as an indexed guard, `"AnchorDate_anchor-procedure"[0]` and
-`[1]`, one check per clause rather than one aggregate check.
+The pattern that replaces a multi-clause anchor (draft §4, "An anchor has exactly one clause"). Two
+OPS codes have to occur together. `anchor-procedure` is the first code alone, with
+`anchorOccurrence: "first"`. `group-second-procedure-near-anchor` is the second code, windowed to
+within a day of the anchor, so the tolerance between the two events is stated rather than implied
+by the dependent's window. The haemoglobin-and-diagnosis group is measured from the anchor only,
+which is the reading published definitions and ATLAS use.
 
-Two group arrays share that anchor, one listing it and one only referencing it, so this is the
-asymmetric pattern from example 4 again, this time where it actually changes the output.
+Two group arrays share the anchor, one listing it together with the second-procedure group and one
+only referencing it. The second array therefore needs the anchor's date and nothing else, and its
+patient qualifies without the second procedure. That is the asymmetric pattern from example 4 again,
+this time with a requirement that only one path carries.
 
 Group array 1 also carries `group-gender`, an ordinary unanchored group AND'd in beside the anchor
 and its dependent. Anchored and unanchored groups mix freely inside a group array. Keep such a filter
@@ -201,37 +205,36 @@ dialysis sessions where only one particular path through them is the qualifying 
 
 ---
 
-### 9. `ccdl-example-any-multi-clause-anchor-draft.json` — a tuple witness
+### 9. `ccdl-example-any-episode-chain-draft.json` — an episode as a chain of `"any"` anchors
 
-The only example of a **multi-clause `"any"` anchor**. `anchor-sepsis-with-aki` is a two-clause AND —
-a sepsis diagnosis and an acute kidney injury, both required — carrying `anchorOccurrence: "any"`,
-referenced by a haemoglobin group within 3 days and a CRP group within 1 day.
+A sepsis-with-AKI episode. `anchor-sepsis` is A41.5 with `anchorOccurrence: "any"`.
+`group-aki-near-sepsis` is N17.0, also `"any"`, windowed to within three days of the sepsis. A
+haemoglobin group (within 3 days) and a CRP group (within 1 day) each carry **two entries**, one per
+anchor, so each has to fall after both events and within its offset of each.
 
-With several clauses the witness stops being one occurrence and becomes a **tuple**, one candidate
-drawn from each clause, quantified over the product of the clauses' candidate sets. The dependents'
-windows come from that tuple's extremes: `minOffset` from the later of the two dates, `maxOffset`
-from the earlier — the same asymmetric rule `"first"`/`"last"` multi-clause anchors already use. Both
-dependents are bound to the same tuple, so the shared-witness rule applies to tuples exactly as it
-does to lone occurrences.
+Both dependents reference both anchors inside one group array, so the shared-witness rule binds them
+to the same sepsis and the same AKI. This is the single-clause decomposition of a two-clause
+`"any"` anchor, and it selects exactly the patients the old two-clause anchor did. It is also the only
+example with several entries on chained `"any"` anchors.
 
-The generated CQL nests one `exists` per clause, because Blaze accepts only single-source queries —
-`from A W1, B W2` is rejected outright — so the product is expressed by nesting:
+The generated CQL nests one `exists` per anchor, because Blaze accepts only single-source queries.
+The AKI candidates are filtered by the sepsis witness `W1`, and both dependents sit innermost:
 
 ```
-exists (from (<sepsis dates>) W1_1
-  where exists (from (<AKI dates>) W1_2
-    where Max({ W1_1, W1_2 }) + 0 hours <= Min({ W1_1, W1_2 }) + 72 hours and
-      exists (... Interval[Max({ W1_1, W1_2 }) + 0 hours, Min({ W1_1, W1_2 }) + 72 hours] ...) and ...
+exists (from (<sepsis dates>) W1
+  where exists (from (<AKI dates in Interval[W1 + -72 hours, W1 + 72 hours]>) W2
+    where Max({ W1 + 0 hours, W2 + 0 hours }) <= Min({ W1 + 72 hours, W2 + 72 hours }) and
+      exists (<Hb in Interval[Max({ W1 + 0 hours, W2 + 0 hours }), Min({ W1 + 72 hours, W2 + 72 hours })]>) and
+      ...
 ```
 
-That leading comparison is the bounds check. A patient whose sepsis and kidney injury lie further
-apart than the offsets allow induces an inverted window, and the check turns that into a no-match
-rather than an evaluation failure — Blaze rejects an inverted `Interval` outright. This is the
-clearest place in the examples to see it.
+The `Max(...) <= Min(...)` comparisons are the bounds check for the intersected windows. If the two
+entries' windows do not overlap, the window would invert, and the check turns that into a no-match
+rather than an evaluation failure, since Blaze rejects an inverted `Interval` outright.
 
 ### 10. `ccdl-example-all-features-draft.json` — every feature in one query
 
-A reference file rather than a teaching one. Thirteen groups across two inclusion group arrays and
+A reference file rather than a teaching one. Fourteen groups across two inclusion group arrays and
 one exclusion group array, exercising every feature of the extension plus the criterion-level
 features it inherits from `version: "2"`. Read examples 1 to 8 first. Come here when you need to see
 how two features interact, or to copy a shape.
@@ -245,8 +248,9 @@ Group array 1, the main clinical path:
 - `group-demographics` — gender (`concept` value filter) AND age (`quantity-comparator`, `ge` 18
   years). No anchor. Level 3 AND across two single-criterion clauses.
 - `anchor-colon-diverticular-disease` — K57.3, `anchorOccurrence: "last"`, `anchorPoint: "start"`.
-- `anchor-resection-with-transfusion` — a **two-clause AND anchor**, resection AND transfusion, with
-  `anchorOccurrence: "first"` and `anchorPoint: "end"`.
+- `anchor-colon-resection` — the resection, with `anchorOccurrence: "first"` and `anchorPoint: "end"`.
+- `group-transfusion-with-resection` — the transfusion, windowed to within a day of the resection.
+  "Resection with transfusion" as a chain rather than as a two-clause anchor.
 - `group-hemoglobin-between-diagnosis-and-resection` — **two `relativeTimeRestrictions` entries**,
   each bounded on one side, intersecting into the window between the two anchors, **plus** an
   absolute `timeRestriction` on the criterion itself, which intersects with the relative window.
@@ -261,8 +265,9 @@ Group array 2, an alternative qualifying path:
 - `anchor-now` — the `now` criterion.
 - `group-colon-biopsy-specimen` — a Specimen criterion carrying an **`attributeFilters`** entry of
   type `reference`, joining the sample to a diverticular disease diagnosis through the biobank extension.
-- `group-followup-lab-since-resection` — references `anchor-resection-with-transfusion`, which is
-  **defined in the other group array and not listed here**, and bounds the other side against `now`.
+- `group-followup-lab-since-resection` — references `anchor-colon-resection`, which is **defined in
+  the other group array and not listed here**, and bounds the other side against `now`. This path
+  needs no transfusion, because it does not list `group-transfusion-with-resection`.
 
 Exclusion group array:
 
@@ -270,13 +275,7 @@ Exclusion group array:
   the cross-side reference case.
 - `group-excl-organ-failure` — level 4 OR of two unanchored diagnoses.
 
-One detail worth looking at in the output: the multi-clause anchor is consumed from both ends in the
-same query. `group-hemoglobin-between-diagnosis-and-resection` bounds a `maxOffset` against it and so
-resolves to `Min("AnchorDate_anchor-resection-with-transfusion")`, its earliest clause, while
-`group-followup-lab-since-resection` bounds a `minOffset` and resolves to `Max(...)`, its latest. That
-is the asymmetric rule from the spec, visible twice in one file.
-
-**Translates**, at 177 lines - every feature in this document exercised in one query, verified end
+**Translates**, at 179 lines - every feature in this document exercised in one query, verified end
 to end against the real translator, including the attribute filter join, the absolute-plus-relative
 window intersection and the `AgeInYears() >= 18` comparison.
 
@@ -292,7 +291,7 @@ window intersection and the `AgeInYears() >= 18` comparison.
 | open-ended window (one offset omitted) | | | yes | yes | | yes | | | | yes |
 | anchor referenced without being listed | | | | yes | yes | | | | | yes |
 | cross-side anchor reference | | | yes | | | | | | | yes |
-| multi-clause AND-anchor (`first`/`last`) | | | | | yes | | | | | yes |
+| "A and B together" as a chain (tolerance group) | | | | | yes | | | | | yes |
 | multiple `relativeTimeRestrictions` entries | | | | | | yes | | | | yes |
 | `anchorOccurrence: "first"` | | yes | yes | yes | yes | yes | yes | | | yes |
 | `anchorOccurrence: "last"` | | | | | | | | | | yes |
@@ -301,13 +300,13 @@ window intersection and the `AgeInYears() >= 18` comparison.
 | chained anchor | | | | | | | yes | yes | | yes |
 | one anchor, two referencers (shared witness) | | | | | | | yes | | yes | yes |
 | chain deeper than two hops | | | | | | | | yes | | |
-| multi-clause `"any"` anchor (tuple witness) | | | | | | | | | yes | |
+| several entries on chained `"any"` anchors | | | | | | | | | yes | |
 | absolute `timeRestriction` on a windowed criterion | | | | | | | | | | yes |
 | `valueFilter` | | | yes | yes | yes | | | | | yes |
 | `attributeFilters` | | | | | | | | | | yes |
 
-Every feature has at least one worked example, and example 10 has all of them except the tuple
-witness, which example 9 covers on its own.
+Every feature has at least one worked example, and example 10 has all of them except several
+entries on chained `"any"` anchors, which example 9 covers on its own.
 
 ## Running them
 
@@ -379,16 +378,16 @@ loaded unchanged.
 | `hemoglobin-24h-after-procedure` | a haemoglobin the day *before* the procedure, which a symmetric window would admit |
 | `hemoglobin-between-two-anchors` | a resection *preceding* its diagnosis, so the window inverts |
 | `or-scoped-anchors` | three patients qualifying through different group arrays, one through none |
-| `multi-clause-anchor` | two procedures five days apart, inverting a multi-clause anchor's window |
+| `and-as-chain` | two procedures five days apart, outside the one-day tolerance |
 | `any-chained-anchors` | `split`: treated after one episode, worked up after another |
 | `any-chain-three-hops` | `late-episode`: qualifies only via its *second* sepsis |
-| `any-multi-clause-anchor` | `two-options`: only one pairing of the tuple satisfies both windows |
+| `any-episode-chain` | `two-options`: only its second sepsis has an AKI near it |
 | `with-new-time-constraint` | an anticoagulant without an organ failure, which does not exclude |
-| `all-features` | one patient qualifying only via the second array, one surviving a partial exclusion |
+| `all-features` | one patient qualifying only via the second array, one excluded by a single organ failure |
 
-Two of those are easy to get wrong by reading alone. `group-excl-organ-failure` is a single clause
-with two criteria in `all-features` but two clauses in `with-new-time-constraint`, and on the
-exclusion side those combine oppositely - so the two examples genuinely mean different things. And an
+Two of those are easy to get wrong by reading alone. `group-excl-organ-failure` is one clause with
+two criteria in both `all-features` and `with-new-time-constraint`, so either failure is enough. In
+`version: "2"` the exclusion side inverted the clause levels and the same JSON required both. And an
 inverted window has to mean "selects nobody" rather than an error, which is a property of the emitted
 query rather than of the language.
 
@@ -400,4 +399,6 @@ plausible. Regenerating them is a side effect of running those tests with an out
 
 ## Known issues
 
-None currently.
+- The harness that generated the datasets checks the selected *count* against the expected
+  patients, not the ids themselves. The ids in each `-expected.json` are the patients the test
+  intends to select, and a second engine comparing ids is a stricter check than the generator ran.

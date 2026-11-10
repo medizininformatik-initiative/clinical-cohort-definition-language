@@ -5,6 +5,18 @@ levels, group arrays, `anchorRef`, `anchorOccurrence`, `anchorPoint`, the evalua
 the translation obligations of §7. This file isolates one decision, sets out every option considered
 for it, and records a verdict with its reasoning. Section references (§N) point into the main draft.
 
+**Status (2026-11-10).** Option A is adopted in the draft (§1, §3) and implemented in `cctb`, which
+now combines a group's `criteria` AND-of-OR on both sides.
+
+A later decision narrows the anchor half of this problem: anchors are single-clause (§4, "An anchor
+has exactly one clause"). A one-clause anchor has no clause structure for a witness rule to read, so
+the anchor-resolution question below no longer arises for the anchors the language allows. Option A
+is still needed, because under alternation the one clause `[[A, B]]` would mean `A and B` in
+`exclusionCriteria`, and the same anchor would change meaning when copied across sides. The
+"What would reverse this" trigger narrows accordingly. Alternatives that share an
+`anchorOccurrence` are now always OR'd inside an anchor's single clause, so only alternatives that
+must share one group's `relativeTimeRestrictions` remain as a reason to revisit.
+
 ## The problem
 
 Under `version: "2"` a group's `criteria` meant two different things depending on the side it was

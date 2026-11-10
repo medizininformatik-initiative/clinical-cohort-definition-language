@@ -124,26 +124,6 @@
     }
   }, {
     "resource": {
-      "resourceType": "Procedure",
-      "id": "second-path-p2",
-      "status": "completed",
-      "code": {
-        "coding": [ {
-          "system": "http://fhir.de/CodeSystem/bfarm/ops",
-          "code": "8-718.94"
-        } ]
-      },
-      "subject": {
-        "reference": "Patient/second-path"
-      },
-      "performedDateTime": "2024-02-10"
-    },
-    "request": {
-      "method": "PUT",
-      "url": "Procedure/second-path-p2"
-    }
-  }, {
-    "resource": {
       "resourceType": "Observation",
       "id": "second-path-hb",
       "status": "final",
@@ -246,7 +226,7 @@
       "subject": {
         "reference": "Patient/spread-out"
       },
-      "effectiveDateTime": "2024-03-03"
+      "effectiveDateTime": "2024-03-01"
     },
     "request": {
       "method": "PUT",
@@ -265,7 +245,7 @@
       "subject": {
         "reference": "Patient/spread-out"
       },
-      "recordedDate": "2024-03-03"
+      "recordedDate": "2024-03-01"
     },
     "request": {
       "method": "PUT",
