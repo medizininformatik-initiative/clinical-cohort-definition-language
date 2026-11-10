@@ -1,0 +1,63 @@
+library Retrieve version '1.0.0'
+using FHIR version '4.0.0'
+include FHIRHelpers version '4.0.0'
+
+codesystem codeSystem1: 'http://fhir.de/CodeSystem/bfarm/ops'
+codesystem codeSystem2: 'http://loinc.org'
+codesystem codeSystem3: 'http://fhir.de/CodeSystem/bfarm/icd-10-gm'
+
+context Patient
+
+define "Criterion 1":
+  Patient.gender = 'female' or
+  Patient.gender = 'male'
+
+define "AnchorDate_anchor-procedure":
+  Min((from [Procedure: Code '5-470.1' from codeSystem1] P
+    return Coalesce(ToDate(P.performed as dateTime), ToDate((P.performed as Period).start))) union
+  (from [Procedure: Code '5-470.1x' from codeSystem1] P
+    return Coalesce(ToDate(P.performed as dateTime), ToDate((P.performed as Period).start))) union
+  (from [Procedure: Code '5-470.10' from codeSystem1] P
+    return Coalesce(ToDate(P.performed as dateTime), ToDate((P.performed as Period).start))) union
+  (from [Procedure: Code '5-470.11' from codeSystem1] P
+    return Coalesce(ToDate(P.performed as dateTime), ToDate((P.performed as Period).start))))
+
+define "Criterion 2":
+  exists (from [Procedure: Code '8-718.94' from codeSystem1] P
+    where ToDate(P.performed as dateTime) in Interval["AnchorDate_anchor-procedure" + -24 hours, "AnchorDate_anchor-procedure" + 24 hours] or
+      P.performed overlaps Interval["AnchorDate_anchor-procedure" + -24 hours, "AnchorDate_anchor-procedure" + 24 hours])
+
+define "Criterion 3":
+  exists (from [Observation: Code '718-7' from codeSystem2] O
+    where ToDate(O.effective as dateTime) in Interval["AnchorDate_anchor-procedure" + -24 hours, "AnchorDate_anchor-procedure" + 24 hours])
+
+define "Criterion 4":
+  exists (from [Condition: Code 'E10.9' from codeSystem3] C
+    where ToDate(C.recordedDate as dateTime) in Interval["AnchorDate_anchor-procedure" + -24 hours, "AnchorDate_anchor-procedure" + 24 hours]) or
+  exists (from [Condition: Code 'E10.91' from codeSystem3] C
+    where ToDate(C.recordedDate as dateTime) in Interval["AnchorDate_anchor-procedure" + -24 hours, "AnchorDate_anchor-procedure" + 24 hours]) or
+  exists (from [Condition: Code 'E10.90' from codeSystem3] C
+    where ToDate(C.recordedDate as dateTime) in Interval["AnchorDate_anchor-procedure" + -24 hours, "AnchorDate_anchor-procedure" + 24 hours])
+
+define "Criterion 5":
+  exists (from [Observation: Code '718-7' from codeSystem2] O
+    where ToDate(O.effective as dateTime) in Interval["AnchorDate_anchor-procedure" + -24 hours, "AnchorDate_anchor-procedure" + 24 hours])
+
+define "Criterion 6":
+  exists (from [Condition: Code 'E11.9' from codeSystem3] C
+    where ToDate(C.recordedDate as dateTime) in Interval["AnchorDate_anchor-procedure" + -24 hours, "AnchorDate_anchor-procedure" + 24 hours]) or
+  exists (from [Condition: Code 'E11.91' from codeSystem3] C
+    where ToDate(C.recordedDate as dateTime) in Interval["AnchorDate_anchor-procedure" + -24 hours, "AnchorDate_anchor-procedure" + 24 hours]) or
+  exists (from [Condition: Code 'E11.90' from codeSystem3] C
+    where ToDate(C.recordedDate as dateTime) in Interval["AnchorDate_anchor-procedure" + -24 hours, "AnchorDate_anchor-procedure" + 24 hours])
+
+define InInitialPopulation:
+  "Criterion 1" and
+  "AnchorDate_anchor-procedure" is not null and
+  "Criterion 2" and
+  "AnchorDate_anchor-procedure" is not null and
+  "Criterion 3" and
+  "Criterion 4" or
+  "AnchorDate_anchor-procedure" is not null and
+  "Criterion 5" and
+  "Criterion 6"

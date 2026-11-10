@@ -1,0 +1,41 @@
+library Retrieve version '1.0.0'
+using FHIR version '4.0.0'
+include FHIRHelpers version '4.0.0'
+
+codesystem codeSystem1: 'http://fhir.de/CodeSystem/bfarm/icd-10-gm'
+codesystem codeSystem2: 'http://fhir.de/CodeSystem/bfarm/ops'
+codesystem codeSystem3: 'http://loinc.org'
+
+context Patient
+
+define "AnchorDate_anchor-colon-diverticular-disease":
+  Min((from [Condition: Code 'K57.3' from codeSystem1] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'K57.30' from codeSystem1] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'K57.31' from codeSystem1] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'K57.32' from codeSystem1] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'K57.33' from codeSystem1] C
+    return ToDate(C.recordedDate as dateTime)))
+
+define "AnchorDate_anchor-colon-resection":
+  Min((from [Procedure: Code '5-455.3' from codeSystem2] P
+    return Coalesce(ToDate(P.performed as dateTime), ToDate((P.performed as Period).start))) union
+  (from [Procedure: Code '5-455.37' from codeSystem2] P
+    return Coalesce(ToDate(P.performed as dateTime), ToDate((P.performed as Period).start))) union
+  (from [Procedure: Code '5-455.35' from codeSystem2] P
+    return Coalesce(ToDate(P.performed as dateTime), ToDate((P.performed as Period).start))) union
+  (from [Procedure: Code '5-455.31' from codeSystem2] P
+    return Coalesce(ToDate(P.performed as dateTime), ToDate((P.performed as Period).start))))
+
+define Criterion:
+  exists (from [Observation: Code '718-7' from codeSystem3] O
+    where ToDate(O.effective as dateTime) in Interval[Max({ "AnchorDate_anchor-colon-diverticular-disease" + 0 hours, @0001-01-01T }), Min({ @9999-12-31T, "AnchorDate_anchor-colon-resection" + 0 hours })])
+
+define InInitialPopulation:
+  "AnchorDate_anchor-colon-diverticular-disease" is not null and
+  "AnchorDate_anchor-colon-resection" is not null and
+  Max({ "AnchorDate_anchor-colon-diverticular-disease" + 0 hours, @0001-01-01T }) <= Min({ @9999-12-31T, "AnchorDate_anchor-colon-resection" + 0 hours }) and
+  Criterion

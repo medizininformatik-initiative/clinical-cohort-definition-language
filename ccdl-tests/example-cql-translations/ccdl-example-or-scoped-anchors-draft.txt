@@ -1,0 +1,62 @@
+library Retrieve version '1.0.0'
+using FHIR version '4.0.0'
+include FHIRHelpers version '4.0.0'
+
+codesystem codeSystem1: 'http://loinc.org'
+codesystem codeSystem2: 'http://fhir.de/CodeSystem/bfarm/icd-10-gm'
+codesystem codeSystem3: 'http://fhir.de/CodeSystem/bfarm/atc'
+
+context Unfiltered
+
+define N06DA02Ref:
+  from [Medication: Code 'N06DA02' from codeSystem3] M
+    return 'Medication/' + M.id
+
+context Patient
+
+define "Criterion 1":
+  Patient.gender = 'female'
+
+define "Criterion 2":
+  exists [Observation: Code '1988-5' from codeSystem1]
+
+define "AnchorDate_anchor-dementia-diagnosis":
+  Min((from [Condition: Code 'F00' from codeSystem2] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'F00.9' from codeSystem2] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'F00.0' from codeSystem2] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'F00.1' from codeSystem2] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'F00.2' from codeSystem2] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'G30' from codeSystem2] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'G30.0' from codeSystem2] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'G30.1' from codeSystem2] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'G30.8' from codeSystem2] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'G30.9' from codeSystem2] C
+    return ToDate(C.recordedDate as dateTime)))
+
+define "Criterion 3":
+  exists (from [MedicationStatement] M
+    where M.medication.reference in N06DA02Ref and
+      (ToDate(M.effective as dateTime) in Interval["AnchorDate_anchor-dementia-diagnosis" + 0 hours, "AnchorDate_anchor-dementia-diagnosis" + 720 hours] or
+      M.effective overlaps Interval["AnchorDate_anchor-dementia-diagnosis" + 0 hours, "AnchorDate_anchor-dementia-diagnosis" + 720 hours]))
+
+define "Criterion 4":
+  exists (from [Observation: Code '29463-7' from codeSystem1] O
+    where ToDate(O.effective as dateTime) in Interval["AnchorDate_anchor-dementia-diagnosis" + -168 hours, @9999-12-31T] or
+      O.effective overlaps Interval["AnchorDate_anchor-dementia-diagnosis" + -168 hours, @9999-12-31T])
+
+define InInitialPopulation:
+  "Criterion 1" and
+  "Criterion 2" or
+  "AnchorDate_anchor-dementia-diagnosis" is not null and
+  "Criterion 3" or
+  "AnchorDate_anchor-dementia-diagnosis" is not null and
+  "Criterion 4"

@@ -1,0 +1,179 @@
+library Retrieve version '1.0.0'
+using FHIR version '4.0.0'
+include FHIRHelpers version '4.0.0'
+
+codesystem codeSystem1: 'http://fhir.de/CodeSystem/bfarm/ops'
+codesystem codeSystem2: 'http://fhir.de/CodeSystem/bfarm/icd-10-gm'
+codesystem codeSystem3: 'http://loinc.org'
+codesystem codeSystem4: 'http://snomed.info/sct'
+codesystem codeSystem5: 'http://fhir.de/CodeSystem/bfarm/atc'
+
+context Unfiltered
+
+define B01AA04Ref:
+  from [Medication: Code 'B01AA04' from codeSystem5] M
+    return 'Medication/' + M.id
+
+context Patient
+
+define "AnchorDate_anchor-colon-resection":
+  Min((from [Procedure: Code '5-455.3' from codeSystem1] P
+    return Coalesce(ToDate(P.performed as dateTime), ToDate((P.performed as Period).end))) union
+  (from [Procedure: Code '5-455.37' from codeSystem1] P
+    return Coalesce(ToDate(P.performed as dateTime), ToDate((P.performed as Period).end))) union
+  (from [Procedure: Code '5-455.35' from codeSystem1] P
+    return Coalesce(ToDate(P.performed as dateTime), ToDate((P.performed as Period).end))) union
+  (from [Procedure: Code '5-455.31' from codeSystem1] P
+    return Coalesce(ToDate(P.performed as dateTime), ToDate((P.performed as Period).end))))
+
+define "Criterion 1":
+  Patient.gender = 'female' or
+  Patient.gender = 'male'
+
+define "Criterion 2":
+  AgeInYears() >= 18
+
+define "Criterion 3":
+  exists (from [Procedure: Code '8-805.0' from codeSystem1] P
+    where ToDate(P.performed as dateTime) in Interval["AnchorDate_anchor-colon-resection" + -24 hours, "AnchorDate_anchor-colon-resection" + 24 hours] or
+      P.performed overlaps Interval["AnchorDate_anchor-colon-resection" + -24 hours, "AnchorDate_anchor-colon-resection" + 24 hours]) or
+  exists (from [Procedure: Code '8-805.00' from codeSystem1] P
+    where ToDate(P.performed as dateTime) in Interval["AnchorDate_anchor-colon-resection" + -24 hours, "AnchorDate_anchor-colon-resection" + 24 hours] or
+      P.performed overlaps Interval["AnchorDate_anchor-colon-resection" + -24 hours, "AnchorDate_anchor-colon-resection" + 24 hours]) or
+  exists (from [Procedure: Code '8-805.03' from codeSystem1] P
+    where ToDate(P.performed as dateTime) in Interval["AnchorDate_anchor-colon-resection" + -24 hours, "AnchorDate_anchor-colon-resection" + 24 hours] or
+      P.performed overlaps Interval["AnchorDate_anchor-colon-resection" + -24 hours, "AnchorDate_anchor-colon-resection" + 24 hours])
+
+define "AnchorDate_anchor-colon-diverticular-disease":
+  Max((from [Condition: Code 'K57.3' from codeSystem2] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'K57.30' from codeSystem2] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'K57.31' from codeSystem2] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'K57.32' from codeSystem2] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'K57.33' from codeSystem2] C
+    return ToDate(C.recordedDate as dateTime)))
+
+define "Criterion 4":
+  exists (from [Observation: Code '718-7' from codeSystem3] O
+    where ToDate(O.effective as dateTime) in Interval[@2020-01-01T, @2026-12-31T] and
+      ToDate(O.effective as dateTime) in Interval[Max({ "AnchorDate_anchor-colon-diverticular-disease" + 0 hours, @0001-01-01T }), Min({ @9999-12-31T, "AnchorDate_anchor-colon-resection" + 0 hours })])
+
+define "Diagnose K57.3":
+  [Condition: Code 'K57.3' from codeSystem2] union
+  [Condition: Code 'K57.30' from codeSystem2] union
+  [Condition: Code 'K57.31' from codeSystem2] union
+  [Condition: Code 'K57.32' from codeSystem2] union
+  [Condition: Code 'K57.33' from codeSystem2]
+
+define "Criterion 5":
+  exists (from [Specimen: Code '16213411000119100' from codeSystem4] S
+    with "Diagnose K57.3" C
+      such that S.extension.where(url='https://www.medizininformatik-initiative.de/fhir/ext/modul-biobank/StructureDefinition/Diagnose').first().value.as(Reference).reference contains 'Condition/' + C.id) or
+  exists (from [Specimen: Code '16213451000119104' from codeSystem4] S
+    with "Diagnose K57.3" C
+      such that S.extension.where(url='https://www.medizininformatik-initiative.de/fhir/ext/modul-biobank/StructureDefinition/Diagnose').first().value.as(Reference).reference contains 'Condition/' + C.id)
+
+define "AnchorDate_anchor-now":
+  Min({ ToDate(Now()) })
+
+define "Criterion 6":
+  exists (from [Observation: Code '718-7' from codeSystem3] O
+    where ToDate(O.effective as dateTime) in Interval[Max({ "AnchorDate_anchor-colon-resection" + 0 hours, @0001-01-01T }), Min({ @9999-12-31T, "AnchorDate_anchor-now" + 0 hours })])
+
+define Inclusion:
+  "AnchorDate_anchor-colon-resection" is not null and
+  exists (from ((from [Condition: Code 'A41.5' from codeSystem2] C
+          where ToDate(C.recordedDate as dateTime) in Interval["AnchorDate_anchor-colon-resection" + 0 hours, "AnchorDate_anchor-colon-resection" + 720 hours]
+          return ToDate(C.recordedDate as dateTime)) union
+        (from [Condition: Code 'A41.58' from codeSystem2] C
+          where ToDate(C.recordedDate as dateTime) in Interval["AnchorDate_anchor-colon-resection" + 0 hours, "AnchorDate_anchor-colon-resection" + 720 hours]
+          return ToDate(C.recordedDate as dateTime)) union
+        (from [Condition: Code 'A41.51' from codeSystem2] C
+          where ToDate(C.recordedDate as dateTime) in Interval["AnchorDate_anchor-colon-resection" + 0 hours, "AnchorDate_anchor-colon-resection" + 720 hours]
+          return ToDate(C.recordedDate as dateTime)) union
+        (from [Condition: Code 'A41.52' from codeSystem2] C
+          where ToDate(C.recordedDate as dateTime) in Interval["AnchorDate_anchor-colon-resection" + 0 hours, "AnchorDate_anchor-colon-resection" + 720 hours]
+          return ToDate(C.recordedDate as dateTime))) W1
+    where exists (from ((from [Condition: Code 'N17.0' from codeSystem2] C
+              where ToDate(C.recordedDate as dateTime) in Interval[W1 + 0 hours, W1 + 168 hours]
+              return ToDate(C.recordedDate as dateTime)) union
+            (from [Condition: Code 'N17.09' from codeSystem2] C
+              where ToDate(C.recordedDate as dateTime) in Interval[W1 + 0 hours, W1 + 168 hours]
+              return ToDate(C.recordedDate as dateTime)) union
+            (from [Condition: Code 'N17.02' from codeSystem2] C
+              where ToDate(C.recordedDate as dateTime) in Interval[W1 + 0 hours, W1 + 168 hours]
+              return ToDate(C.recordedDate as dateTime)) union
+            (from [Condition: Code 'N17.03' from codeSystem2] C
+              where ToDate(C.recordedDate as dateTime) in Interval[W1 + 0 hours, W1 + 168 hours]
+              return ToDate(C.recordedDate as dateTime)) union
+            (from [Condition: Code 'N17.01' from codeSystem2] C
+              where ToDate(C.recordedDate as dateTime) in Interval[W1 + 0 hours, W1 + 168 hours]
+              return ToDate(C.recordedDate as dateTime))) W2
+        where "Criterion 1" and
+          "Criterion 2" and
+          "AnchorDate_anchor-colon-resection" is not null and
+          "Criterion 3" and
+          "AnchorDate_anchor-colon-diverticular-disease" is not null and
+          "AnchorDate_anchor-colon-resection" is not null and
+          Max({ "AnchorDate_anchor-colon-diverticular-disease" + 0 hours, @0001-01-01T }) <= Min({ @9999-12-31T, "AnchorDate_anchor-colon-resection" + 0 hours }) and
+          "Criterion 4" and
+          (exists (from [Procedure: Code '8-85a.0' from codeSystem1] P
+            where ToDate(P.performed as dateTime) in Interval[W2 + 0 hours, W2 + 336 hours] or
+              P.performed overlaps Interval[W2 + 0 hours, W2 + 336 hours]) or
+          exists (from [Procedure: Code '8-85a.02' from codeSystem1] P
+            where ToDate(P.performed as dateTime) in Interval[W2 + 0 hours, W2 + 336 hours] or
+              P.performed overlaps Interval[W2 + 0 hours, W2 + 336 hours]) or
+          exists (from [Procedure: Code '8-85a.01' from codeSystem1] P
+            where ToDate(P.performed as dateTime) in Interval[W2 + 0 hours, W2 + 336 hours] or
+              P.performed overlaps Interval[W2 + 0 hours, W2 + 336 hours]) or
+          exists (from [Procedure: Code '8-85a.03' from codeSystem1] P
+            where ToDate(P.performed as dateTime) in Interval[W2 + 0 hours, W2 + 336 hours] or
+              P.performed overlaps Interval[W2 + 0 hours, W2 + 336 hours]) or
+          exists (from [Procedure: Code '8-85a.00' from codeSystem1] P
+            where ToDate(P.performed as dateTime) in Interval[W2 + 0 hours, W2 + 336 hours] or
+              P.performed overlaps Interval[W2 + 0 hours, W2 + 336 hours])) and
+          exists (from [Observation: Code '1988-5' from codeSystem3] O
+            where ToDate(O.effective as dateTime) in Interval[W1 + 0 hours, W1 + 72 hours]))) or
+  "Criterion 5" and
+  "AnchorDate_anchor-colon-resection" is not null and
+  "AnchorDate_anchor-now" is not null and
+  Max({ "AnchorDate_anchor-colon-resection" + 0 hours, @0001-01-01T }) <= Min({ @9999-12-31T, "AnchorDate_anchor-now" + 0 hours }) and
+  "Criterion 6"
+
+define "Criterion 7":
+  exists (from [MedicationStatement] M
+    where M.medication.reference in B01AA04Ref and
+      (ToDate(M.effective as dateTime) in Interval["AnchorDate_anchor-colon-resection" + -48 hours, "AnchorDate_anchor-colon-resection" + 48 hours] or
+      M.effective overlaps Interval["AnchorDate_anchor-colon-resection" + -48 hours, "AnchorDate_anchor-colon-resection" + 48 hours]))
+
+define "Criterion 8":
+  exists [Condition: Code 'N18.8' from codeSystem2] or
+  exists [Condition: Code 'N18.80' from codeSystem2] or
+  exists [Condition: Code 'N18.89' from codeSystem2]
+
+define "Criterion 9":
+  exists [Condition: Code 'K72' from codeSystem2] or
+  exists [Condition: Code 'K72.9' from codeSystem2] or
+  exists [Condition: Code 'K72.0' from codeSystem2] or
+  exists [Condition: Code 'K72.1' from codeSystem2] or
+  exists [Condition: Code 'K72.18' from codeSystem2] or
+  exists [Condition: Code 'K72.10' from codeSystem2] or
+  exists [Condition: Code 'K72.7' from codeSystem2] or
+  exists [Condition: Code 'K72.79' from codeSystem2] or
+  exists [Condition: Code 'K72.72' from codeSystem2] or
+  exists [Condition: Code 'K72.71' from codeSystem2] or
+  exists [Condition: Code 'K72.74' from codeSystem2] or
+  exists [Condition: Code 'K72.73' from codeSystem2]
+
+define Exclusion:
+  "AnchorDate_anchor-colon-resection" is not null and
+  "Criterion 7" and
+  ("Criterion 8" or
+  "Criterion 9")
+
+define InInitialPopulation:
+  Inclusion and
+  not Exclusion

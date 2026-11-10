@@ -1,0 +1,125 @@
+library Retrieve version '1.0.0'
+using FHIR version '4.0.0'
+include FHIRHelpers version '4.0.0'
+
+codesystem codeSystem1: 'http://fhir.de/CodeSystem/bfarm/icd-10-gm'
+codesystem codeSystem2: 'http://loinc.org'
+codesystem codeSystem3: 'http://fhir.de/CodeSystem/bfarm/atc'
+
+context Unfiltered
+
+define B01AA04Ref:
+  from [Medication: Code 'B01AA04' from codeSystem3] M
+    return 'Medication/' + M.id
+
+define N06DA02Ref:
+  from [Medication: Code 'N06DA02' from codeSystem3] M
+    return 'Medication/' + M.id
+
+context Patient
+
+define "Criterion 1":
+  Patient.gender = 'female' or
+  Patient.gender = 'male'
+
+define "AnchorDate_anchor-dementia-diagnosis":
+  Min((from [Condition: Code 'F00' from codeSystem1] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'F00.9' from codeSystem1] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'F00.0' from codeSystem1] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'F00.1' from codeSystem1] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'F00.2' from codeSystem1] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'G30' from codeSystem1] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'G30.0' from codeSystem1] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'G30.1' from codeSystem1] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'G30.8' from codeSystem1] C
+    return ToDate(C.recordedDate as dateTime)) union
+  (from [Condition: Code 'G30.9' from codeSystem1] C
+    return ToDate(C.recordedDate as dateTime)))
+
+define "Criterion 2":
+  exists (from [Observation: Code '1988-5' from codeSystem2] O
+    where ToDate(O.effective as dateTime) in Interval["AnchorDate_anchor-dementia-diagnosis" + -72 hours, "AnchorDate_anchor-dementia-diagnosis" + 0 hours])
+
+define "Criterion 3":
+  exists (from [Observation: Code '6690-2' from codeSystem2] O
+    where ToDate(O.effective as dateTime) in Interval["AnchorDate_anchor-dementia-diagnosis" + -72 hours, "AnchorDate_anchor-dementia-diagnosis" + 0 hours])
+
+define "Criterion 4":
+  exists (from [Observation: Code '8867-4' from codeSystem2] O
+    where ToDate(O.effective as dateTime) in Interval["AnchorDate_anchor-dementia-diagnosis" + -72 hours, "AnchorDate_anchor-dementia-diagnosis" + 0 hours] or
+      O.effective overlaps Interval["AnchorDate_anchor-dementia-diagnosis" + -72 hours, "AnchorDate_anchor-dementia-diagnosis" + 0 hours])
+
+define "Criterion 5":
+  exists (from [MedicationStatement] M
+    where M.medication.reference in N06DA02Ref and
+      (ToDate(M.effective as dateTime) in Interval["AnchorDate_anchor-dementia-diagnosis" + 0 hours, "AnchorDate_anchor-dementia-diagnosis" + 720 hours] or
+      M.effective overlaps Interval["AnchorDate_anchor-dementia-diagnosis" + 0 hours, "AnchorDate_anchor-dementia-diagnosis" + 720 hours]))
+
+define "Criterion 6":
+  exists (from [Observation: Code '29463-7' from codeSystem2] O
+    where ToDate(O.effective as dateTime) in Interval["AnchorDate_anchor-dementia-diagnosis" + -168 hours, @9999-12-31T] or
+      O.effective overlaps Interval["AnchorDate_anchor-dementia-diagnosis" + -168 hours, @9999-12-31T])
+
+define "AnchorDate_anchor-now":
+  Min({ ToDate(Now()) })
+
+define "Criterion 7":
+  exists (from [Observation: Code '9279-1' from codeSystem2] O
+    where ToDate(O.effective as dateTime) in Interval["AnchorDate_anchor-now" + -168 hours, "AnchorDate_anchor-now" + 0 hours] or
+      O.effective overlaps Interval["AnchorDate_anchor-now" + -168 hours, "AnchorDate_anchor-now" + 0 hours])
+
+define Inclusion:
+  "Criterion 1" and
+  "AnchorDate_anchor-dementia-diagnosis" is not null and
+  ("Criterion 2" or
+  "Criterion 3") and
+  "Criterion 4" and
+  "AnchorDate_anchor-dementia-diagnosis" is not null and
+  "Criterion 5" and
+  "AnchorDate_anchor-dementia-diagnosis" is not null and
+  "Criterion 6" and
+  "AnchorDate_anchor-now" is not null and
+  "Criterion 7"
+
+define "Criterion 8":
+  exists (from [MedicationStatement] M
+    where M.medication.reference in B01AA04Ref and
+      (ToDate(M.effective as dateTime) in Interval["AnchorDate_anchor-dementia-diagnosis" + 0 hours, "AnchorDate_anchor-dementia-diagnosis" + 48 hours] or
+      M.effective overlaps Interval["AnchorDate_anchor-dementia-diagnosis" + 0 hours, "AnchorDate_anchor-dementia-diagnosis" + 48 hours]))
+
+define "Criterion 9":
+  exists [Condition: Code 'N18.8' from codeSystem1] or
+  exists [Condition: Code 'N18.80' from codeSystem1] or
+  exists [Condition: Code 'N18.89' from codeSystem1]
+
+define "Criterion 10":
+  exists [Condition: Code 'K72' from codeSystem1] or
+  exists [Condition: Code 'K72.9' from codeSystem1] or
+  exists [Condition: Code 'K72.0' from codeSystem1] or
+  exists [Condition: Code 'K72.1' from codeSystem1] or
+  exists [Condition: Code 'K72.18' from codeSystem1] or
+  exists [Condition: Code 'K72.10' from codeSystem1] or
+  exists [Condition: Code 'K72.7' from codeSystem1] or
+  exists [Condition: Code 'K72.79' from codeSystem1] or
+  exists [Condition: Code 'K72.72' from codeSystem1] or
+  exists [Condition: Code 'K72.71' from codeSystem1] or
+  exists [Condition: Code 'K72.74' from codeSystem1] or
+  exists [Condition: Code 'K72.73' from codeSystem1]
+
+define Exclusion:
+  "AnchorDate_anchor-dementia-diagnosis" is not null and
+  "Criterion 8" and
+  ("Criterion 9" or
+  "Criterion 10")
+
+define InInitialPopulation:
+  Inclusion and
+  not Exclusion

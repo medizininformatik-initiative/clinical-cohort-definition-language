@@ -1,0 +1,18 @@
+library Retrieve version '1.0.0'
+using FHIR version '4.0.0'
+include FHIRHelpers version '4.0.0'
+
+codesystem codeSystem1: 'http://loinc.org'
+
+context Patient
+
+define "AnchorDate_anchor-now":
+  Min({ ToDate(Now()) })
+
+define Criterion:
+  exists (from [Observation: Code '718-7' from codeSystem1] O
+    where ToDate(O.effective as dateTime) in Interval["AnchorDate_anchor-now" + -24 hours, "AnchorDate_anchor-now" + 0 hours])
+
+define InInitialPopulation:
+  "AnchorDate_anchor-now" is not null and
+  Criterion

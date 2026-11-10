@@ -1,0 +1,39 @@
+library Retrieve version '1.0.0'
+using FHIR version '4.0.0'
+include FHIRHelpers version '4.0.0'
+
+codesystem codeSystem1: 'http://fhir.de/CodeSystem/bfarm/icd-10-gm'
+codesystem codeSystem2: 'http://loinc.org'
+
+context Patient
+
+define InInitialPopulation:
+  exists (from ((from [Condition: Code 'A41.5' from codeSystem1] C
+          return ToDate(C.recordedDate as dateTime)) union
+        (from [Condition: Code 'A41.58' from codeSystem1] C
+          return ToDate(C.recordedDate as dateTime)) union
+        (from [Condition: Code 'A41.51' from codeSystem1] C
+          return ToDate(C.recordedDate as dateTime)) union
+        (from [Condition: Code 'A41.52' from codeSystem1] C
+          return ToDate(C.recordedDate as dateTime))) W1
+    where exists (from ((from [Condition: Code 'N17.0' from codeSystem1] C
+              where ToDate(C.recordedDate as dateTime) in Interval[W1 + -72 hours, W1 + 72 hours]
+              return ToDate(C.recordedDate as dateTime)) union
+            (from [Condition: Code 'N17.09' from codeSystem1] C
+              where ToDate(C.recordedDate as dateTime) in Interval[W1 + -72 hours, W1 + 72 hours]
+              return ToDate(C.recordedDate as dateTime)) union
+            (from [Condition: Code 'N17.02' from codeSystem1] C
+              where ToDate(C.recordedDate as dateTime) in Interval[W1 + -72 hours, W1 + 72 hours]
+              return ToDate(C.recordedDate as dateTime)) union
+            (from [Condition: Code 'N17.03' from codeSystem1] C
+              where ToDate(C.recordedDate as dateTime) in Interval[W1 + -72 hours, W1 + 72 hours]
+              return ToDate(C.recordedDate as dateTime)) union
+            (from [Condition: Code 'N17.01' from codeSystem1] C
+              where ToDate(C.recordedDate as dateTime) in Interval[W1 + -72 hours, W1 + 72 hours]
+              return ToDate(C.recordedDate as dateTime))) W2
+        where Max({ W1 + 0 hours, W2 + 0 hours }) <= Min({ W1 + 72 hours, W2 + 72 hours }) and
+          exists (from [Observation: Code '718-7' from codeSystem2] O
+            where ToDate(O.effective as dateTime) in Interval[Max({ W1 + 0 hours, W2 + 0 hours }), Min({ W1 + 72 hours, W2 + 72 hours })]) and
+          Max({ W1 + 0 hours, W2 + 0 hours }) <= Min({ W1 + 24 hours, W2 + 24 hours }) and
+          exists (from [Observation: Code '1988-5' from codeSystem2] O
+            where ToDate(O.effective as dateTime) in Interval[Max({ W1 + 0 hours, W2 + 0 hours }), Min({ W1 + 24 hours, W2 + 24 hours })])))

@@ -1,0 +1,20 @@
+library Retrieve version '1.0.0'
+using FHIR version '4.0.0'
+include FHIRHelpers version '4.0.0'
+
+codesystem codeSystem1: 'http://fhir.de/CodeSystem/bfarm/ops'
+codesystem codeSystem2: 'http://loinc.org'
+
+context Patient
+
+define InInitialPopulation:
+  exists (from ((from [Procedure: Code '5-470.1' from codeSystem1] P
+          return Coalesce(ToDate(P.performed as dateTime), ToDate((P.performed as Period).start))) union
+        (from [Procedure: Code '5-470.1x' from codeSystem1] P
+          return Coalesce(ToDate(P.performed as dateTime), ToDate((P.performed as Period).start))) union
+        (from [Procedure: Code '5-470.10' from codeSystem1] P
+          return Coalesce(ToDate(P.performed as dateTime), ToDate((P.performed as Period).start))) union
+        (from [Procedure: Code '5-470.11' from codeSystem1] P
+          return Coalesce(ToDate(P.performed as dateTime), ToDate((P.performed as Period).start)))) W1
+    where exists (from [Observation: Code '718-7' from codeSystem2] O
+        where ToDate(O.effective as dateTime) in Interval[W1 + 0 hours, W1 + 24 hours]))
